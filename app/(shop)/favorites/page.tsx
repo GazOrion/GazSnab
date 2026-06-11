@@ -1,0 +1,85 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import Link from "next/link";
+import type { CatalogProduct } from "@/components/ProductCard";
+import { ProductCard } from "@/components/ProductCard";
+import { SiteFooter } from "@/components/SiteFooter";
+import { SiteHeader } from "@/components/SiteHeader";
+import { useFavorites } from "@/components/FavoritesProvider";
+
+export default function FavoritesPage() {
+  const { ids } = useFavorites();
+  const [products, setProducts] = useState<CatalogProduct[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!ids.length) {
+      setProducts([]);
+      setLoading(false);
+      return;
+    }
+
+    let cancelled = false;
+    setLoading(true);
+
+    fetch(`/api/products/by-ids?ids=${encodeURIComponent(ids.join(","))}`)
+      .then((response) => response.json())
+      .then((data: CatalogProduct[]) => {
+        if (!cancelled) {
+          const order = new Map(ids.map((id, index) => [id, index]));
+          setProducts(
+            [...data].sort(
+              (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0)
+            )
+          );
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setProducts([]);
+      })
+      .finally(() => {
+        if (!cancelled) setLoading(false);
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [ids]);
+
+  return (
+    <main className="site-shell site-shell-shop">
+      <SiteHeader />
+      <section className="store-page-section">
+        <div className="container">
+          <header className="store-section-head">
+            <div>
+              <span className="eyebrow">Сохранённое</span>
+              <h1>Избранное</h1>
+              <p className="muted">
+                {ids.length
+                  ? `${ids.length} позиций в списке — добавьте в корзину и оформите заявку`
+                  : "Добавляйте товары и услуги в избранное с карточки каталога"}
+              </p>
+            </div>
+          </header>
+
+          {loading ? (
+            <p className="muted">Загрузка…</p>
+          ) : products.length === 0 ? (
+            <p className="catalog-empty muted">
+              Список пуст. <Link href="/">Перейти в каталог</Link>
+            </p>
+          ) : (
+            <div className="product-grid store-product-grid">
+              {products.map((product) => (
+                <ProductCard product={product} key={product.id} />
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+      <SiteFooter />
+    </main>
+  );
+}

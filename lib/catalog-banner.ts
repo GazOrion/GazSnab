@@ -11,7 +11,7 @@ export const EQUIPMENT_CATEGORY_BANNER_FILES: Record<string, string> = {
   ПО: "software-banner.webp",
   "Дополнительное оборудование": "additional-equipment-banner.webp",
   "Газорегуляторные пункты": "regulators-banner.webp",
-  "Узлы учета газа": "gas-metering-units-banner.webp",
+  ГРПШ: "gas-metering-units-banner.webp",
   "Узлы учета": "gas-alarm-banner.webp",
   Фильтры: "filters-banner.webp",
   Насосы: "pumps-banner.webp",

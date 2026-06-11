@@ -7,7 +7,7 @@ import {
 } from "@/lib/pumps-catalog";
 
 export const GAS_METERS_CATEGORY = "Счётчики газа";
-export const GAS_METERING_UNITS_CATEGORY = "Узлы учета газа";
+export const GAS_METERING_UNITS_CATEGORY = "ГРПШ";
 export const TELEMETRY_CATEGORY = "Телеметрия";
 export const SOFTWARE_CATEGORY = "ПО";
 export const ADDITIONAL_EQUIPMENT_CATEGORY = "Дополнительное оборудование";
@@ -84,10 +84,10 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
     filterSections: ["Тип регулятора", "Давление", "Пропускная способность"],
     manufacturers: []
   },
-  "Узлы учета газа": {
-    category: "Узлы учета газа",
+  [GAS_METERING_UNITS_CATEGORY]: {
+    category: GAS_METERING_UNITS_CATEGORY,
     slug: "gas-metering-units",
-    searchPlaceholder: "Поиск по узлам учёта газа",
+    searchPlaceholder: "Поиск по ГРПШ",
     filterSections: ["Тип узла", "Диаметр", "Пропускная способность", "Способ монтажа"],
     manufacturers: []
   },

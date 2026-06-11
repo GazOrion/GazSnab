@@ -1275,7 +1275,7 @@ const products = [
     title: "Газорегуляторный пункт шкафной ГРПШ-04-2У1",
     slug: "grp-sh-04-2u1",
     kind: "Товар",
-    category: "Узлы учета газа",
+    category: "ГРПШ",
     description: GRP_SHKAFNY_CATEGORY,
     details: bulletDetails([
       "Компактное шкафное исполнение для наружной установки.",
@@ -1299,7 +1299,7 @@ const products = [
     title: "Газорегуляторный пункт шкафной ГРПШ-32-2У1",
     slug: "grp-sh-32-2u1",
     kind: "Товар",
-    category: "Узлы учета газа",
+    category: "ГРПШ",
     description: GRP_SHKAFNY_CATEGORY,
     details: bulletDetails([
       "Усиленная компоновка шкафа для повышенных расходов.",
@@ -1323,7 +1323,7 @@ const products = [
     title: "Газорегуляторный пункт шкафной ГРПШ-10МС-2У1 на базе двух РДГК-10М",
     slug: "grp-sh-10ms-2u1",
     kind: "Товар",
-    category: "Узлы учета газа",
+    category: "ГРПШ",
     description: GRP_SHKAFNY_CATEGORY,
     details: bulletDetails([
       "Рабочая линия на базе двух регуляторов давления газа РДГК-10М.",

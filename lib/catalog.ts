@@ -76,10 +76,10 @@ export const EQUIPMENT_CLUSTER_PRESENTATION: Record<string, ClusterPresentation>
     title: "Дополнительное оборудование",
     teaser: "Кабели, комплектующие и аксессуары для подключения приборов учёта и телеметрии"
   },
-  "Узлы учета газа": {
-    title: "Узлы учета газа",
+  ГРПШ: {
+    title: "ГРПШ",
     teaser:
-      "Прайс-лист и актуальные комплектации можно запросить у отдела продаж — подберём узел под ваш проект"
+      "Прайс-лист и актуальные комплектации можно запросить у отдела продаж — подберём ГРПШ под ваш проект"
   },
   "Узлы учета": {
     title: "Сигнализаторы загазованности",
@@ -141,7 +141,7 @@ export const EQUIPMENT_CATEGORY_IMAGES: Partial<Record<string, string>> = {
   ПО: "/media/products/software/gazset-standart.webp",
   "Дополнительное оборудование": "/media/products/accessories/bpek-ek-cable.webp",
   "Газорегуляторные пункты": "/media/categories/regulator-davleniya.webp",
-  "Узлы учета газа": "/media/products/gas-metering-units/uzel-ucheta-gaza.webp",
+  ГРПШ: "/media/products/gas-metering-units/uzel-ucheta-gaza.webp",
   "Узлы учета": "/media/categories/signalizator-zagazovannosti.webp",
   Фильтры: "/media/categories/filtr.webp",
   Насосы: "/media/categories/pumps.webp",
@@ -178,7 +178,7 @@ export const EQUIPMENT_CLUSTER_ORDER = [
   "Телеметрия",
   "ПО",
   "Дополнительное оборудование",
-  "Узлы учета газа",
+  "ГРПШ",
   "Узлы учета",
   "Фильтры",
   "Насосы",
@@ -204,8 +204,8 @@ export const EQUIPMENT_PROMO_CATEGORIES = [
     image: "/media/categories/pumps.webp"
   },
   {
-    name: "Узлы учета газа",
-    label: "Узлы учета газа",
+    name: "ГРПШ",
+    label: "ГРПШ",
     image: "/media/products/gas-metering-units/uzel-ucheta-gaza.webp"
   },
   {
@@ -277,8 +277,8 @@ export const EQUIPMENT_HEADER_CATALOG_ITEMS = dedupeEquipmentCatalogNavItems([
     image: "/media/categories/regulator-davleniya.webp"
   },
   {
-    name: "Узлы учета газа",
-    label: "Узлы учета газа",
+    name: "ГРПШ",
+    label: "ГРПШ",
     image: "/media/products/gas-metering-units/uzel-ucheta-gaza.webp"
   },
   {

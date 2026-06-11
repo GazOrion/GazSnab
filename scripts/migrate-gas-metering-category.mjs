@@ -1,12 +1,12 @@
 /**
- * Переносит узлы учёта газа (включая ГРПШ) в категорию «Узлы учета газа»
+ * Переносит узлы учёта газа (включая ГРПШ) в категорию «ГРПШ»
  * и обновляет пути к фото в `public/media/products/gas-metering-units/`.
  * Запуск: node scripts/migrate-gas-metering-category.mjs
  */
 import { PrismaClient } from "@prisma/client";
 
-const TARGET_CATEGORY = "Узлы учета газа";
-const SOURCE_CATEGORIES = ["Узлы учета", "Газорегуляторные пункты"];
+const TARGET_CATEGORY = "ГРПШ";
+const SOURCE_CATEGORIES = ["Узлы учета", "Газорегуляторные пункты", "Узлы учета газа"];
 const MEDIA_BASE = "/media/products/gas-metering-units";
 
 const IMAGE_BY_SLUG = {

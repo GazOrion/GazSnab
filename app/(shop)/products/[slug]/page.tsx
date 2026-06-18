@@ -19,6 +19,7 @@ import {
   isCompactPumpDesignation,
   getPumpModelFromSpecs
 } from "@/lib/pumps-catalog";
+import { versionedPublicSrc } from "@/lib/versioned-media.server";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -36,9 +37,11 @@ function buildProductGalleryImages(imageUrl: string | null, gallery: string[]) {
 
   const push = (url: string | null | undefined) => {
     const value = url?.trim();
-    if (!value || seen.has(value)) return;
-    seen.add(value);
-    images.push(value);
+    if (!value) return;
+    const versioned = versionedPublicSrc(value);
+    if (seen.has(versioned)) return;
+    seen.add(versioned);
+    images.push(versioned);
   };
 
   push(imageUrl);

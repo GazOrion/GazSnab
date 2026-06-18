@@ -97,7 +97,7 @@ export function buildGasMeterSubcategoryClusters(products: CatalogProduct[]): Ca
       name: GAS_METER_SUBCATEGORY_ROTARY,
       label: GAS_METER_SUBCATEGORY_ROTARY,
       teaser:
-        "Ротационные счётчики газа РГ-Р для промышленного и коммерческого учёта природного газа",
+        "Ротационные счётчики газа РГ-Р, RVG и RABO для промышленного и коммерческого учёта природного газа",
       imageUrl: "/media/products/rgr/rgr-rotary-card.webp",
       count: rotaryProducts.length,
       minPrice: minPrice(rotaryProducts),

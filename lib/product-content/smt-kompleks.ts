@@ -52,9 +52,16 @@ export type ProductComparisonTable = {
   rows: ProductComparisonTableRow[];
 };
 
+export type ProductDataTableCell =
+  | string
+  | {
+      text: string;
+      colspan?: number;
+    };
+
 export type ProductDataTable = {
   columns: string[];
-  rows: string[][];
+  rows: ProductDataTableCell[][];
 };
 
 export type ProductRichContent = {

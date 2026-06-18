@@ -101,6 +101,16 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
             .filter(Boolean)
             .join(" ");
 
+          function renderTableCell(cell: string) {
+            return cell.includes("\n")
+              ? cell.split("\n").map((line, lineIndex) => (
+                  <span className="product-data-table__cell-line" key={lineIndex}>
+                    {line.trim() || "\u00a0"}
+                  </span>
+                ))
+              : cell;
+          }
+
           return (
             <div className={wrapClass} key={index}>
               <table className="product-data-table">
@@ -116,17 +126,16 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
                 <tbody>
                   {block.table.rows.map((row, rowIndex) => (
                     <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => (
-                        <td key={cellIndex}>
-                          {cell.includes("\n")
-                            ? cell.split("\n").map((line, lineIndex) => (
-                                <span className="product-data-table__cell-line" key={lineIndex}>
-                                  {line.trim() || "\u00a0"}
-                                </span>
-                              ))
-                            : cell}
-                        </td>
-                      ))}
+                      {row.map((cell, cellIndex) => {
+                        const text = typeof cell === "string" ? cell : cell.text;
+                        const colspan = typeof cell === "object" ? cell.colspan : undefined;
+
+                        return (
+                          <td key={cellIndex} colSpan={colspan}>
+                            {renderTableCell(text)}
+                          </td>
+                        );
+                      })}
                     </tr>
                   ))}
                 </tbody>

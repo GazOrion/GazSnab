@@ -34,6 +34,7 @@ import { MONTAZHNOE_PRISOEDINITELNOE_OBORUDOVANIE_CONTENT } from "@/lib/product-
 import { SHKAF_ZASHCHITNYY_SHG_CONTENT } from "@/lib/product-content/shkaf-zashchitnyy-shg";
 import { RGR_R_CONTENT_BY_SLUG } from "@/lib/product-content/rgr-r";
 import { RVG_CONTENT_BY_SLUG } from "@/lib/product-content/rvg";
+import { RABO_CONTENT_BY_SLUG } from "@/lib/product-content/rabo";
 import { RGT_T_CONTENT_BY_SLUG } from "@/lib/product-content/rgt-t";
 import { RASKO_VK_CONTENT_BY_SLUG } from "@/lib/product-content/rasko-vk";
 import { TAUGAZ_VKR_CONTENT_BY_SLUG } from "@/lib/product-content/taugaz-vkr";
@@ -78,6 +79,7 @@ const RICH_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
   ...RASKO_VK_CONTENT_BY_SLUG,
   ...RGR_R_CONTENT_BY_SLUG,
   ...RVG_CONTENT_BY_SLUG,
+  ...RABO_CONTENT_BY_SLUG,
   ...RGT_T_CONTENT_BY_SLUG
 };
 

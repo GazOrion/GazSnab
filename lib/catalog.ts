@@ -1,3 +1,5 @@
+import { GAS_METERING_UNITS_CARD_IMAGE } from "@/lib/gas-metering-units-media";
+
 export const PRODUCT_KIND = {
   GOODS: "Товар",
   SERVICE: "Услуга"
@@ -141,7 +143,7 @@ export const EQUIPMENT_CATEGORY_IMAGES: Partial<Record<string, string>> = {
   ПО: "/media/products/software/gazset-standart.webp",
   "Дополнительное оборудование": "/media/products/accessories/bpek-ek-cable.webp",
   "Газорегуляторные пункты": "/media/categories/regulator-davleniya.webp",
-  ГРПШ: "/media/products/gas-metering-units/uzel-ucheta-gaza.webp",
+  ГРПШ: GAS_METERING_UNITS_CARD_IMAGE,
   "Узлы учета": "/media/categories/signalizator-zagazovannosti.webp",
   Фильтры: "/media/categories/filtr.webp",
   Насосы: "/media/categories/pumps.webp",
@@ -206,7 +208,7 @@ export const EQUIPMENT_PROMO_CATEGORIES = [
   {
     name: "ГРПШ",
     label: "ГРПШ",
-    image: "/media/products/gas-metering-units/uzel-ucheta-gaza.webp"
+    image: GAS_METERING_UNITS_CARD_IMAGE
   },
   {
     name: "Телеметрия",
@@ -279,7 +281,7 @@ export const EQUIPMENT_HEADER_CATALOG_ITEMS = dedupeEquipmentCatalogNavItems([
   {
     name: "ГРПШ",
     label: "ГРПШ",
-    image: "/media/products/gas-metering-units/uzel-ucheta-gaza.webp"
+    image: GAS_METERING_UNITS_CARD_IMAGE
   },
   {
     name: "Фильтры",

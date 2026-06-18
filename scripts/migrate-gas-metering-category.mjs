@@ -10,7 +10,6 @@ const SOURCE_CATEGORIES = ["Узлы учета", "Газорегуляторн�
 const MEDIA_BASE = "/media/products/gas-metering-units";
 
 const IMAGE_BY_SLUG = {
-  "uzel-ucheta-gaza": `${MEDIA_BASE}/uzel-ucheta-gaza.webp`,
   "grp-sh-04-2u1": `${MEDIA_BASE}/grp-sh-04-2u1-Photoroom_csecollege.webp`,
   "grp-sh-32-2u1": `${MEDIA_BASE}/grp-sh-32-2u1-Photoroom_csecollege.webp`,
   "grp-sh-10ms-2u1": `${MEDIA_BASE}/grp-sh-10ms-2u1-Photoroom_csecollege.webp`

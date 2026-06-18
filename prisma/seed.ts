@@ -22,6 +22,7 @@ import {
   buildRvgListingDescription,
   RVG_SHORT_DESCRIPTION
 } from "../lib/product-content/rvg";
+import { RABO_CARD_IMAGE, RABO_GALLERY, RABO_PRODUCTS, buildRaboListingDescription, RABO_SHORT_DESCRIPTION } from "../lib/product-content/rabo";
 import {
   RGT_T_CARD_IMAGE,
   RGT_T_GALLERY,
@@ -29,6 +30,11 @@ import {
   buildRgtListingDescription,
   RGT_T_SHORT_DESCRIPTION
 } from "../lib/product-content/rgt-t";
+import {
+  GRP_SH_04_IMAGE,
+  GRP_SH_10MS_IMAGE,
+  GRP_SH_32_IMAGE
+} from "../lib/gas-metering-units-media";
 import { CDL_VERTICAL_PUMPS, type VerticalMultistagePumpRow } from "./data/cdl-vertical-pumps";
 import { CHJ_HORIZONTAL_PUMPS } from "./data/chj-horizontal-pumps";
 import { CHL_HORIZONTAL_PUMPS } from "./data/chl-horizontal-pumps";
@@ -1932,6 +1938,26 @@ const rvgRotaryMeterSeedProducts = RVG_PRODUCTS.map((product) => ({
   featured: true
 }));
 
+const raboRotaryMeterSeedProducts = RABO_PRODUCTS.map((product) => ({
+  title: product.title,
+  slug: product.slug,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: buildRaboListingDescription(product),
+  details: RABO_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "RABO",
+    Подкатегория: "Ротационные",
+    ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: RABO_CARD_IMAGE,
+  gallery: RABO_GALLERY,
+  featured: true
+}));
+
 const rgtTurbineMeterSeedProducts = RGT_T_PRODUCTS.map((product) => ({
   title: product.title,
   slug: product.slug,
@@ -1973,8 +1999,8 @@ const products = [
     leadTime: "по запросу у отдела продаж",
     price: "172000",
     unit: "компл.",
-    imageUrl: "/media/products/gas-metering-units/grp-sh-04-2u1-Photoroom_csecollege.webp",
-    gallery: ["/media/products/gas-metering-units/grp-sh-04-2u1-Photoroom_csecollege.webp"],
+    imageUrl: GRP_SH_04_IMAGE,
+    gallery: [GRP_SH_04_IMAGE],
     featured: true
   },
   {
@@ -1997,8 +2023,8 @@ const products = [
     leadTime: "по запросу у отдела продаж",
     price: "248000",
     unit: "компл.",
-    imageUrl: "/media/products/gas-metering-units/grp-sh-32-2u1-Photoroom_csecollege.webp",
-    gallery: ["/media/products/gas-metering-units/grp-sh-32-2u1-Photoroom_csecollege.webp"],
+    imageUrl: GRP_SH_32_IMAGE,
+    gallery: [GRP_SH_32_IMAGE],
     featured: true
   },
   {
@@ -2022,8 +2048,8 @@ const products = [
     leadTime: "по запросу у отдела продаж",
     price: "315000",
     unit: "компл.",
-    imageUrl: "/media/products/gas-metering-units/grp-sh-10ms-2u1-Photoroom_csecollege.webp",
-    gallery: ["/media/products/gas-metering-units/grp-sh-10ms-2u1-Photoroom_csecollege.webp"]
+    imageUrl: GRP_SH_10MS_IMAGE,
+    gallery: [GRP_SH_10MS_IMAGE]
   },
   {
     title: "Проектирование газового оборудования",
@@ -2915,6 +2941,7 @@ const products = [
   },
   ...rgrRotaryMeterSeedProducts,
   ...rvgRotaryMeterSeedProducts,
+  ...raboRotaryMeterSeedProducts,
   ...rgtTurbineMeterSeedProducts,
   {
     title: "Счётчик газа микротермальный СМТ-Комплекс",

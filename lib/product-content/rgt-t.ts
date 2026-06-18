@@ -348,7 +348,7 @@ const RGT_T_COMMON_SPECS: ProductSpecRow[] = [
   }
 ];
 
-function mergeSpecRows(...groups: ProductSpecRow[]): ProductSpecRow[] {
+function mergeSpecRows(...groups: ProductSpecRow[][]): ProductSpecRow[] {
   const seen = new Set<string>();
   const merged: ProductSpecRow[] = [];
 

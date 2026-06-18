@@ -1,18 +1,25 @@
 import Image from "next/image";
 
-const DESIGNATION_IMAGE = "/media/categories/pumps/three-speed-designation.webp";
+type Props = {
+  image: string;
+  alt: string;
+  compact?: boolean;
+};
 
-export function ThreeSpeedPumpDesignation() {
+export function PumpDesignation({ image, alt, compact = false }: Props) {
   return (
-    <section className="store-pump-designation" aria-labelledby="pump-designation-title">
+    <section
+      className={`store-pump-designation${compact ? " store-pump-designation--compact" : ""}`}
+      aria-labelledby="pump-designation-title"
+    >
       <h2 className="store-pump-designation__title" id="pump-designation-title">
         Как читать обозначение
       </h2>
 
       <figure className="store-pump-designation__figure">
         <Image
-          src={DESIGNATION_IMAGE}
-          alt="Схема расшифровки обозначения трёхскоростного насоса GS-F"
+          src={image}
+          alt={alt}
           width={1400}
           height={520}
           className="store-pump-designation__image"

@@ -30,9 +30,8 @@ export default function WarrantyPage() {
     <main className="site-shell">
       <SiteHeader />
 
-      <article className="section static-page narrow">
+      <article className="section static-page">
         <div className="container">
-          <span className="eyebrow">Гарантии и возврат</span>
           <h1>Гарантия и возврат товара</h1>
           <p className="lead">
             Мы сопровождаем поставленное оборудование на этапе ввода в эксплуатацию и при гарантийных

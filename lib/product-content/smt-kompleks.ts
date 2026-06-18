@@ -15,6 +15,7 @@ export type ProductDescriptionBlock =
       imageAlt: string;
       caption?: string;
       expandable?: boolean;
+      plain?: boolean;
     }
   | {
       type: "parts-catalog";
@@ -22,7 +23,7 @@ export type ProductDescriptionBlock =
       imageAlt?: string;
       items: ProductPartsCatalogRow[];
     }
-  | { type: "data-table"; table: ProductDataTable };
+  | { type: "data-table"; table: ProductDataTable; highlight?: boolean; matrix?: boolean };
 
 export type ProductSpecRow = {
   characteristic: string;
@@ -59,8 +60,11 @@ export type ProductDataTable = {
 export type ProductRichContent = {
   descriptionTitle: string;
   description: ProductDescriptionBlock[];
-  specsTitle: string;
-  specs: ProductSpecRow[];
+  optionsTitle?: string;
+  optionsDescription?: ProductDescriptionBlock[];
+  specsTitle?: string;
+  specs?: ProductSpecRow[];
+  specsFooter?: ProductDescriptionBlock[];
   comparisonTable?: ProductComparisonTable;
   dimensions?: ProductDimensionsContent;
   dimensionsSection?: ProductDimensionsSection;

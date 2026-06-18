@@ -12,6 +12,7 @@ type Props = {
   lead: string;
   breadcrumbs: CategoryBreadcrumb[];
   bannerModifier?: string;
+  subtitle?: string;
 };
 
 export function EquipmentCategoryHero({
@@ -19,7 +20,8 @@ export function EquipmentCategoryHero({
   title,
   lead,
   breadcrumbs,
-  bannerModifier
+  bannerModifier,
+  subtitle
 }: Props) {
   return (
     <header className="store-equipment-catalog-hero">
@@ -44,7 +46,12 @@ export function EquipmentCategoryHero({
                 </span>
               ))}
             </nav>
-            <h1 className="store-equipment-catalog-hero__title">{title}</h1>
+            <div className="store-equipment-catalog-hero__heading">
+              <h1 className="store-equipment-catalog-hero__title">{title}</h1>
+              {subtitle ? (
+                <p className="store-equipment-catalog-hero__subtitle">{subtitle}</p>
+              ) : null}
+            </div>
             <p className="store-equipment-catalog-hero__lead">{lead}</p>
           </div>
         </div>

@@ -7,6 +7,38 @@ import { SMT_SMART_CONTENT } from "../lib/product-content/smt-smart";
 import { SMT_SMART_K_CONTENT } from "../lib/product-content/smt-smart-k";
 import { SMT_SMART_DKZ_CONTENT } from "../lib/product-content/smt-smart-dkz";
 import { SMT_SMART_110_CONTENT } from "../lib/product-content/smt-smart-110";
+import { RASKO_VK_COMMUNAL_SHORT_DESCRIPTION, RASKO_VK_SHORT_DESCRIPTION } from "../lib/product-content/rasko-vk";
+import {
+  RGR_R_CARD_IMAGE,
+  RGR_R_GALLERY,
+  RGR_R_PRODUCTS,
+  buildRgrListingDescription,
+  RGR_R_SHORT_DESCRIPTION
+} from "../lib/product-content/rgr-r";
+import {
+  RVG_CARD_IMAGE,
+  RVG_GALLERY,
+  RVG_PRODUCTS,
+  buildRvgListingDescription,
+  RVG_SHORT_DESCRIPTION
+} from "../lib/product-content/rvg";
+import {
+  RGT_T_CARD_IMAGE,
+  RGT_T_GALLERY,
+  RGT_T_PRODUCTS,
+  buildRgtListingDescription,
+  RGT_T_SHORT_DESCRIPTION
+} from "../lib/product-content/rgt-t";
+import { CDL_VERTICAL_PUMPS, type VerticalMultistagePumpRow } from "./data/cdl-vertical-pumps";
+import { CHJ_HORIZONTAL_PUMPS } from "./data/chj-horizontal-pumps";
+import { CHL_HORIZONTAL_PUMPS } from "./data/chl-horizontal-pumps";
+import { CHT_HORIZONTAL_PUMPS, type HorizontalMultistagePumpRow } from "./data/cht-horizontal-pumps";
+import { CDLF_VERTICAL_PUMPS } from "./data/cdlf-vertical-pumps";
+import { GSM_CONSOLE_CENTRIFUGAL_PUMPS, type ConsoleCentrifugalPumpRow } from "./data/gsm-console-centrifugal-pumps";
+import { GF_MONOBLOCK_PUMPS } from "./data/gf-monoblock-pumps";
+import { GFM_MONOBLOCK_PUMPS, type MonoblockConsolePumpRow } from "./data/gfm-monoblock-pumps";
+import { WQ_SUBMERSIBLE_SEWAGE_PUMPS, WQK_SUBMERSIBLE_SEWAGE_PUMPS, type SubmersibleSewagePumpRow } from "./data/wq-submersible-sewage-pumps";
+import { GTD_INLINE_PUMPS, type InlineCirculationPumpRow } from "./data/gtd-inline-pumps";
 
 const prisma = new PrismaClient();
 
@@ -962,7 +994,8 @@ const intelligentWetRotorPumpProducts = INTELLIGENT_WET_ROTOR_PUMPS.map((row) =>
 const PUMP_THREE_SPEED_SUBCATEGORY =
   "Трехскоростные циркуляционные насосы с «мокрым» ротором";
 
-const PUMP_THREE_SPEED_IMAGE = "/media/categories/pumps/three-speed-wet-rotor.webp";
+const PUMP_THREE_SPEED_GALLERY_IMAGE = "/media/categories/pumps/three-speed-wet-rotor.webp";
+const PUMP_THREE_SPEED_CARD_IMAGE = "/media/categories/pumps/three-speed-wet-rotor-card.webp";
 
 const PUMP_THREE_SPEED_SHORT_DESCRIPTION = [
   "Бесшумная работа",
@@ -970,17 +1003,21 @@ const PUMP_THREE_SPEED_SHORT_DESCRIPTION = [
   "Возможность регулировки режимов работы"
 ].join("\n");
 
-const PUMP_THREE_SPEED_DETAILS =
+const PUMP_THREE_SPEED_DETAILS_GS_F =
   "Насосы серии GS-F представляют собой трехскоростные циркуляционные насосы с «мокрым» ротором. Предназначен для обеспечения циркуляции жидкости в системах отопления, охлаждения, кондиционирования и горячего водоснабжения различных объектов.";
+
+const PUMP_THREE_SPEED_DETAILS_UPS =
+  "Насосы серии UPS представляют собой трехскоростные циркуляционные насосы с «мокрым» ротором. Предназначен для обеспечения циркуляции жидкости в системах отопления, охлаждения, кондиционирования и горячего водоснабжения различных объектов.";
 
 type ThreeSpeedPumpRow = {
   model: string;
   dn: string;
   supply: string;
   power: string;
-  current: string;
+  current?: string;
   flow: string;
   head: string;
+  series?: "GS-F" | "UPS";
 };
 
 const THREE_SPEED_WET_ROTOR_PUMPS: ThreeSpeedPumpRow[] = [
@@ -1238,36 +1275,681 @@ const THREE_SPEED_WET_ROTOR_PUMPS: ThreeSpeedPumpRow[] = [
   }
 ];
 
+const THREE_SPEED_UPS_PUMPS: ThreeSpeedPumpRow[] = [
+  {
+    model: "UPS25-16-230T",
+    dn: 'G1"',
+    supply: "3×380В / 50Гц",
+    power: "700 / 450 / 400",
+    flow: "14,5 / 12 / 9,2",
+    head: "16 / 13 / 11",
+    series: "UPS"
+  },
+  {
+    model: "UPS25-20-230T",
+    dn: 'G1"',
+    supply: "3×380В / 50Гц",
+    power: "1000 / 700 / 600",
+    flow: "17 / 14 / 12,5",
+    head: "20 / 17 / 14",
+    series: "UPS"
+  },
+  {
+    model: "UPS32-8-200F",
+    dn: "DN32",
+    supply: "1×220В / 50Гц",
+    power: "245 / 190 / 135",
+    flow: "8 / 5,2 / 3,5",
+    head: "8 / 7 / 5",
+    series: "UPS"
+  },
+  {
+    model: "UPS40-12-250TF",
+    dn: "DN40",
+    supply: "3×380В / 50Гц",
+    power: "700 / 450 / 400",
+    flow: "14 / 11,2 / 8",
+    head: "14,5 / 12,5 / 11",
+    series: "UPS"
+  },
+  {
+    model: "UPS40-16-250TF",
+    dn: "DN40",
+    supply: "3×380В / 50Гц",
+    power: "1000 / 700 / 600",
+    flow: "17 / 14 / 12",
+    head: "16,2 / 15,5 / 14,5",
+    series: "UPS"
+  },
+  {
+    model: "UPS50-12-280TF",
+    dn: "DN50",
+    supply: "3×380В / 50Гц",
+    power: "1000 / 700 / 600",
+    flow: "24 / 18,5 / 13",
+    head: "13,2 / 11 / 10",
+    series: "UPS"
+  },
+  {
+    model: "UPS50-20-280TF",
+    dn: "DN50",
+    supply: "3×380В / 50Гц",
+    power: "1300 / 1000 / 900",
+    flow: "24,5 / 22 / 18,5",
+    head: "20 / 17 / 16",
+    series: "UPS"
+  },
+  {
+    model: "UPS65-8-280TF",
+    dn: "DN65",
+    supply: "3×380В / 50Гц",
+    power: "700 / 450 / 400",
+    flow: "35 / 28 / 25",
+    head: "8,2 / 6,7 / 5,5",
+    series: "UPS"
+  },
+  {
+    model: "UPS80-12-300TF",
+    dn: "DN80",
+    supply: "3×380В / 50Гц",
+    power: "1300 / 1000 / 900",
+    flow: "41,2 / 35 / 33",
+    head: "12,2 / 10 / 9,3",
+    series: "UPS"
+  }
+];
+
+const ALL_THREE_SPEED_WET_ROTOR_PUMPS = [...THREE_SPEED_WET_ROTOR_PUMPS, ...THREE_SPEED_UPS_PUMPS];
+
 function threeSpeedPumpSpecs(row: ThreeSpeedPumpRow) {
-  return {
+  const specs: Record<string, string> = {
     Модель: row.model,
     Подкатегория: PUMP_THREE_SPEED_SUBCATEGORY,
     "Номинальный диаметр": row.dn,
     Питание: row.supply,
     Мощность: `${row.power} Вт`,
-    Ток: `${row.current} А`,
     "Пропускная способность": `${row.flow} м³/ч`,
     Напор: `${row.head} м`
   };
+
+  if (row.current) {
+    specs.Ток = `${row.current} А`;
+  }
+
+  return specs;
+}
+
+function threeSpeedPumpDetails(row: ThreeSpeedPumpRow) {
+  return row.series === "UPS" ? PUMP_THREE_SPEED_DETAILS_UPS : PUMP_THREE_SPEED_DETAILS_GS_F;
 }
 
 function threeSpeedPumpSlug(model: string) {
   return `nasos-${model.toLowerCase()}`;
 }
 
-const threeSpeedWetRotorPumpProducts = THREE_SPEED_WET_ROTOR_PUMPS.map((row) => ({
+const threeSpeedWetRotorPumpProducts = ALL_THREE_SPEED_WET_ROTOR_PUMPS.map((row) => ({
   title: `Трехскоростной циркуляционный насос ${row.model}`,
   slug: threeSpeedPumpSlug(row.model),
   kind: "Товар" as const,
   category: "Насосы",
   description: PUMP_THREE_SPEED_SHORT_DESCRIPTION,
-  details: PUMP_THREE_SPEED_DETAILS,
+  details: threeSpeedPumpDetails(row),
   specs: threeSpeedPumpSpecs(row),
   leadTime: "по наличию, уточняется в заявке",
   price: "0",
   unit: "шт.",
-  imageUrl: PUMP_THREE_SPEED_IMAGE,
-  gallery: [PUMP_THREE_SPEED_IMAGE]
+  imageUrl: PUMP_THREE_SPEED_CARD_IMAGE,
+  gallery: [PUMP_THREE_SPEED_GALLERY_IMAGE]
+}));
+
+const PUMP_INLINE_SUBCATEGORY = "Линейные циркуляционные насосы";
+
+const PUMP_INLINE_GALLERY_IMAGE = "/media/categories/pumps/inline-circulation.webp";
+const PUMP_INLINE_CARD_IMAGE = "/media/categories/pumps/inline-circulation-card.webp";
+
+const PUMP_INLINE_SHORT_DESCRIPTION =
+  "Циркуляционный центробежный насос линейного исполнения серии GTD";
+
+const PUMP_INLINE_DETAILS =
+  "Циркуляционный центробежный насос GTD представляет собой одноступенчатый центробежный насос линейного исполнения. При проектировании используется отлично выполненная гидравлическая модель. Проточная часть насоса изготовлена по технологии точного литья. Технология делает проточную часть гладкой с небольшим трением и высокой эффективностью. Насосы серии GTD не предназначены для перекачивания питьевой воды и работы в централизованных системах водоснабжения.";
+
+const PUMP_INLINE_SUPPLY = "3×380В / 50Гц";
+
+function formatPumpDecimal(value: string) {
+  return value.replace(/\./g, ",");
+}
+
+function inlinePumpSlug(model: string) {
+  return `nasos-${model.toLowerCase().replace(/\./g, "-").replace(/\//g, "-")}`;
+}
+
+function inlinePumpSpecs(row: InlineCirculationPumpRow) {
+  return {
+    Модель: row.model,
+    Подкатегория: PUMP_INLINE_SUBCATEGORY,
+    "Присоединение вход/выход": row.connection,
+    Питание: PUMP_INLINE_SUPPLY,
+    "Номинальная мощность": `${formatPumpDecimal(row.powerKw)} кВт`,
+    "Номинальный ток": `${formatPumpDecimal(row.currentA)} А`,
+    "Номинальный расход": `${formatPumpDecimal(row.flow)} м³/ч`,
+    "Номинальный напор": `${formatPumpDecimal(row.head)} м`,
+    "Номинальная частота вращения": `${row.speed} об/мин`
+  };
+}
+
+const inlineCirculationPumpProducts = GTD_INLINE_PUMPS.map((row) => ({
+  title: `Линейный циркуляционный насос ${row.model}`,
+  slug: inlinePumpSlug(row.model),
+  kind: "Товар" as const,
+  category: "Насосы",
+  description: PUMP_INLINE_SHORT_DESCRIPTION,
+  details: PUMP_INLINE_DETAILS,
+  specs: inlinePumpSpecs(row),
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: PUMP_INLINE_CARD_IMAGE,
+  gallery: [PUMP_INLINE_GALLERY_IMAGE]
+}));
+
+const PUMP_VERTICAL_SUBCATEGORY = "Вертикальные многоступенчатые центробежные насосы";
+
+const PUMP_VERTICAL_IMAGE = "/media/categories/pumps/vertical-multistage-card.webp";
+
+const PUMP_VERTICAL_SHORT_DESCRIPTION = [
+  "Низкий уровень шума",
+  "Малая вибрация",
+  "Высокая долговечность"
+].join("\n");
+
+const PUMP_VERTICAL_DETAILS =
+  "Серия CDL представляет собой вертикальный многоступенчатый центробежный насос с всасывающим и нагнетательным патрубками на одном уровне. Проточная часть выполнена из нержавеющей стали.";
+
+const PUMP_VERTICAL_CDLF_DETAILS =
+  "Серия CDLF представляет собой вертикальный многоступенчатый центробежный насос с всасывающим и нагнетательным патрубками на одном уровне. Насос, двигатель и база выполнены из нержавеющей стали.";
+
+const PUMP_VERTICAL_SUPPLY = "3×380В / 50Гц";
+
+function verticalPumpSlug(model: string) {
+  return `nasos-${model.toLowerCase()}`;
+}
+
+function verticalPumpConnectionToDn(connection: string) {
+  const match = connection.match(/^(\d+)x\d+$/i);
+  return match ? `DN${match[1]}` : connection;
+}
+
+function verticalPumpSpecs(row: VerticalMultistagePumpRow) {
+  return {
+    Модель: row.model,
+    Подкатегория: PUMP_VERTICAL_SUBCATEGORY,
+    "Присоединение вход/выход": row.connection,
+    "Номинальный диаметр": verticalPumpConnectionToDn(row.connection),
+    Питание: PUMP_VERTICAL_SUPPLY,
+    "Номинальная мощность": `${formatPumpDecimal(row.powerKw)} кВт`,
+    "Номинальный ток": `${formatPumpDecimal(row.currentA)} А`,
+    "Пропускная способность": `${formatPumpDecimal(row.flow)} м³/ч`,
+    Напор: `${formatPumpDecimal(row.head)} м`,
+    "Максимальное рабочее давление": `${row.maxPressure} бар`
+  };
+}
+
+function buildVerticalMultistagePumpProducts(rows: VerticalMultistagePumpRow[], details: string) {
+  return rows.map((row) => ({
+    title: `Вертикальный многоступенчатый насос ${row.model}`,
+    slug: verticalPumpSlug(row.model),
+    kind: "Товар" as const,
+    category: "Насосы",
+    description: PUMP_VERTICAL_SHORT_DESCRIPTION,
+    details,
+    specs: verticalPumpSpecs(row),
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: PUMP_VERTICAL_IMAGE,
+    gallery: [PUMP_VERTICAL_IMAGE]
+  }));
+}
+
+const verticalMultistagePumpProducts = [
+  ...buildVerticalMultistagePumpProducts(CDL_VERTICAL_PUMPS, PUMP_VERTICAL_DETAILS),
+  ...buildVerticalMultistagePumpProducts(CDLF_VERTICAL_PUMPS, PUMP_VERTICAL_CDLF_DETAILS)
+];
+
+const PUMP_HORIZONTAL_SUBCATEGORY = "Горизонтальные многоступенчатые центробежные насосы";
+
+const PUMP_CHT_IMAGE = "/media/categories/pumps/horizontal-multistage-card.webp";
+const PUMP_CHL_IMAGE = "/media/categories/pumps/chl-horizontal-multistage-card.webp";
+const PUMP_CHJ_IMAGE = "/media/categories/pumps/chj-horizontal-multistage-card.webp";
+
+const PUMP_CHT_SHORT_DESCRIPTION = [
+  "Горизонтальная компоновка",
+  "Проточная часть из нержавеющей стали",
+  "Присоединительные патрубки из чугуна"
+].join("\n");
+
+const PUMP_CHL_SHORT_DESCRIPTION = [
+  "Горизонтальная компоновка",
+  "Проточная часть из нержавеющей стали",
+  "Присоединительные патрубки из нержавеющей стали"
+].join("\n");
+
+const PUMP_CHT_DETAILS =
+  "Насосы серии CHT предназначены для перекачивания низковязких, нейтральных, невзрывоопасных жидкостей, не содержащих твердых частиц и волокон, в системах повышения давления в котельных и на промышленных объектах. Они не предназначены для перекачивания питьевой воды и работы в централизованных системах водоснабжения. Проточная часть насоса выполнена из нержавеющей стали. Патрубки присоединительные из чугуна.";
+
+const PUMP_CHL_DETAILS =
+  "Насосы серии CHS/CHL предназначены для перекачивания низковязких, нейтральных, невзрывоопасных жидкостей, не содержащих твердых частиц и волокон, в системах повышения давления в котельных и на промышленных объектах. Они не предназначены для перекачивания питьевой воды и работы в централизованных системах водоснабжения. Проточная часть насоса и патрубки присоединительные выполнены из нержавеющей стали.";
+
+function horizontalPumpSlug(model: string) {
+  return `nasos-${model.toLowerCase()}`;
+}
+
+function horizontalPumpConnectionLabel(connection: string) {
+  return connection.replace(/x/gi, "×");
+}
+
+function horizontalPumpConnectionToDn(connection: string) {
+  const inchToDn: Record<string, string> = {
+    "1": "DN25",
+    "1.25": "DN32",
+    "1.5": "DN40",
+    "2": "DN50"
+  };
+  const match = connection.match(/^(\d+(?:\.\d+)?)"/);
+  return match && inchToDn[match[1]] ? inchToDn[match[1]] : connection;
+}
+
+function horizontalPumpSupply(voltage: HorizontalMultistagePumpRow["voltage"]) {
+  return voltage === "220" ? "1×220В / 50Гц" : "3×380В / 50Гц";
+}
+
+function formatPumpCurrent(currentA: string) {
+  if (currentA.includes("Δ")) {
+    return currentA.replace(/\./g, ",");
+  }
+
+  return `${formatPumpDecimal(currentA)} А`;
+}
+
+function horizontalPumpSpecs(row: HorizontalMultistagePumpRow) {
+  return {
+    Модель: row.model,
+    Подкатегория: PUMP_HORIZONTAL_SUBCATEGORY,
+    "Присоединение вход/выход": horizontalPumpConnectionLabel(row.connection),
+    "Номинальный диаметр": horizontalPumpConnectionToDn(row.connection),
+    Питание: horizontalPumpSupply(row.voltage),
+    "Номинальная мощность": `${formatPumpDecimal(row.powerKw)} кВт`,
+    "Номинальный ток": formatPumpCurrent(row.currentA),
+    "Пропускная способность": `${formatPumpDecimal(row.flow)} м³/ч`,
+    Напор: `${formatPumpDecimal(row.head)} м`,
+    "Материал корпуса": "нержавеющая сталь"
+  };
+}
+
+function buildHorizontalMultistagePumpProducts(
+  rows: HorizontalMultistagePumpRow[],
+  {
+    description,
+    details,
+    imageUrl
+  }: {
+    description: string;
+    details: string;
+    imageUrl: string;
+  }
+) {
+  return rows.map((row) => ({
+    title: `Горизонтальный многоступенчатый насос ${row.model}`,
+    slug: horizontalPumpSlug(row.model),
+    kind: "Товар" as const,
+    category: "Насосы",
+    description,
+    details,
+    specs: horizontalPumpSpecs(row),
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl,
+    gallery: [imageUrl]
+  }));
+}
+
+const horizontalMultistagePumpProducts = [
+  ...buildHorizontalMultistagePumpProducts(CHT_HORIZONTAL_PUMPS, {
+    description: PUMP_CHT_SHORT_DESCRIPTION,
+    details: PUMP_CHT_DETAILS,
+    imageUrl: PUMP_CHT_IMAGE
+  }),
+  ...buildHorizontalMultistagePumpProducts(CHL_HORIZONTAL_PUMPS, {
+    description: PUMP_CHL_SHORT_DESCRIPTION,
+    details: PUMP_CHL_DETAILS,
+    imageUrl: PUMP_CHL_IMAGE
+  }),
+  ...buildHorizontalMultistagePumpProducts(CHJ_HORIZONTAL_PUMPS, {
+    description: PUMP_CHL_SHORT_DESCRIPTION,
+    details: PUMP_CHL_DETAILS,
+    imageUrl: PUMP_CHJ_IMAGE
+  })
+];
+
+const PUMP_MONOBLOCK_SUBCATEGORY = "Консольно-моноблочные центробежные насосы";
+
+const PUMP_GFM_IMAGE = "/media/categories/pumps/monoblock-console-card.webp";
+const PUMP_GF_IMAGE = "/media/categories/pumps/gf-monoblock-console-card.webp";
+
+const PUMP_GFM_SHORT_DESCRIPTION = [
+  "Моноблочная консольная компоновка",
+  "Проточная часть из точного литья",
+  "Высокая эффективность перекачивания"
+].join("\n");
+
+const PUMP_GFM_DETAILS =
+  "Центробежный горизонтальный насос GF(m) представляет собой одноступенчатый центробежный моноблочный насос консольного типа. Предназначен для перекачивания воды или промышленных жидкостей. Адаптированные к различным температурам, скорости потока и диапазону давления. Проточная часть насоса изготовлена по технологии точного литья. Технология делает проточную часть гладкой с небольшим трением и высокой эффективностью.";
+
+function monoblockPumpSlug(model: string) {
+  return `nasos-${model.toLowerCase().replace(/[()*]/g, "").replace(/[/]/g, "-").replace(/\s+/g, "-")}`;
+}
+
+function monoblockPumpSpecs(row: MonoblockConsolePumpRow) {
+  return {
+    Модель: row.model,
+    Подкатегория: PUMP_MONOBLOCK_SUBCATEGORY,
+    "Присоединение вход/выход": horizontalPumpConnectionLabel(row.connection),
+    "Номинальный диаметр": horizontalPumpConnectionToDn(row.connection),
+    Питание: horizontalPumpSupply(row.voltage),
+    "Номинальная мощность": `${formatPumpDecimal(row.powerKw)} кВт`,
+    "Номинальный ток": formatPumpCurrent(row.currentA),
+    "Пропускная способность": `${formatPumpDecimal(row.flow)} м³/ч`,
+    Напор: `${formatPumpDecimal(row.head)} м`,
+    "Номинальная частота вращения": `${row.speed} об/мин`,
+    "Материал корпуса": row.material
+  };
+}
+
+function buildMonoblockConsolePumpProducts(
+  rows: MonoblockConsolePumpRow[],
+  {
+    description,
+    details,
+    imageUrl
+  }: {
+    description: string;
+    details: string;
+    imageUrl: string;
+  }
+) {
+  return rows.map((row) => ({
+    title: `Консольно-моноблочный насос ${row.model}`,
+    slug: monoblockPumpSlug(row.model),
+    kind: "Товар" as const,
+    category: "Насосы",
+    description,
+    details,
+    specs: monoblockPumpSpecs(row),
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl,
+    gallery: [imageUrl]
+  }));
+}
+
+const monoblockConsolePumpProducts = [
+  ...buildMonoblockConsolePumpProducts(GFM_MONOBLOCK_PUMPS, {
+    description: PUMP_GFM_SHORT_DESCRIPTION,
+    details: PUMP_GFM_DETAILS,
+    imageUrl: PUMP_GFM_IMAGE
+  }),
+  ...buildMonoblockConsolePumpProducts(GF_MONOBLOCK_PUMPS, {
+    description: PUMP_GFM_SHORT_DESCRIPTION,
+    details: PUMP_GFM_DETAILS,
+    imageUrl: PUMP_GF_IMAGE
+  })
+];
+
+const PUMP_CONSOLE_CENTRIFUGAL_SUBCATEGORY = "Центробежные насосы консольного типа";
+
+const PUMP_GSM_IMAGE = "/media/categories/pumps/gsm-console-centrifugal-card.webp";
+
+const PUMP_GSM_SHORT_DESCRIPTION = [
+  "Консольная компоновка с креплением на валу",
+  "Проточная часть из точного литья",
+  "Высокая эффективность перекачивания"
+].join("\n");
+
+const PUMP_GSM_DETAILS =
+  "Центробежный горизонтальный насос GSM представляет собой одноступенчатый центробежный насос консольного типа. Предназначен для перекачивания воды или промышленных жидкостей. Адаптированные к различным температурам, скорости потока и диапазону давления. Проточная часть насоса изготовлена по технологии точного литья. Технология делает проточную часть гладкой с небольшим трением и высокой эффективностью.";
+
+function consoleCentrifugalPumpSlug(model: string) {
+  return `nasos-${model.toLowerCase().replace(/[()*]/g, "").replace(/[/]/g, "-").replace(/\s+/g, "-")}`;
+}
+
+function consoleCentrifugalPumpSpecs(row: ConsoleCentrifugalPumpRow) {
+  const specs: Record<string, string> = {
+    Модель: row.model,
+    Подкатегория: PUMP_CONSOLE_CENTRIFUGAL_SUBCATEGORY,
+    "Присоединение вход/выход": horizontalPumpConnectionLabel(row.connection),
+    "Номинальный диаметр": horizontalPumpConnectionToDn(row.connection),
+    "Номинальное напряжение": horizontalPumpSupply(row.voltage),
+    "Номинальная мощность": `${formatPumpDecimal(row.powerKw)} кВт`,
+    "Номинальный ток": formatPumpCurrent(row.currentA),
+    "Пропускная способность": `${formatPumpDecimal(row.flow)} м³/ч`,
+    Напор: `${formatPumpDecimal(row.head)} м`,
+    "Номинальная частота вращения": `${row.speed} об/мин`
+  };
+
+  if (row.npshr) {
+    specs["Допускаемый кавитационный запас"] = `${formatPumpDecimal(row.npshr)} м`;
+  }
+
+  if (row.maxPressure) {
+    specs["Максимальное рабочее давление"] = `${formatPumpDecimal(row.maxPressure)} бар`;
+  }
+
+  return specs;
+}
+
+function buildConsoleCentrifugalPumpProducts(
+  rows: ConsoleCentrifugalPumpRow[],
+  {
+    description,
+    details,
+    imageUrl
+  }: {
+    description: string;
+    details: string;
+    imageUrl: string;
+  }
+) {
+  return rows.map((row) => ({
+    title: `Насос консольного типа ${row.model}`,
+    slug: consoleCentrifugalPumpSlug(row.model),
+    kind: "Товар" as const,
+    category: "Насосы",
+    description,
+    details,
+    specs: consoleCentrifugalPumpSpecs(row),
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl,
+    gallery: [imageUrl]
+  }));
+}
+
+const consoleCentrifugalPumpProducts = buildConsoleCentrifugalPumpProducts(
+  GSM_CONSOLE_CENTRIFUGAL_PUMPS,
+  {
+    description: PUMP_GSM_SHORT_DESCRIPTION,
+    details: PUMP_GSM_DETAILS,
+    imageUrl: PUMP_GSM_IMAGE
+  }
+);
+
+const PUMP_SUBMERSIBLE_SEWAGE_SUBCATEGORY = "Погружные канализационные насосы";
+
+const PUMP_WQ_IMAGE = "/media/categories/pumps/wq-submersible-sewage-card.webp";
+
+const PUMP_WQ_SHORT_DESCRIPTION = [
+  "Погружной насос для сточных вод",
+  "Канальное рабочее колесо",
+  "Непрерывная длительная работа"
+].join("\n");
+
+const PUMP_WQ_DETAILS =
+  "Насосы серии WQ представляют собой базовые погружные насосы для сточных вод с канальными рабочими колесами. Существует широкая линейка продуктов, которые можно легко установить в сочетании с рельсовыми системами с автоматической муфтой или использовать отдельно с гибким шлангом или фланцевым соединением. Обладая превосходной надежностью и долговечностью, он может работать непрерывно в течение длительного времени.";
+
+const PUMP_WQK_SHORT_DESCRIPTION = [
+  "Погружной насос для сточных вод",
+  "Канальное колесо с режущим устройством",
+  "Непрерывная длительная работа"
+].join("\n");
+
+const PUMP_WQK_DETAILS =
+  "Насосы серии WQK представляют собой погружные насосы для сточных вод с канальными рабочими колесами и режущим устройством. Их можно установить в сочетании с рельсовыми системами с автоматической муфтой или использовать отдельно с гибким шлангом или фланцевым соединением. Обладая превосходной надежностью и долговечностью, насос может работать непрерывно в течение длительного времени.";
+
+function submersibleSewagePumpSlug(model: string) {
+  return `nasos-${model.toLowerCase().replace(/[()*]/g, "").replace(/[/]/g, "-").replace(/\s+/g, "-")}`;
+}
+
+function submersibleSewagePumpOutletDn(model: string) {
+  const wq = model.match(/^(\d+)WQ/i)?.[1];
+  if (wq) return `DN${wq}`;
+
+  const wqk = model.match(/^WQK(\d+)/i)?.[1];
+  if (wqk) return `DN${wqk}`;
+
+  return "";
+}
+
+function submersibleSewagePumpOutletInchesLabel(outletInches: string) {
+  return `${formatPumpDecimal(outletInches)}"`;
+}
+
+function submersibleSewagePumpSpecs(row: SubmersibleSewagePumpRow) {
+  const specs: Record<string, string> = {
+    Модель: row.model,
+    Подкатегория: PUMP_SUBMERSIBLE_SEWAGE_SUBCATEGORY,
+    Присоединение: submersibleSewagePumpOutletInchesLabel(row.outletInches),
+    "Номинальный диаметр": submersibleSewagePumpOutletDn(row.model),
+    "Номинальное напряжение": horizontalPumpSupply(row.voltage),
+    "Номинальная мощность": `${formatPumpDecimal(row.powerKw)} кВт`,
+    "Номинальный ток": formatPumpCurrent(row.currentA),
+    "Пропускная способность": `${formatPumpDecimal(row.flow)} м³/ч`,
+    Напор: `${formatPumpDecimal(row.head)} м`,
+    "Номинальная частота вращения": `${row.speed} об/мин`
+  };
+
+  if (row.maxHeadM) {
+    specs["Максимальный напор"] = `${formatPumpDecimal(row.maxHeadM)} м`;
+  }
+
+  if (row.weightKg) {
+    specs.Масса = `${formatPumpDecimal(row.weightKg)} кг`;
+  }
+
+  if (row.solidsMm) {
+    specs["Диаметр прохождения"] = `${row.solidsMm} мм`;
+  }
+
+  return specs;
+}
+
+function buildSubmersibleSewagePumpProducts(
+  rows: SubmersibleSewagePumpRow[],
+  {
+    description,
+    details
+  }: {
+    description: string;
+    details: string;
+  }
+) {
+  return rows.map((row) => ({
+    title: `Погружной канализационный насос ${row.model}`,
+    slug: submersibleSewagePumpSlug(row.model),
+    kind: "Товар" as const,
+    category: "Насосы",
+    description,
+    details,
+    specs: submersibleSewagePumpSpecs(row),
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: PUMP_WQ_IMAGE,
+    gallery: [PUMP_WQ_IMAGE]
+  }));
+}
+
+const submersibleSewagePumpProducts = [
+  ...buildSubmersibleSewagePumpProducts(WQ_SUBMERSIBLE_SEWAGE_PUMPS, {
+    description: PUMP_WQ_SHORT_DESCRIPTION,
+    details: PUMP_WQ_DETAILS
+  }),
+  ...buildSubmersibleSewagePumpProducts(WQK_SUBMERSIBLE_SEWAGE_PUMPS, {
+    description: PUMP_WQK_SHORT_DESCRIPTION,
+    details: PUMP_WQK_DETAILS
+  })
+];
+
+const rgrRotaryMeterSeedProducts = RGR_R_PRODUCTS.map((product) => ({
+  title: product.title,
+  slug: product.slug,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: buildRgrListingDescription(product),
+  details: RGR_R_SHORT_DESCRIPTION.split("\n\n")[0],
+  specs: {
+    Серия: "РГ-Р",
+    Подкатегория: "Ротационные",
+    ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: RGR_R_CARD_IMAGE,
+  gallery: RGR_R_GALLERY,
+  featured: true
+}));
+
+const rvgRotaryMeterSeedProducts = RVG_PRODUCTS.map((product) => ({
+  title: product.title,
+  slug: product.slug,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: buildRvgListingDescription(product),
+  details: RVG_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "RVG",
+    Подкатегория: "Ротационные",
+    ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: RVG_CARD_IMAGE,
+  gallery: RVG_GALLERY,
+  featured: true
+}));
+
+const rgtTurbineMeterSeedProducts = RGT_T_PRODUCTS.map((product) => ({
+  title: product.title,
+  slug: product.slug,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: buildRgtListingDescription(product),
+  details: RGT_T_SHORT_DESCRIPTION.split("\n\n")[0],
+  specs: {
+    Серия: "РГ-Т",
+    Подкатегория: "Турбинные",
+    ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: RGT_T_CARD_IMAGE,
+  gallery: RGT_T_GALLERY,
+  featured: true
 }));
 
 const products = [
@@ -1742,47 +2424,6 @@ const products = [
     gallery: ["/media/products/catalog/kran-sharovoy-ld-pride-vv-r-gas-du50.png"]
   },
   {
-    title: "Мембранный счётчик газа ТАУГАЗ ВКР G1,6; G2,5; G4",
-    slug: "taugaz-vkr-g16-g25-g4",
-    kind: "Товар",
-    category: "Счётчики газа",
-    description: "Мембранный счётчик газа серии ВКР. V1,2L, A-110, левый/правый.",
-    details: "Мембранные счётчики газа ТАУГАЗ серии ВКР. V1,2L, A-110, левый/правый.",
-    specs: {
-      Производитель: "ТАУГАЗ",
-      Подкатегория: "Мембранные",
-      Серия: "ВКР",
-      "Типоразмеры": "G1,6; G2,5; G4"
-    },
-    leadTime: "по наличию, уточняется в заявке",
-    price: "0",
-    unit: "шт.",
-    imageUrl: "/media/products/taugaz/taugaz-vkr-g4.png",
-    gallery: ["/media/products/taugaz/taugaz-vkr-g4.png"]
-  },
-  {
-    title: "Мембранный счётчик газа ТАУГАЗ ВКР G1,6T; G2,5T; G4T",
-    slug: "taugaz-vkr-g16-g25-g4t",
-    kind: "Товар",
-    category: "Счётчики газа",
-    description:
-      "Мембранный счётчик с механической термокоррекцией. V1,2L, A-110, левый/правый.",
-    details:
-      "Мембранные счётчики газа ТАУГАЗ серии ВКР с механической термокоррекцией. V1,2L, A-110, левый/правый.",
-    specs: {
-      Производитель: "ТАУГАЗ",
-      Подкатегория: "Мембранные",
-      Серия: "ВКР",
-      "Типоразмеры": "G1,6T; G2,5T; G4T",
-      Термокоррекция: "механическая"
-    },
-    leadTime: "по наличию, уточняется в заявке",
-    price: "0",
-    unit: "шт.",
-    imageUrl: "/media/products/taugaz/taugaz-vkr-g4.png",
-    gallery: ["/media/products/taugaz/taugaz-vkr-g4.png"]
-  },
-  {
     title: "Мембранный счётчик газа ТАУГАЗ ВКР G6",
     slug: "taugaz-vkr-g6",
     kind: "Товар",
@@ -1921,6 +2562,360 @@ const products = [
     imageUrl: "/media/products/taugaz/taugaz-vkr-g25.png",
     gallery: ["/media/products/taugaz/taugaz-vkr-g25.png"]
   },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G1,6",
+    slug: "rasko-vk-g16",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_SHORT_DESCRIPTION,
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G1,6",
+      "Диапазон рабочих расходов": "0,016 — 2,5 м³/ч",
+      "Номинальный расход": "1,6 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g4.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g4.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G1,6T",
+    slug: "rasko-vk-g16t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Диафрагменный счётчик газа ВК-G1,6T с механической температурной компенсацией.",
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G1,6T",
+      "Диапазон рабочих расходов": "0,016 — 2,5 м³/ч",
+      "Номинальный расход": "1,6 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g4t.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g4t.webp",
+      "/media/products/rasko/rasko-vk-g4t-alt.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G2,5",
+    slug: "rasko-vk-g25",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_SHORT_DESCRIPTION,
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G2,5",
+      "Диапазон рабочих расходов": "0,025 — 4 м³/ч",
+      "Номинальный расход": "2,5 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g4.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g4.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G2,5T",
+    slug: "rasko-vk-g25t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Диафрагменный счётчик газа ВК-G2,5T с механической температурной компенсацией.",
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G2,5T",
+      "Диапазон рабочих расходов": "0,025 — 4 м³/ч",
+      "Номинальный расход": "2,5 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g4t.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g4t.webp",
+      "/media/products/rasko/rasko-vk-g4t-alt.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G4",
+    slug: "rasko-vk-g4",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_SHORT_DESCRIPTION,
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G4",
+      "Диапазон рабочих расходов": "0,04 — 6 м³/ч",
+      "Номинальный расход": "4 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g4.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g4.webp",
+      "/media/products/rasko/rasko-vk-g4-alt.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G4T",
+    slug: "rasko-vk-g4t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Диафрагменный счётчик газа ВК-G4T с механической температурной компенсацией.",
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G4T",
+      "Диапазон рабочих расходов": "0,04 — 6 м³/ч",
+      "Номинальный расход": "4 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g4t.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g4t.webp",
+      "/media/products/rasko/rasko-vk-g4t-alt.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G6",
+    slug: "rasko-vk-g6",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_SHORT_DESCRIPTION,
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G6",
+      "Диапазон рабочих расходов": "0,06 — 10 м³/ч",
+      "Номинальный расход": "6 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g6t.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g6t.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G6T",
+    slug: "rasko-vk-g6t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Диафрагменный счётчик газа ВК-G6T с механической температурной компенсацией.",
+    details: RASKO_VK_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Бытовые",
+      Типоразмер: "G6T",
+      "Диапазон рабочих расходов": "0,06 — 10 м³/ч",
+      "Номинальный расход": "6 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g6t.webp",
+    gallery: [
+      "/media/products/rasko/rasko-vk-g6t.webp",
+      "/media/products/rasko/rasko-vk-g6t-alt.webp",
+      "/media/products/rasko/rasko-vk-side.webp"
+    ]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G10",
+    slug: "rasko-vk-g10",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    details: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Коммунальные",
+      Типоразмер: "G10",
+      "Диапазон рабочих расходов": "0,10 — 16 м³/ч",
+      "Номинальный расход": "10 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g10.webp",
+    gallery: ["/media/products/rasko/rasko-vk-g10.webp"]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G10T",
+    slug: "rasko-vk-g10t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Коммунальный диафрагменный счётчик газа ВК-G10T с механической температурной компенсацией.",
+    details: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Коммунальные",
+      Типоразмер: "G10T",
+      "Диапазон рабочих расходов": "0,10 — 16 м³/ч",
+      "Номинальный расход": "10 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g10.webp",
+    gallery: ["/media/products/rasko/rasko-vk-g10.webp"]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G16",
+    slug: "rasko-vk-comm-g16",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    details: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Коммунальные",
+      Типоразмер: "G16",
+      "Диапазон рабочих расходов": "0,16 — 25 м³/ч",
+      "Номинальный расход": "16 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g25.webp",
+    gallery: ["/media/products/rasko/rasko-vk-g25.webp"]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G16T",
+    slug: "rasko-vk-comm-g16t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Коммунальный диафрагменный счётчик газа ВК-G16T с механической температурной компенсацией.",
+    details: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Коммунальные",
+      Типоразмер: "G16T",
+      "Диапазон рабочих расходов": "0,16 — 25 м³/ч",
+      "Номинальный расход": "16 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g25.webp",
+    gallery: ["/media/products/rasko/rasko-vk-g25.webp"]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G25",
+    slug: "rasko-vk-comm-g25",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    details: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Коммунальные",
+      Типоразмер: "G25",
+      "Диапазон рабочих расходов": "0,25 — 40 м³/ч",
+      "Номинальный расход": "25 м³/ч"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g25.webp",
+    gallery: ["/media/products/rasko/rasko-vk-g25.webp"]
+  },
+  {
+    title: "Мембранный счётчик газа РАСКО ВК-G25T",
+    slug: "rasko-vk-comm-g25t",
+    kind: "Товар",
+    category: "Счётчики газа",
+    description:
+      "Коммунальный диафрагменный счётчик газа ВК-G25T с механической температурной компенсацией.",
+    details: RASKO_VK_COMMUNAL_SHORT_DESCRIPTION,
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Мембранные",
+      Серия: "ВК",
+      Назначение: "Коммунальные",
+      Типоразмер: "G25T",
+      "Диапазон рабочих расходов": "0,25 — 40 м³/ч",
+      "Номинальный расход": "25 м³/ч",
+      Термокоррекция: "механическая"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: "/media/products/rasko/rasko-vk-g25.webp",
+    gallery: ["/media/products/rasko/rasko-vk-g25.webp"]
+  },
+  ...rgrRotaryMeterSeedProducts,
+  ...rvgRotaryMeterSeedProducts,
+  ...rgtTurbineMeterSeedProducts,
   {
     title: "Счётчик газа микротермальный СМТ-Комплекс",
     slug: "smt-kompleks",
@@ -2480,6 +3475,156 @@ const products = [
     featured: true
   },
   {
+    title: "Комплект фитингов ВК G10(Т)",
+    slug: "komplekt-fitingov-vk-g10t",
+    kind: "Товар",
+    category: "Дополнительное оборудование",
+    description:
+      "Комплект фитингов для счётчиков газа ВК G10(Т). Гайка накидная 1 ¾\", патрубок без резьбы d=38 мм, Ду=32 мм.",
+    details:
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмера G10(Т).",
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Присоединительное оборудование",
+      Серия: "ВК",
+      Совместимость: "ВК G10(Т)",
+      "Гайка накидная": "1 ¾\"",
+      "Патрубок без резьбы": "d=38 мм",
+      "Условный диаметр": "Ду=32 мм"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "компл.",
+    imageUrl: "/media/products/accessories/rasko-vk-fittings.webp",
+    gallery: ["/media/products/accessories/rasko-vk-fittings.webp"],
+    featured: true
+  },
+  {
+    title: "Комплект фитингов ВК G10, G16",
+    slug: "komplekt-fitingov-vk-g10-g16",
+    kind: "Товар",
+    category: "Дополнительное оборудование",
+    description:
+      "Комплект фитингов для счётчиков газа ВК G10, G16. Гайка накидная 2\", патрубок без резьбы d=48 мм, Ду=40 мм.",
+    details:
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G10 и G16.",
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Присоединительное оборудование",
+      Серия: "ВК",
+      Совместимость: "ВК G10, G16",
+      "Гайка накидная": "2\"",
+      "Патрубок без резьбы": "d=48 мм",
+      "Условный диаметр": "Ду=40 мм"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "компл.",
+    imageUrl: "/media/products/accessories/rasko-vk-fittings.webp",
+    gallery: ["/media/products/accessories/rasko-vk-fittings.webp"],
+    featured: true
+  },
+  {
+    title: "Комплект фитингов ВК G25",
+    slug: "komplekt-fitingov-vk-g25",
+    kind: "Товар",
+    category: "Дополнительное оборудование",
+    description:
+      "Комплект фитингов для счётчиков газа ВК G25. Гайка накидная 2 ½\", патрубок без резьбы d=60 мм, Ду=50 мм.",
+    details:
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмера G25.",
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Присоединительное оборудование",
+      Серия: "ВК",
+      Совместимость: "ВК G25",
+      "Гайка накидная": "2 ½\"",
+      "Патрубок без резьбы": "d=60 мм",
+      "Условный диаметр": "Ду=50 мм"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "компл.",
+    imageUrl: "/media/products/accessories/rasko-vk-fittings.webp",
+    gallery: ["/media/products/accessories/rasko-vk-fittings.webp"],
+    featured: true
+  },
+  {
+    title: "Комплект фитингов ВК G1,6(Т)-G6(Т)",
+    slug: "komplekt-fitingov-vk-g16-g6t-dy15",
+    kind: "Товар",
+    category: "Дополнительное оборудование",
+    description:
+      "Комплект фитингов для счётчиков газа ВК G1,6(Т)-G6(Т). Гайка накидная 1¼\", патрубок без резьбы d=22 мм, Ду=15 мм.",
+    details:
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т).",
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Присоединительное оборудование",
+      Серия: "ВК",
+      Совместимость: "ВК G1,6(Т)-G6(Т)",
+      "Гайка накидная": "1¼\"",
+      "Патрубок без резьбы": "d=22 мм",
+      "Условный диаметр": "Ду=15 мм"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "компл.",
+    imageUrl: "/media/products/accessories/rasko-vk-fittings.webp",
+    gallery: ["/media/products/accessories/rasko-vk-fittings.webp"],
+    featured: true
+  },
+  {
+    title: "Комплект фитингов ВК G1,6(Т)-G6(Т)",
+    slug: "komplekt-fitingov-vk-g16-g6t-dy20",
+    kind: "Товар",
+    category: "Дополнительное оборудование",
+    description:
+      "Комплект фитингов для счётчиков газа ВК G1,6(Т)-G6(Т). Гайка накидная 1¼\", патрубок без резьбы d=26,5 мм, Ду=20 мм.",
+    details:
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т).",
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Присоединительное оборудование",
+      Серия: "ВК",
+      Совместимость: "ВК G1,6(Т)-G6(Т)",
+      "Гайка накидная": "1¼\"",
+      "Патрубок без резьбы": "d=26,5 мм",
+      "Условный диаметр": "Ду=20 мм"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "компл.",
+    imageUrl: "/media/products/accessories/rasko-vk-fittings.webp",
+    gallery: ["/media/products/accessories/rasko-vk-fittings.webp"],
+    featured: true
+  },
+  {
+    title: "Комплект фитингов ВК G1,6(Т)-G6(Т)",
+    slug: "komplekt-fitingov-vk-g16-g6t-dy25",
+    kind: "Товар",
+    category: "Дополнительное оборудование",
+    description:
+      "Комплект фитингов для счётчиков газа ВК G1,6(Т)-G6(Т). Гайка накидная 1¼\", патрубок без резьбы d=33,5 мм, Ду=25 мм.",
+    details:
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т).",
+    specs: {
+      Производитель: "РАСКО",
+      Подкатегория: "Присоединительное оборудование",
+      Серия: "ВК",
+      Совместимость: "ВК G1,6(Т)-G6(Т)",
+      "Гайка накидная": "1¼\"",
+      "Патрубок без резьбы": "d=33,5 мм",
+      "Условный диаметр": "Ду=25 мм"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "компл.",
+    imageUrl: "/media/products/accessories/rasko-vk-fittings.webp",
+    gallery: ["/media/products/accessories/rasko-vk-fittings.webp"],
+    featured: true
+  },
+  {
     title: "Шкаф защитный ШГ",
     slug: "shkaf-zashchitnyy-shg",
     kind: "Товар",
@@ -2645,6 +3790,12 @@ const products = [
   },
   ...intelligentWetRotorPumpProducts,
   ...threeSpeedWetRotorPumpProducts,
+  ...inlineCirculationPumpProducts,
+  ...verticalMultistagePumpProducts,
+  ...horizontalMultistagePumpProducts,
+  ...monoblockConsolePumpProducts,
+  ...consoleCentrifugalPumpProducts,
+  ...submersibleSewagePumpProducts,
   {
     title: "Заточка свёрл до 20 мм на профессиональном оборудовании",
     slug: "zatochka-sverl-20mm",
@@ -2853,7 +4004,9 @@ const RETIRED_PRODUCT_SLUGS = [
   "uug-25",
   "grp-sh-10",
   "grp-shkafnoy",
-  "uzel-ucheta-gaza"
+  "uzel-ucheta-gaza",
+  "taugaz-vkr-g16-g25-g4",
+  "taugaz-vkr-g16-g25-g4t"
 ];
 
 async function main() {

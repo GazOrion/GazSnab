@@ -26,9 +26,8 @@ export default function DeliveryPage() {
     <main className="site-shell">
       <SiteHeader />
 
-      <article className="section static-page narrow">
+      <article className="section static-page">
         <div className="container">
-          <span className="eyebrow">Доставка и оплата</span>
           <h1>Доставка и оплата</h1>
           <p className="lead">
             Отгружаем оборудование после подтверждения заявки. Сроки и стоимость доставки зависят от

@@ -67,6 +67,70 @@ export type PumpSubcategory = (typeof PUMP_SUBCATEGORIES)[number];
 export const PUMP_THREE_SPEED_SUBCATEGORY =
   PUMP_SUBCATEGORIES.find((item) => item.id === "three-speed-wet-rotor")!.name;
 
+const PUMP_SPEC_MODEL = "Модель";
+
+const PUMP_DESIGNATION_IMAGES = {
+  UPS: "/media/categories/pumps/designation-ups.png",
+  GEB: "/media/categories/pumps/designation-geb.png",
+  GEM: "/media/categories/pumps/designation-gem.png",
+  "GS-F": "/media/categories/pumps/three-speed-designation.webp",
+  CDL: "/media/categories/pumps/designation-cdl.png",
+  CHT: "/media/categories/pumps/designation-cht.webp",
+  CHL: "/media/categories/pumps/designation-chl.webp",
+  GFM: "/media/categories/pumps/designation-gfm.webp",
+  GSM: "/media/categories/pumps/designation-gsm.webp",
+  WQ: "/media/categories/pumps/designation-wq.webp"
+} as const;
+
+export function getPumpModelFromSpecs(specs: Record<string, string>): string | null {
+  return specs[PUMP_SPEC_MODEL] ?? null;
+}
+
+export function getPumpDesignationImage(model: string): string | null {
+  const normalized = model.toUpperCase();
+
+  if (normalized.startsWith("UPS")) return PUMP_DESIGNATION_IMAGES.UPS;
+  if (normalized.startsWith("GEB")) return PUMP_DESIGNATION_IMAGES.GEB;
+  if (normalized.startsWith("GEM")) return PUMP_DESIGNATION_IMAGES.GEM;
+  if (normalized.startsWith("GSM")) return PUMP_DESIGNATION_IMAGES.GSM;
+  if (/\d+WQ/i.test(normalized)) return PUMP_DESIGNATION_IMAGES.WQ;
+  if (/WQK/i.test(normalized)) return PUMP_DESIGNATION_IMAGES.WQ;
+  if (normalized.startsWith("GS")) return PUMP_DESIGNATION_IMAGES["GS-F"];
+  if (normalized.startsWith("CDLF") || normalized.startsWith("CDL")) {
+    return PUMP_DESIGNATION_IMAGES.CDL;
+  }
+  if (normalized.startsWith("CHT")) return PUMP_DESIGNATION_IMAGES.CHT;
+  if (normalized.startsWith("CHL") || normalized.startsWith("CHS")) {
+    return PUMP_DESIGNATION_IMAGES.CHL;
+  }
+  if (normalized.startsWith("GF")) return PUMP_DESIGNATION_IMAGES.GFM;
+
+  return null;
+}
+
+export function getPumpDesignationAlt(model: string): string {
+  if (/\d+WQ/i.test(model)) return "Схема расшифровки обозначения насоса WQ";
+  if (/WQK/i.test(model)) return "Схема расшифровки обозначения насоса WQK";
+
+  const series =
+    model.match(/^(UPS|GEB|GEM|GSM|GS|CDLF|CDL|CHT|CHL|CHS|GF)/i)?.[1]?.toUpperCase() ?? "насоса";
+  return `Схема расшифровки обозначения насоса ${series === "GF" ? "GF(m)" : series}`;
+}
+
+export function isCompactPumpDesignation(model: string) {
+  const normalized = model.toUpperCase();
+  return (
+    normalized.startsWith("CDL") ||
+    normalized.startsWith("CHT") ||
+    normalized.startsWith("CHL") ||
+    normalized.startsWith("CHS") ||
+    normalized.startsWith("GF") ||
+    normalized.startsWith("GSM") ||
+    /\d+WQ/i.test(normalized) ||
+    /WQK/i.test(normalized)
+  );
+}
+
 export function getProductSpecs(product: CatalogProduct): Record<string, string> {
   return product.specs ?? {};
 }
@@ -139,11 +203,83 @@ export const PUMP_FILTER_SECTIONS = [
 export type PumpFilterSection = (typeof PUMP_FILTER_SECTIONS)[number];
 
 const PUMP_FILTER_SPEC_KEYS: Record<PumpFilterSection, readonly string[]> = {
-  "Номинальный диаметр": ["Номинальный диаметр", "Присоединение"],
-  "Пропускная способность": ["Пропускная способность"],
+  "Номинальный диаметр": [
+    "Номинальный диаметр",
+    "Присоединение",
+    "Присоединение вход/выход"
+  ],
+  "Пропускная способность": ["Пропускная способность", "Номинальный расход"],
   "Материал корпуса": ["Материал корпуса"],
-  Напор: ["Напор"]
+  Напор: ["Напор", "Номинальный напор"]
 };
+
+function stripPumpFilterUnit(value: string, section: PumpFilterSection) {
+  if (section === "Пропускная способность") {
+    return value.replace(/\s*м³\/ч\s*$/i, "").trim();
+  }
+
+  if (section === "Напор") {
+    return value.replace(/\s*м\s*$/i, "").trim();
+  }
+
+  return value.trim();
+}
+
+const PUMP_INCH_TO_DN: Record<string, string> = {
+  "1": "DN25",
+  "1.25": "DN32",
+  "1.5": "DN40",
+  "2": "DN50"
+};
+
+function normalizePumpConnection(value: string) {
+  const dnMatch = value.match(/^DN(\d+)/i);
+  if (dnMatch) return `DN${dnMatch[1]}`;
+
+  const sizeMatch = value.match(/^(\d+)x\d+$/i);
+  if (sizeMatch) return `DN${sizeMatch[1]}`;
+
+  const inchMatch = value.match(/^(\d+(?:\.\d+)?)\s*["″]?\s*[×x]/i);
+  if (inchMatch) {
+    const dn = PUMP_INCH_TO_DN[inchMatch[1]];
+    if (dn) return dn;
+  }
+
+  return value;
+}
+
+function formatPumpFilterValue(section: PumpFilterSection, part: string) {
+  const trimmed = part.trim();
+  if (!trimmed) return "";
+
+  if (section === "Пропускная способность") {
+    return `${trimmed} м³/ч`;
+  }
+
+  if (section === "Напор") {
+    return `${trimmed} м`;
+  }
+
+  if (section === "Номинальный диаметр") {
+    return normalizePumpConnection(trimmed);
+  }
+
+  return trimmed;
+}
+
+function expandPumpSpecFilterValues(section: PumpFilterSection, raw: string) {
+  const stripped = stripPumpFilterUnit(raw, section);
+
+  if (section === "Пропускная способность" || section === "Напор") {
+    const parts = stripped.includes(" / ") ? stripped.split(" / ") : [stripped];
+    return parts
+      .map((part) => formatPumpFilterValue(section, part))
+      .filter((value): value is string => Boolean(value));
+  }
+
+  const formatted = formatPumpFilterValue(section, stripped);
+  return formatted ? [formatted] : [];
+}
 
 export function isPumpFilterSection(section: string): section is PumpFilterSection {
   return (PUMP_FILTER_SECTIONS as readonly string[]).includes(section);
@@ -155,7 +291,11 @@ export function getPumpSpecFilterValues(product: CatalogProduct, section: PumpFi
 
   for (const key of PUMP_FILTER_SPEC_KEYS[section]) {
     const value = specs[key];
-    if (value) values.add(value);
+    if (!value) continue;
+
+    for (const expanded of expandPumpSpecFilterValues(section, value)) {
+      values.add(expanded);
+    }
   }
 
   return [...values];
@@ -172,9 +312,10 @@ export function pumpMatchesSectionFilter(
 function connectionSortWeight(value: string) {
   const dnMatch = value.match(/^DN(\d+)/i);
   if (dnMatch) return Number(dnMatch[1]);
-  if (value.startsWith("G1")) return 32;
-  if (value.startsWith("1½")) return 40;
-  if (value.startsWith("2")) return 50;
+  if (value.startsWith('G1½"') || value.startsWith("G1½")) return 40;
+  if (value.startsWith('G1"') || value.startsWith("G1")) return 32;
+  if (value.startsWith('1½"') || value.startsWith("1½")) return 40;
+  if (value.startsWith('2"') || value.startsWith("2")) return 50;
   return 999;
 }
 

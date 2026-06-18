@@ -11,8 +11,9 @@ import {
 } from "@/components/catalog/EquipmentCategoryListingToolbar";
 import { EquipmentListingProductCard } from "@/components/catalog/EquipmentListingProductCard";
 import type { CategoryBreadcrumb } from "@/components/catalog/EquipmentCategoryHero";
-import { CATALOG_ROUTES, clusterPresentation, PRODUCT_KIND } from "@/lib/catalog";
+import { CATALOG_ROUTES, clusterPresentation, EQUIPMENT_SORT, PRODUCT_KIND } from "@/lib/catalog";
 import {
+  ADDITIONAL_EQUIPMENT_CATEGORY,
   createEquipmentCategoryFilterState,
   filterEquipmentCategoryProducts,
   getEquipmentCategoryConfig,
@@ -20,6 +21,7 @@ import {
   type EquipmentCategoryFilterState
 } from "@/lib/equipment-category-config";
 import { sortEquipmentProducts } from "@/lib/equipment-catalog";
+import { prioritizeRaskoVkFittingsProducts } from "@/lib/rasko-accessories";
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
 
 const PAGE_SIZE_OPTIONS = [12, 24, 48] as const;
@@ -32,6 +34,7 @@ type Props = {
   breadcrumbs?: CategoryBreadcrumb[];
   listingTitle?: string;
   heroTitle?: string;
+  heroSubtitle?: string;
 };
 
 export function EquipmentCategoryListing({
@@ -41,7 +44,8 @@ export function EquipmentCategoryListing({
   hideHero = false,
   breadcrumbs,
   listingTitle,
-  heroTitle
+  heroTitle,
+  heroSubtitle
 }: Props) {
   const config = getEquipmentCategoryConfig(category);
   const presentation = clusterPresentation(category, PRODUCT_KIND.GOODS);
@@ -68,8 +72,12 @@ export function EquipmentCategoryListing({
 
   const filteredProducts = useMemo(() => {
     const filtered = filterEquipmentCategoryProducts(products, searchQuery, filters);
-    return sortEquipmentProducts(filtered, equipmentSort);
-  }, [products, searchQuery, filters, equipmentSort]);
+    const sorted = sortEquipmentProducts(filtered, equipmentSort);
+    if (category === ADDITIONAL_EQUIPMENT_CATEGORY && equipmentSort === EQUIPMENT_SORT.popular) {
+      return prioritizeRaskoVkFittingsProducts(sorted);
+    }
+    return sorted;
+  }, [products, searchQuery, filters, equipmentSort, category]);
 
   const totalPages = Math.max(1, Math.ceil(filteredProducts.length / pageSize));
   const currentPage = Math.min(page, totalPages);
@@ -115,6 +123,7 @@ export function EquipmentCategoryListing({
         <EquipmentCategoryHero
           bannerSrc={bannerSrc}
           title={heroTitle ?? presentation.title}
+          subtitle={heroSubtitle}
           lead={heroTitle ? `Раздел «${presentation.title}»` : presentation.teaser}
           bannerModifier={config.slug}
           breadcrumbs={heroBreadcrumbs}

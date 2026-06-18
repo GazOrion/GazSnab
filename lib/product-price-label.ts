@@ -1,5 +1,7 @@
 import { formatPrice } from "@/lib/format";
 import { PUMPS_CATEGORY } from "@/lib/equipment-category-config";
+import { isOnRequestGasMeterProduct } from "@/lib/gas-meters-catalog";
+import { isRaskoVkFittingsSlug } from "@/lib/rasko-accessories";
 import { getProductLineCatalog, getProductLineMinPrice } from "@/lib/product-lines";
 
 export const ON_REQUEST_PRICE_LABEL = "по запросу";
@@ -33,10 +35,19 @@ export function getProductPriceLabel(options: {
   price: number;
   kind?: string;
   category?: string;
+  specs?: Record<string, string> | null;
 }) {
-  const { slug, price, kind, category } = options;
+  const { slug, price, kind, category, specs } = options;
 
   if (isPumpProduct(slug, category)) {
+    return ON_REQUEST_PRICE_LABEL;
+  }
+
+  if (isOnRequestGasMeterProduct(specs)) {
+    return ON_REQUEST_PRICE_LABEL;
+  }
+
+  if (isRaskoVkFittingsSlug(slug)) {
     return ON_REQUEST_PRICE_LABEL;
   }
 

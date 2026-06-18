@@ -32,6 +32,10 @@ import { GSM_EXTERNAL_ANTENNA_3M_CONTENT } from "@/lib/product-content/gsm-exter
 import { KAO_USB_CONTENT } from "@/lib/product-content/kao-usb";
 import { MONTAZHNOE_PRISOEDINITELNOE_OBORUDOVANIE_CONTENT } from "@/lib/product-content/montazhnoe-prisoedinitelnoe-oborudovanie";
 import { SHKAF_ZASHCHITNYY_SHG_CONTENT } from "@/lib/product-content/shkaf-zashchitnyy-shg";
+import { RGR_R_CONTENT_BY_SLUG } from "@/lib/product-content/rgr-r";
+import { RVG_CONTENT_BY_SLUG } from "@/lib/product-content/rvg";
+import { RGT_T_CONTENT_BY_SLUG } from "@/lib/product-content/rgt-t";
+import { RASKO_VK_CONTENT_BY_SLUG } from "@/lib/product-content/rasko-vk";
 import { TAUGAZ_VKR_CONTENT_BY_SLUG } from "@/lib/product-content/taugaz-vkr";
 
 const RICH_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
@@ -70,7 +74,11 @@ const RICH_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
   "kran-sharovoy-ld-pride-vv-r-gas-du32": KRAN_SHAROVOY_LD_PRIDE_VV_R_GAS_DU32_CONTENT,
   "kran-sharovoy-ld-pride-vv-r-gas-du40": KRAN_SHAROVOY_LD_PRIDE_VV_R_GAS_DU40_CONTENT,
   "kran-sharovoy-ld-pride-vv-r-gas-du50": KRAN_SHAROVOY_LD_PRIDE_VV_R_GAS_DU50_CONTENT,
-  ...TAUGAZ_VKR_CONTENT_BY_SLUG
+  ...TAUGAZ_VKR_CONTENT_BY_SLUG,
+  ...RASKO_VK_CONTENT_BY_SLUG,
+  ...RGR_R_CONTENT_BY_SLUG,
+  ...RVG_CONTENT_BY_SLUG,
+  ...RGT_T_CONTENT_BY_SLUG
 };
 
 export function getProductRichContent(slug: string): ProductRichContent | null {

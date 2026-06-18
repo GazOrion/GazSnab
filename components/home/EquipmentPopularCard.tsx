@@ -7,6 +7,7 @@ import { CartQuantityControl } from "@/components/CartQuantityControl";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { POPULAR_CARD_COVER_IMAGE_SLUGS } from "@/lib/catalog-data";
 import { getProductPriceLabel } from "@/lib/product-price-label";
+import { getProductListingTitle } from "@/lib/product-listing-title";
 
 type Props = {
   product: CatalogProduct;
@@ -32,9 +33,11 @@ export function EquipmentPopularCard({ product }: Props) {
   const priceLabel = getProductPriceLabel({
     slug: product.slug,
     price: product.price,
-    kind: product.kind
+    kind: product.kind,
+    specs: product.specs
   });
   const coverImage = POPULAR_CARD_COVER_IMAGE_SLUGS.has(product.slug);
+  const listingTitle = getProductListingTitle(product.title, product.specs);
 
   return (
     <article
@@ -74,7 +77,7 @@ export function EquipmentPopularCard({ product }: Props) {
       <div className="store-equipment-popular-card__content">
         <div className="store-equipment-popular-card__body">
           <h3 className="store-equipment-popular-card__title">
-            <Link href={`/products/${product.slug}`}>{product.title}</Link>
+            <Link href={`/products/${product.slug}`}>{listingTitle}</Link>
           </h3>
           <p className="store-equipment-popular-card__price">{priceLabel}</p>
         </div>

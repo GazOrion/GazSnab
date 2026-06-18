@@ -1973,6 +1973,16 @@
   color: #0d3b82;
 }
 
+.store-equipment-catalog-hero__subtitle {
+  margin: 8px 0 0;
+  font-size: clamp(20px, 2.4vw, 28px);
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+  text-transform: uppercase;
+  color: #f97316;
+}
+
 .store-equipment-catalog-hero__lead {
   max-width: 480px;
   margin: 12px 0 0;
@@ -2266,6 +2276,12 @@
 
 .store-pump-designation__figure {
   margin: 0;
+  background: #fff;
+}
+
+.store-pump-designation--compact .store-pump-designation__figure {
+  max-width: min(720px, 100%);
+  margin-inline: auto;
 }
 
 .store-pump-designation__image {
@@ -2273,6 +2289,7 @@
   width: 100%;
   max-width: 100%;
   height: auto;
+  background: #fff;
 }
 
 .store-equipment-category-page__inner {

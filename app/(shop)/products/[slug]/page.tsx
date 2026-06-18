@@ -10,9 +10,15 @@ import { getProductBackCatalogHref } from "@/lib/catalog";
 import { ProductShortSpecs } from "@/components/ProductShortSpecs";
 import { getProductRichContent } from "@/lib/product-content";
 import { getProductPriceLabel } from "@/lib/product-price-label";
-import { ThreeSpeedPumpDesignation } from "@/components/catalog/ThreeSpeedPumpDesignation";
+import { getProductListingTitle } from "@/lib/product-listing-title";
+import { PumpDesignation } from "@/components/catalog/PumpDesignation";
 import { BALL_VALVE_CATEGORY, getOrderedShortSpecs } from "@/lib/product-short-specs";
-import { PUMP_SPEC_SUBCATEGORY, PUMP_THREE_SPEED_SUBCATEGORY } from "@/lib/pumps-catalog";
+import {
+  getPumpDesignationAlt,
+  getPumpDesignationImage,
+  isCompactPumpDesignation,
+  getPumpModelFromSpecs
+} from "@/lib/pumps-catalog";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +28,23 @@ function descriptionListItems(text: string) {
     .split("\n")
     .map((line) => line.trim())
     .filter(Boolean);
+}
+
+function buildProductGalleryImages(imageUrl: string | null, gallery: string[]) {
+  const seen = new Set<string>();
+  const images: string[] = [];
+
+  const push = (url: string | null | undefined) => {
+    const value = url?.trim();
+    if (!value || seen.has(value)) return;
+    seen.add(value);
+    images.push(value);
+  };
+
+  push(imageUrl);
+  for (const url of gallery) push(url);
+
+  return images.length ? images : ["/placeholder-product.jpg"];
 }
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
@@ -43,19 +66,25 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   });
 
   const price = Number(product.price);
-  const gallery = product.gallery.length ? product.gallery : [product.imageUrl].filter(Boolean);
-  const images = gallery.length ? gallery : ["/placeholder-product.jpg"];
+  const images = buildProductGalleryImages(product.imageUrl, product.gallery);
   const specsRecord = (product.specs || {}) as Record<string, string>;
   const specs = Object.entries(specsRecord);
   const shortSpecs =
     product.category === BALL_VALVE_CATEGORY ? getOrderedShortSpecs(specsRecord) : [];
   const richContent = getProductRichContent(product.slug);
+  const hasRichSpecsContent = Boolean(
+    (richContent?.specs?.length ?? 0) > 0 ||
+      (richContent?.specsFooter?.length ?? 0) > 0 ||
+      (richContent?.comparisonTable?.rows?.length ?? 0) > 0
+  );
+  const showSpecsPanel = hasRichSpecsContent || (!richContent && specs.length > 0);
   const descriptionItems = descriptionListItems(product.description);
   const priceLabel = getProductPriceLabel({
     slug: product.slug,
     price,
     kind: product.kind,
-    category: product.category
+    category: product.category,
+    specs: specsRecord
   });
   const backCatalogHref = getProductBackCatalogHref({
     kind: product.kind,
@@ -63,10 +92,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
     specs: specsRecord
   });
   const detailSections: ProductDetailSectionId[] | undefined =
-    slug === "elementy-pitaniya" ? ["bought-together"] : undefined;
-  const showSpecsButton = slug !== "elementy-pitaniya";
-  const isThreeSpeedPump =
-    specsRecord[PUMP_SPEC_SUBCATEGORY] === PUMP_THREE_SPEED_SUBCATEGORY;
+    slug === "elementy-pitaniya"
+      ? ["bought-together"]
+      : showSpecsPanel
+        ? undefined
+        : ["description", "bought-together"];
+  const showSpecsButton = showSpecsPanel;
+  const pumpModel = getPumpModelFromSpecs(specsRecord);
+  const pumpDesignationImage = pumpModel ? getPumpDesignationImage(pumpModel) : null;
+  const listingTitle = getProductListingTitle(product.title, specsRecord);
   return (
     <main className="site-shell">
       <SiteHeader />
@@ -81,7 +115,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <ProductGallery images={images as string[]} title={product.title} />
 
             <aside className="detail-summary detail-summary--product">
-            <h1>{product.title}</h1>
+            <h1>{listingTitle}</h1>
             {shortSpecs.length ? (
               <ProductShortSpecs specs={shortSpecs} />
             ) : descriptionItems.length > 1 ? (
@@ -140,7 +174,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             relatedProducts={relatedProducts}
             richContent={richContent}
             sections={detailSections}
-            beforeBoughtTogether={isThreeSpeedPump ? <ThreeSpeedPumpDesignation /> : undefined}
+            beforeBoughtTogether={
+              pumpModel && pumpDesignationImage ? (
+                <PumpDesignation
+                  image={pumpDesignationImage}
+                  alt={getPumpDesignationAlt(pumpModel)}
+                  compact={isCompactPumpDesignation(pumpModel)}
+                />
+              ) : undefined
+            }
           />
         </div>
       </section>

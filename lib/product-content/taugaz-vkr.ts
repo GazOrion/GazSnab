@@ -26,27 +26,6 @@ function vkrContent(
 }
 
 export const TAUGAZ_VKR_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
-  "taugaz-vkr-g16-g25-g4": vkrContent(
-    "ВКР G1,6; G2,5; G4",
-    "V1,2L, A-110, левый/правый.",
-    [
-      { characteristic: "Типоразмеры", value: "G1,6; G2,5; G4" },
-      { characteristic: "Циклический объём", value: "1,2 л" },
-      { characteristic: "Межосевое расстояние", value: "110 мм" },
-      { characteristic: "Исполнение", value: "левый/правый" }
-    ]
-  ),
-  "taugaz-vkr-g16-g25-g4t": vkrContent(
-    "ВКР G1,6T; G2,5T; G4T",
-    "V1,2L, A-110, левый/правый, с механической термокоррекцией.",
-    [
-      { characteristic: "Типоразмеры", value: "G1,6T; G2,5T; G4T" },
-      { characteristic: "Циклический объём", value: "1,2 л" },
-      { characteristic: "Межосевое расстояние", value: "110 мм" },
-      { characteristic: "Термокоррекция", value: "механическая" },
-      { characteristic: "Исполнение", value: "левый/правый" }
-    ]
-  ),
   "taugaz-vkr-g6": vkrContent("ВКР G6", "V2L, A-250, левый.", [
     { characteristic: "Типоразмер", value: "G6" },
     { characteristic: "Циклический объём", value: "2 л" },

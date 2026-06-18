@@ -229,6 +229,9 @@ function CatalogSectionInner({
                 ? getPumpSubcategoryListingTitle(subcategory)
                 : undefined
           }
+          heroSubtitle={
+            category === GAS_METERS_CATEGORY && subcategory ? subcategory : undefined
+          }
         />
       ) : null}
 

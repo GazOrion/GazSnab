@@ -5,6 +5,8 @@ import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
 import { getProductPriceLabel } from "@/lib/product-price-label";
+import { getProductListingTitle } from "@/lib/product-listing-title";
+import { shouldHideProductCardDescription } from "@/lib/rasko-accessories";
 import type { CatalogProduct } from "@/components/ProductCard";
 
 function normalizeDescription(text: string) {
@@ -46,10 +48,12 @@ export function EquipmentListingProductCard({ product, layout = "grid" }: Props)
   };
 
   const inStock = product.inStock !== false;
+  const listingTitle = getProductListingTitle(product.title, product.specs);
   const priceText = getProductPriceLabel({
     slug: product.slug,
     price: product.price,
-    kind: product.kind
+    kind: product.kind,
+    specs: product.specs
   });
 
   return (
@@ -74,9 +78,9 @@ export function EquipmentListingProductCard({ product, layout = "grid" }: Props)
 
       <div className="store-equipment-listing-card__body">
         <h3 className="store-equipment-listing-card__title">
-          <Link href={`/products/${product.slug}`}>{product.title}</Link>
+          <Link href={`/products/${product.slug}`}>{listingTitle}</Link>
         </h3>
-        {product.description ? (
+        {product.description && !shouldHideProductCardDescription(product.slug) ? (
           descriptionLines(product.description).length > 1 ? (
             <ul className="store-equipment-listing-card__desc store-equipment-listing-card__desc-list">
               {descriptionLines(product.description).map((line) => (

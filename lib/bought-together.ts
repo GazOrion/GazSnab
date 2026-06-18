@@ -1,6 +1,10 @@
 import type { CatalogProduct } from "@/components/ProductCard";
 import { CONSULTATION_PRODUCT_SLUG } from "@/lib/catalog";
 import { GAS_METERS_CATEGORY, SOFTWARE_CATEGORY } from "@/lib/equipment-category-config";
+import {
+  getRaskoVkFittingsSlugForMeter,
+  isRaskoGasMeterProduct
+} from "@/lib/rasko-accessories";
 import { prisma } from "@/lib/prisma";
 
 const DEFAULT_LIMIT = 4;
@@ -96,15 +100,25 @@ function pickRequiredItem(pool: PoolItem[], predicate: (item: PoolItem) => boole
 function pickBoughtTogetherPool(
   pool: PoolItem[],
   limit: number,
-  current: { category: string; specs?: ProductSpecs | null }
+  current: { slug: string; category: string; specs?: ProductSpecs | null }
 ): PoolItem[] {
   const picked: PoolItem[] = [];
   const usedIds = new Set<string>();
 
   const currentIsSmt = isSmtTechnomerProduct(current);
   const currentIsPo = isPoProduct(current);
+  const currentIsRasko = isRaskoGasMeterProduct(current);
 
-  if (currentIsSmt) {
+  if (currentIsRasko) {
+    const fittingsSlug = getRaskoVkFittingsSlugForMeter(current.slug);
+    if (fittingsSlug) {
+      const fitting = pool.find((item) => item.slug === fittingsSlug);
+      if (fitting && !usedIds.has(fitting.id)) {
+        picked.push(fitting);
+        usedIds.add(fitting.id);
+      }
+    }
+  } else if (currentIsSmt) {
     const poItem = pickRequiredItem(pool, (item) => isPoProduct(item));
     if (poItem) {
       picked.push(poItem);
@@ -180,6 +194,7 @@ export async function getBoughtTogetherProducts(params: {
   });
 
   return pickBoughtTogetherPool(pool, limit, {
+    slug: params.slug,
     category: params.category,
     specs: params.specs
   }).map(toCatalogProduct);

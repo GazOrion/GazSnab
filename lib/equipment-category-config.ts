@@ -5,6 +5,12 @@ import {
   PUMP_FILTER_SECTIONS,
   pumpMatchesSectionFilter
 } from "@/lib/pumps-catalog";
+import {
+  collectGasMeterTypeSizeOptions,
+  gasMeterMatchesTypeSize,
+  GAS_METER_SPEC_PURPOSE,
+  GAS_METER_TYPE_SIZE_FILTER
+} from "@/lib/gas-meters-catalog";
 
 export const GAS_METERS_CATEGORY = "Счётчики газа";
 export const GAS_METERING_UNITS_CATEGORY = "ГРПШ";
@@ -43,16 +49,23 @@ export type EquipmentCategoryConfig = {
   manufacturers: readonly string[];
 };
 
-const GAS_METER_MANUFACTURERS = ["Техномер", "ТАУГАЗ"] as const;
+const GAS_METER_MANUFACTURERS = ["Техномер", "ТАУГАЗ", "РАСКО"] as const;
 
 export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig> = {
   "Счётчики газа": {
     category: "Счётчики газа",
     slug: "gas-meters",
     searchPlaceholder: "Поиск по счетчикам",
-    filterSections: ["Тип счётчика", "Диаметр подключения", "Назначение", "Способ монтажа"],
+    filterSections: [
+      "Тип счётчика",
+      GAS_METER_TYPE_SIZE_FILTER,
+      "Диаметр подключения",
+      "Назначение",
+      "Способ монтажа"
+    ],
     filterSectionOptions: {
-      "Тип счётчика": ["Мембранные", "СМТ-Комплексы"]
+      "Тип счётчика": ["Мембранные", "СМТ-Комплексы", "Ротационные", "Турбинные"],
+      Назначение: ["Бытовые", "Коммунальные"]
     },
     manufacturers: GAS_METER_MANUFACTURERS
   },
@@ -159,7 +172,11 @@ function productMatchesManufacturer(product: CatalogProduct, brand: string) {
     }
 
     if (brand === "ТАУГАЗ") {
-      return manufacturer === "ТАУГАЗ" || subcategory === "Мембранные";
+      return manufacturer === "ТАУГАЗ";
+    }
+
+    if (brand === "РАСКО") {
+      return manufacturer === "РАСКО";
     }
   }
 
@@ -180,6 +197,14 @@ function productMatchesSectionFilter(
     return product.specs?.["Подкатегория"] === value;
   }
 
+  if (section === GAS_METER_TYPE_SIZE_FILTER) {
+    return gasMeterMatchesTypeSize(product, value);
+  }
+
+  if (section === "Назначение") {
+    return product.specs?.[GAS_METER_SPEC_PURPOSE] === value;
+  }
+
   if (isPumpFilterSection(section)) {
     return pumpMatchesSectionFilter(product, section, value);
   }
@@ -197,6 +222,10 @@ export function getEquipmentFilterSectionOptions(
 
   if (config.slug === "pumps" && isPumpFilterSection(section)) {
     return collectPumpFilterOptions(products, section);
+  }
+
+  if (config.slug === "gas-meters" && section === GAS_METER_TYPE_SIZE_FILTER) {
+    return collectGasMeterTypeSizeOptions(products);
   }
 
   return [];

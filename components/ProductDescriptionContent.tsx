@@ -62,16 +62,29 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
             );
           }
 
+          const figureClass = block.plain
+            ? "product-description-rich__figure product-description-rich__figure--plain"
+            : "product-description-rich__figure";
+
           return (
-            <figure className="product-description-rich__figure" key={index}>
-              <div className="product-description-rich__figure-frame">
+            <figure className={figureClass} key={index}>
+              {block.plain ? (
                 <img
-                  className="product-description-rich__figure-image"
+                  className="product-description-rich__figure-image product-description-rich__figure-image--plain"
                   src={block.imageSrc}
                   alt={block.imageAlt}
                   loading="lazy"
                 />
-              </div>
+              ) : (
+                <div className="product-description-rich__figure-frame">
+                  <img
+                    className="product-description-rich__figure-image"
+                    src={block.imageSrc}
+                    alt={block.imageAlt}
+                    loading="lazy"
+                  />
+                </div>
+              )}
               {block.caption ? (
                 <figcaption className="product-description-rich__figure-caption">{block.caption}</figcaption>
               ) : null}
@@ -80,8 +93,16 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
         }
 
         if (block.type === "data-table") {
+          const wrapClass = [
+            "product-data-table-wrap",
+            block.highlight ? "product-data-table-wrap--highlight" : "",
+            block.matrix ? "product-data-table-wrap--matrix" : ""
+          ]
+            .filter(Boolean)
+            .join(" ");
+
           return (
-            <div className="product-data-table-wrap" key={index}>
+            <div className={wrapClass} key={index}>
               <table className="product-data-table">
                 <thead>
                   <tr>
@@ -96,7 +117,15 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
                   {block.table.rows.map((row, rowIndex) => (
                     <tr key={rowIndex}>
                       {row.map((cell, cellIndex) => (
-                        <td key={cellIndex}>{cell}</td>
+                        <td key={cellIndex}>
+                          {cell.includes("\n")
+                            ? cell.split("\n").map((line, lineIndex) => (
+                                <span className="product-data-table__cell-line" key={lineIndex}>
+                                  {line.trim() || "\u00a0"}
+                                </span>
+                              ))
+                            : cell}
+                        </td>
                       ))}
                     </tr>
                   ))}

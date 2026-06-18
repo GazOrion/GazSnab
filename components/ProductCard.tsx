@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { getProductPriceLabel, isFromPriceProduct } from "@/lib/product-price-label";
+import { getProductListingTitle } from "@/lib/product-listing-title";
+import { shouldHideProductCardDescription } from "@/lib/rasko-accessories";
 
 export type CatalogProduct = {
   id: string;
@@ -45,9 +47,11 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   const priceLabel = getProductPriceLabel({
     slug: product.slug,
     price: product.price,
-    kind: product.kind
+    kind: product.kind,
+    specs: product.specs
   });
   const showFromPriceStyle = isFromPriceProduct(product.slug, product.kind);
+  const listingTitle = getProductListingTitle(product.title, product.specs);
 
   return (
     <article className="product-card product-card-shop">
@@ -69,9 +73,9 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
 
       <div className="product-card-body">
         <h3 className="product-card-title">
-          <Link href={`/products/${product.slug}`}>{product.title}</Link>
+          <Link href={`/products/${product.slug}`}>{listingTitle}</Link>
         </h3>
-        {product.description ? (
+        {product.description && !shouldHideProductCardDescription(product.slug) ? (
           <p className="product-card-desc muted">{excerpt(product.description)}</p>
         ) : null}
 

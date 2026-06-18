@@ -16,9 +16,8 @@ export default function CompanyPage() {
     <main className="site-shell">
       <SiteHeader />
 
-      <article className="section static-page narrow">
+      <article className="section static-page">
         <div className="container">
-          <span className="eyebrow">О компании</span>
           <h1>{company.name}</h1>
           <p className="lead">
             Поставляем насосы, фильтры для газа и воды, счётчики, клапаны и выполняем сопутствующие

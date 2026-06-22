@@ -56,7 +56,7 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
   return (
     <article className="product-card product-card-shop">
       <div className="product-card-media">
-        <FavoriteButton productId={product.id} className="product-card-favorite" />
+        <FavoriteButton productSlug={product.slug} className="product-card-favorite" />
         <Link className="product-card-image-link" href={`/products/${product.slug}`} tabIndex={-1}>
           <img
             src={imageSrc}

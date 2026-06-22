@@ -10,12 +10,12 @@ import { useFavorites } from "@/components/FavoritesProvider";
 import { CATALOG_ROUTES } from "@/lib/catalog";
 
 export default function FavoritesPage() {
-  const { ids } = useFavorites();
+  const { slugs, pruneSlugs } = useFavorites();
   const [products, setProducts] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!ids.length) {
+    if (!slugs.length) {
       setProducts([]);
       setLoading(false);
       return;
@@ -24,16 +24,19 @@ export default function FavoritesPage() {
     let cancelled = false;
     setLoading(true);
 
-    fetch(`/api/products/by-ids?ids=${encodeURIComponent(ids.join(","))}`)
+    fetch(`/api/products/by-slugs?slugs=${encodeURIComponent(slugs.join(","))}`)
       .then((response) => response.json())
       .then((data: CatalogProduct[]) => {
         if (!cancelled) {
-          const order = new Map(ids.map((id, index) => [id, index]));
-          setProducts(
-            [...data].sort(
-              (a, b) => (order.get(a.id) ?? 0) - (order.get(b.id) ?? 0)
-            )
+          const order = new Map(slugs.map((slug, index) => [slug, index]));
+          const sorted = [...data].sort(
+            (a, b) => (order.get(a.slug) ?? 0) - (order.get(b.slug) ?? 0)
           );
+          setProducts(sorted);
+          const resolvedSlugs = sorted.map((product) => product.slug);
+          if (resolvedSlugs.length !== slugs.length) {
+            pruneSlugs(resolvedSlugs);
+          }
         }
       })
       .catch(() => {
@@ -46,7 +49,9 @@ export default function FavoritesPage() {
     return () => {
       cancelled = true;
     };
-  }, [ids]);
+  }, [slugs, pruneSlugs]);
+
+  const visibleCount = loading ? slugs.length : products.length;
 
   return (
     <main className="site-shell site-shell-shop">
@@ -57,8 +62,8 @@ export default function FavoritesPage() {
             <div>
               <h1>Избранное</h1>
               <p className="muted">
-                {ids.length
-                  ? `${ids.length} позиций в списке — добавьте в корзину и оформите заявку`
+                {visibleCount
+                  ? `${visibleCount} позиций в списке — добавьте в корзину и оформите заявку`
                   : "Добавляйте товары и услуги в избранное с карточки каталога"}
               </p>
             </div>

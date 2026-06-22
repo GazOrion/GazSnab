@@ -59,7 +59,7 @@ export function EquipmentListingProductCard({ product, layout = "grid" }: Props)
 
   return (
     <article className="store-equipment-listing-card">
-      <FavoriteButton productId={product.id} className="store-equipment-listing-card__favorite" />
+      <FavoriteButton productSlug={product.slug} className="store-equipment-listing-card__favorite" />
       <Link
         className="store-equipment-listing-card__media"
         href={`/products/${product.slug}`}

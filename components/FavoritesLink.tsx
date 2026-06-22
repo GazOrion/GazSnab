@@ -11,10 +11,10 @@ type Props = {
 };
 
 export function FavoritesLink({ className }: Props) {
-  const { ids } = useFavorites();
+  const { slugs } = useFavorites();
   const pathname = usePathname();
   const active = pathname === "/favorites";
-  const count = ids.length;
+  const count = slugs.length;
 
   return (
     <Link

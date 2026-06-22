@@ -5,13 +5,13 @@ import { Heart } from "lucide-react";
 import { useFavorites } from "@/components/FavoritesProvider";
 
 type Props = {
-  productId: string;
+  productSlug: string;
   className?: string;
 };
 
-export function FavoriteButton({ productId, className }: Props) {
+export function FavoriteButton({ productSlug, className }: Props) {
   const { isFavorite, toggle } = useFavorites();
-  const active = isFavorite(productId);
+  const active = isFavorite(productSlug);
 
   return (
     <button
@@ -22,7 +22,7 @@ export function FavoriteButton({ productId, className }: Props) {
       onClick={(event) => {
         event.preventDefault();
         event.stopPropagation();
-        toggle(productId);
+        toggle(productSlug);
       }}
     >
       <Heart size={18} strokeWidth={2} fill={active ? "currentColor" : "none"} />

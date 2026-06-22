@@ -2,7 +2,7 @@ export type CompanyAboutSubsection = {
   subheading?: string;
   paragraph?: string;
   listLabel?: string;
-  listItems: string[];
+  listItems?: string[];
 };
 
 export type CompanyAboutSection = {
@@ -11,24 +11,6 @@ export type CompanyAboutSection = {
   subsections?: CompanyAboutSubsection[];
   listItems?: string[];
 };
-
-/** Заполнитель для полей, которые нужно уточнить (три прочерка, не тире в тексте). */
-export const COMPANY_ABOUT_PLACEHOLDER = "---";
-
-export const COMPANY_ABOUT_META = {
-  foundedYear: COMPANY_ABOUT_PLACEHOLDER,
-  productionSite: COMPANY_ABOUT_PLACEHOLDER,
-  projectDesignContact: COMPANY_ABOUT_PLACEHOLDER
-} as const;
-
-export const COMPANY_ABOUT_TRANSPORT_CARRIERS = [
-  "Деловые линии",
-  "ПЭК",
-  "ЖелДорЭкспедиция",
-  "GTD",
-  "ЭНЕРГИЯ",
-  "Байкал-Сервис"
-] as const;
 
 export const COMPANY_ABOUT_SECTIONS: CompanyAboutSection[] = [
   {
@@ -40,7 +22,17 @@ export const COMPANY_ABOUT_SECTIONS: CompanyAboutSection[] = [
         subheading: "Насосы",
         paragraph:
           "Насосное оборудование для газовых и водных контуров, котельных и технологических узлов. Поможем подобрать модель под задачу и схему подключения.",
-        listItems: ["Марки и серии в каталоге: " + COMPANY_ABOUT_PLACEHOLDER]
+        listLabel: "Марки и серии в каталоге",
+        listItems: [
+          "Интеллектуальные циркуляционные — GEB, GEM, GEM-PRO, GEM FN-PRO",
+          "Трёхскоростные — UPS, GS-F",
+          "Линейные — GTD",
+          "Вертикальные многоступенчатые — CDL, CDLF",
+          "Горизонтальные многоступенчатые — CHT, CHL/CHS",
+          "Консольные — GF(m), GSM",
+          "Погружные канализационные — WQ, WQK",
+          "Насосы UNIPUMP"
+        ]
       },
       {
         subheading: "Фильтры",
@@ -75,11 +67,27 @@ export const COMPANY_ABOUT_SECTIONS: CompanyAboutSection[] = [
     heading: "Услуги",
     paragraph:
       "Помимо поставки оборудования выполняем работы для промышленных и коммунальных заказчиков. Состав услуг и сроки согласуем после заявки.",
-    listItems: [
-      "Металлообработка: гибка, сварка, распил, сверление и другие операции по чертежам",
-      "Инжиниринг и подбор решений под объект",
-      "Монтаж, пусконаладка и сервис газового оборудования",
-      "Дополнительные виды работ: " + COMPANY_ABOUT_PLACEHOLDER
+    subsections: [
+      {
+        listItems: [
+          "Металлообработка: гибка, сварка, распил, сверление и другие операции по чертежам",
+          "Инжиниринг и подбор решений под объект",
+          "Монтаж, пусконаладка и сервис газового оборудования"
+        ]
+      },
+      {
+        listLabel: "Дополнительные виды работ",
+        paragraph:
+          "На главной странице мы также представляем смежные направления — дополнительные услуги металлообработки и проекты экосистемы Orion в блоке «Больше, чем оборудование»:",
+        listItems: [
+          "3-D печать пластиком (TPU) — прототипирование и мелкосерийные детали",
+          "Нарезка резьбы на трубах и заточка свёрл до 20 мм",
+          "Dev-разработка — сайты, CRM-системы и автоматизация процессов для бизнеса",
+          "Учебный центр — курсы для школьников 7–11 классов: физика, информатика и проектные занятия",
+          "Дизайн интерьеров — планировка, визуализация и подбор материалов",
+          "Эксплуатация газовых сетей — обслуживание объектов, контроль и инженерная поддержка"
+        ]
+      }
     ]
   }
 ];

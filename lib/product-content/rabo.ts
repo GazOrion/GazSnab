@@ -21,7 +21,6 @@ export const RABO_SHORT_DESCRIPTION =
 
 const RABO_MODEL_COLUMNS = [
   "Параметры",
-  "G10",
   "G16",
   "G25",
   "G40",
@@ -34,6 +33,84 @@ const RABO_MODEL_COLUMNS = [
   "G1000*"
 ];
 
+const RABO_SPECIAL_ORDER_RANGE =
+  "до 1:160, 1:200 и 1:250 — по спецзаказу";
+
+type RaboProductRow = {
+  slug: string;
+  typoraзmer: string;
+  dn: number;
+  qmax: number;
+  range?: string;
+};
+
+const RABO_PRODUCT_ROWS: RaboProductRow[] = [
+  { slug: "rabo-g16-dn50", typoraзmer: "G16", dn: 50, qmax: 25, range: "до 1:50" },
+  { slug: "rabo-g25-dn50", typoraзmer: "G25", dn: 50, qmax: 40, range: "до 1:80" },
+  { slug: "rabo-g40-dn50", typoraзmer: "G40", dn: 50, qmax: 65, range: "до 1:130" },
+  {
+    slug: "rabo-g65-dn50",
+    typoraзmer: "G65",
+    dn: 50,
+    qmax: 100,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  {
+    slug: "rabo-g100-dn80",
+    typoraзmer: "G100",
+    dn: 80,
+    qmax: 160,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  {
+    slug: "rabo-g160-dn80",
+    typoraзmer: "G160",
+    dn: 80,
+    qmax: 250,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  {
+    slug: "rabo-g160-dn100",
+    typoraзmer: "G160",
+    dn: 100,
+    qmax: 250,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  {
+    slug: "rabo-g250-dn80",
+    typoraзmer: "G250",
+    dn: 80,
+    qmax: 400,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  {
+    slug: "rabo-g250-dn100",
+    typoraзmer: "G250",
+    dn: 100,
+    qmax: 400,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  {
+    slug: "rabo-g400-dn100",
+    typoraзmer: "G400",
+    dn: 100,
+    qmax: 650,
+    range: RABO_SPECIAL_ORDER_RANGE
+  },
+  { slug: "rabo-g400-dn150", typoraзmer: "G400", dn: 150, qmax: 650 },
+  { slug: "rabo-g650-dn150", typoraзmer: "G650", dn: 150, qmax: 1000 },
+  { slug: "rabo-g1000-dn200", typoraзmer: "G1000", dn: 200, qmax: 1600 }
+];
+
+function buildRaboTyporaзmerParams(row: RaboProductRow): string {
+  const base = `Qmax=${row.qmax} м³/ч; Ду=${row.dn} мм`;
+  return row.range ? `${base} (${row.range})` : base;
+}
+
+function buildRaboTyporaзmerTableRows(): string[][] {
+  return RABO_PRODUCT_ROWS.map((row) => [`RABO ${row.typoraзmer}`, buildRaboTyporaзmerParams(row)]);
+}
+
 const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
   {
     type: "heading",
@@ -44,27 +121,12 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
     type: "data-table",
     table: {
       columns: ["Наименование", "Параметры"],
-      rows: [
-        ["RABO G10", "Qmax=16 м³/ч; Ду=40 мм"],
-        ["RABO G16", "Qmax=25 м³/ч; Ду=50 мм"],
-        ["RABO G25", "Qmax=40 м³/ч; Ду=50 мм"],
-        ["RABO G40", "Qmax=65 м³/ч; Ду=50 мм"],
-        ["RABO G65", "Qmax=100 м³/ч; Ду=50 мм"],
-        ["RABO G100", "Qmax=160 м³/ч; Ду=80 мм"],
-        ["RABO G160", "Qmax=250 м³/ч; Ду=80 мм"],
-        ["RABO G160", "Qmax=250 м³/ч; Ду=100 мм"],
-        ["RABO G250", "Qmax=400 м³/ч; Ду=80 мм"],
-        ["RABO G250", "Qmax=400 м³/ч; Ду=100 мм"],
-        ["RABO G400", "Qmax=650 м³/ч; Ду=100 мм"],
-        ["RABO G400", "Qmax=650 м³/ч; Ду=150 мм"],
-        ["RABO G650", "Qmax=1000 м³/ч; Ду=150 мм"],
-        ["RABO G1000", "Qmax=1600 м³/ч; Ду=200 мм"]
-      ]
+      rows: buildRaboTyporaзmerTableRows()
     }
   },
   {
     type: "heading",
-    text: "Основные технические характеристики RABO счетчика газа ротационного (RABO G10, G16, G25, G40, G65, G100, G160, G250, G400, G650, G1000)",
+    text: "Основные технические характеристики RABO счетчика газа ротационного (RABO G16, G25, G40, G65, G100, G160, G250, G400, G650, G1000)",
     level: 4
   },
   {
@@ -75,11 +137,10 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
       rows: [
         [
           "Исполнения",
-          { text: "«Р», «Б», «К»", colspan: 11 }
+          { text: "«Р», «Б», «К»", colspan: 10 }
         ],
         [
           "Диапазоны рабочих расходов счётчика",
-          "1:50, 1:30",
           "1:50, 1:30",
           "1:80, 1:65, 1:50, 1:30",
           "1:130, 1:100, 1:80, 1:65, 1:50, 1:30",
@@ -93,7 +154,7 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
         ],
         [
           "Порог чувствительности, м³/ч",
-          { text: "0,03", colspan: 5 },
+          { text: "0,03", colspan: 4 },
           "0,05",
           "0,1",
           "0,2",
@@ -101,12 +162,12 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
         ],
         [
           "Цена оборота ролика младшего разряда, м³",
-          { text: "0,1", colspan: 5 },
+          { text: "0,1", colspan: 4 },
           { text: "1", colspan: 6 }
         ],
         [
           "Масса, кг",
-          { text: "12", colspan: 5 },
+          { text: "12", colspan: 4 },
           "16",
           "32",
           "36",
@@ -114,27 +175,27 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
         ],
         [
           "Рабочее давление измеряемого газа",
-          { text: "не более 1,6 МПа", colspan: 11 }
+          { text: "не более 1,6 МПа", colspan: 10 }
         ],
         [
           "Диапазон температур измеряемой среды",
-          { text: "от −30 °C до +70 °C", colspan: 11 }
+          { text: "от −30 °C до +70 °C", colspan: 10 }
         ],
         [
           "Диапазон температур окружающей среды",
-          { text: "от −40 °C до +70 °C", colspan: 11 }
+          { text: "от −40 °C до +70 °C", colspan: 10 }
         ],
-        ["Счётный механизм", { text: "8-разрядный", colspan: 11 }],
+        ["Счётный механизм", { text: "8-разрядный", colspan: 10 }],
         [
           "Степень защиты",
           {
             text: "IP67 (для исполнений «Б» и «К» — IP65) по ГОСТ 14254",
-            colspan: 11
+            colspan: 10
           }
         ],
-        ["Средний срок службы", { text: "12 лет", colspan: 11 }],
-        ["Средняя наработка на отказ", { text: "100000 ч", colspan: 11 }],
-        ["Интервал между поверками", { text: "5 лет", colspan: 11 }]
+        ["Средний срок службы", { text: "12 лет", colspan: 10 }],
+        ["Средняя наработка на отказ", { text: "100000 ч", colspan: 10 }],
+        ["Интервал между поверками", { text: "5 лет", colspan: 10 }]
       ]
     }
   },
@@ -144,7 +205,6 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
     table: {
       columns: [
         "Параметр",
-        "G10",
         "G16",
         "G25",
         "G40",
@@ -159,7 +219,6 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
       rows: [
         [
           "Порог чувствительности, м³/ч\n– исполнение «Р»\n– исполнение «Б», «К»",
-          "\n—\n0,08",
           "\n0,03\n0,08",
           "\n0,03\n0,08",
           "\n0,03\n0,08",
@@ -178,7 +237,6 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
           "10⁶",
           "10⁶",
           "10⁶",
-          "10⁶",
           "10⁷",
           "10⁷",
           "10⁷",
@@ -187,7 +245,6 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
         ],
         [
           "Объём изм. камеры, дм³\n– исполнение «Р»\n– исполнение «Б»\n– исполнение «К»",
-          "\n0,87\n0,95\n0,51",
           "\n0,87\n0,95\n0,51",
           "\n0,87\n0,95\n0,51",
           "\n0,87\n0,95\n0,51",
@@ -201,7 +258,6 @@ const RABO_SPECS_SECTION_BLOCKS: ProductDescriptionBlock[] = [
         ],
         [
           "Цена деления ролика младшего разряда, м³",
-          "0,002",
           "0,002",
           "0,002",
           "0,002",
@@ -226,11 +282,6 @@ export const RABO_OPTIONS_TITLE = "Дополнительные опции и и
 
 export const RABO_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
   {
-    type: "heading",
-    text: "2.9. Дополнительные опции и исполнения счетчика газа RABO",
-    level: 4
-  },
-  {
     type: "data-table",
     table: {
       columns: ["Опция / исполнение", "Описание"],
@@ -242,7 +293,13 @@ export const RABO_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
         ["Расш. диапазона", "Qmax/Qmin=130 (бесплатно)"],
         ["Расш. диапазона", "Qmax/Qmin=160 (бесплатно)"],
         ["Расш. диапазона", "Qmax/Qmin=200"],
-        ["Расш. диапазона", "Qmax/Qmin=250"]
+        ["Расш. диапазона", "Qmax/Qmin=250"],
+        ["Исполнение «У»", "точка перехода 0,05 Qmax"],
+        [
+          "Исполнение «2У»",
+          "относительная погрешность 0,9% в диапазоне расходов Qmin—Qmax"
+        ],
+        ["Двойной сч. механизм", "счётный механизм двунаправленный"]
       ]
     }
   }
@@ -294,40 +351,22 @@ function raboContent(): ProductRichContent {
   };
 }
 
-type RaboProductRow = {
-  slug: string;
-  typoraзmer: string;
-  dn: number;
-  qmax: number;
-};
-
-const RABO_PRODUCT_ROWS: RaboProductRow[] = [
-  { slug: "rabo-g10-dn40", typoraзmer: "G10", dn: 40, qmax: 16 },
-  { slug: "rabo-g16-dn50", typoraзmer: "G16", dn: 50, qmax: 25 },
-  { slug: "rabo-g25-dn50", typoraзmer: "G25", dn: 50, qmax: 40 },
-  { slug: "rabo-g40-dn50", typoraзmer: "G40", dn: 50, qmax: 65 },
-  { slug: "rabo-g65-dn50", typoraзmer: "G65", dn: 50, qmax: 100 },
-  { slug: "rabo-g100-dn80", typoraзmer: "G100", dn: 80, qmax: 160 },
-  { slug: "rabo-g160-dn80", typoraзmer: "G160", dn: 80, qmax: 250 },
-  { slug: "rabo-g160-dn100", typoraзmer: "G160", dn: 100, qmax: 250 },
-  { slug: "rabo-g250-dn80", typoraзmer: "G250", dn: 80, qmax: 400 },
-  { slug: "rabo-g250-dn100", typoraзmer: "G250", dn: 100, qmax: 400 },
-  { slug: "rabo-g400-dn100", typoraзmer: "G400", dn: 100, qmax: 650 },
-  { slug: "rabo-g400-dn150", typoraзmer: "G400", dn: 150, qmax: 650 },
-  { slug: "rabo-g650-dn150", typoraзmer: "G650", dn: 150, qmax: 1000 },
-  { slug: "rabo-g1000-dn200", typoraзmer: "G1000", dn: 200, qmax: 1600 }
-];
-
 function buildRaboTitle(row: RaboProductRow): string {
   return `Ротационный счётчик газа RABO ${row.typoraзmer} (DN ${row.dn} мм)`;
 }
 
 function buildRaboExtraSpecs(row: RaboProductRow): ProductSpecRow[] {
-  return [
+  const specs: ProductSpecRow[] = [
     { characteristic: "Типоразмер", value: row.typoraзmer },
     { characteristic: "Максимальный расход Qmax", value: `${row.qmax} м³/ч` },
-    { characteristic: "Условный диаметр", value: `DN${row.dn} мм` }
+    { characteristic: "Условный диаметр", value: `Ду=${row.dn} мм` }
   ];
+
+  if (row.range) {
+    specs.push({ characteristic: "Диапазон измерения", value: row.range });
+  }
+
+  return specs;
 }
 
 export type RaboProductDefinition = {
@@ -350,8 +389,10 @@ export function buildRaboListingDescription(product: RaboProductDefinition): str
   const qmax = product.extraSpecs.find((row) => row.characteristic === "Максимальный расход Qmax")
     ?.value;
   const du = product.extraSpecs.find((row) => row.characteristic === "Условный диаметр")?.value;
+  const range = product.extraSpecs.find((row) => row.characteristic === "Диапазон измерения")
+    ?.value;
 
-  const params = [qmax, du].filter(Boolean).join(", ");
+  const params = [qmax, du, range ? `(${range})` : undefined].filter(Boolean).join(", ");
   if (params) {
     return `Ротационный счётчик газа RABO ${product.typoraзmer}, ${params}. Промышленный учёт природного газа.`;
   }

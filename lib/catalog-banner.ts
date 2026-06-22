@@ -16,7 +16,7 @@ export const EQUIPMENT_CATEGORY_BANNER_FILES: Record<string, string> = {
   Фильтры: "filters-banner.webp",
   Насосы: "pumps-banner.webp",
   "Краны шаровые": "ball-valves-banner.webp",
-  "Запорная арматура": "ball-valves-banner.webp"
+  "Корректоры газа": "korrektory-gaza-banner.webp"
 };
 
 function versionedMediaSrc(filename: string): string {

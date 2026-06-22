@@ -8,6 +8,7 @@ import { CatalogHubHero } from "@/components/catalog/CatalogHubHero";
 import { EquipmentCatalogHero } from "@/components/catalog/EquipmentCatalogHero";
 import { EquipmentCategoryGrid } from "@/components/catalog/EquipmentCategoryGrid";
 import { EquipmentCategoryListing } from "@/components/catalog/EquipmentCategoryListing";
+import { EquipmentListingProductCard } from "@/components/catalog/EquipmentListingProductCard";
 import { GasMetersCategoryLanding } from "@/components/catalog/GasMetersCategoryLanding";
 import { PumpsCategoryLanding } from "@/components/catalog/PumpsCategoryLanding";
 import {
@@ -30,6 +31,7 @@ import {
   clusterPresentation,
   EQUIPMENT_CLUSTER_ORDER,
   PRODUCT_KIND,
+  resolveEquipmentClusterImage,
   SERVICE_CLUSTER_ORDER,
   sortClusters,
   catalogBlockFromKind,
@@ -116,17 +118,31 @@ function CatalogSectionInner({
   const gasMetersBannerSrc =
     categoryBannerSrc ?? "/media/gas-meters-banner.webp";
   const pumpsBannerSrc = categoryBannerSrc ?? "/media/pumps-banner.webp";
+  const equipmentCategoryConfig =
+    category && variant === "equipment" ? getEquipmentCategoryConfig(category) : null;
   const isGasMetersLanding = isGasMetersCategoryView && !subcategory;
   const isPumpsLanding = isPumpsCategoryView && !subcategory;
   const usesDedicatedCategoryPage =
     isGasMetersCategoryView || isPumpsCategoryView
       ? true
-      : variant === "equipment" &&
-        inCategoryView &&
-        Boolean(category && categoryBannerSrc && getEquipmentCategoryConfig(category));
+      : variant === "equipment" && inCategoryView && Boolean(equipmentCategoryConfig);
 
   const isEquipmentCategoryListing =
     usesDedicatedCategoryPage && !isGasMetersLanding && !isPumpsLanding;
+
+  const resolvedEquipmentCategoryBannerSrc =
+    category && equipmentCategoryConfig
+      ? category === GAS_METERS_CATEGORY
+        ? gasMetersBannerSrc
+        : category === PUMPS_CATEGORY
+          ? pumpsBannerSrc
+          : categoryBannerSrc ??
+            resolveEquipmentClusterImage(category, null) ??
+            catalogBannerSrc
+      : undefined;
+
+  const usesEquipmentListingCards =
+    variant === "equipment" && inCategoryView && Boolean(equipmentCategoryConfig);
 
   const hubSource = hubClusters?.length ? hubClusters : clusters;
 
@@ -177,6 +193,7 @@ function CatalogSectionInner({
       className={clsx(
         `store-catalog store-catalog-${variant}`,
         usesDedicatedCategoryPage && "store-catalog-equipment-category",
+        usesEquipmentListingCards && "store-catalog-equipment-category",
         isServicesHub && "store-catalog-services-hub"
       )}
       id={id}
@@ -208,13 +225,7 @@ function CatalogSectionInner({
                 ? filterPumpProducts(products, subcategory)
                 : products
           }
-          bannerSrc={
-            category === GAS_METERS_CATEGORY
-              ? gasMetersBannerSrc
-              : category === PUMPS_CATEGORY
-                ? pumpsBannerSrc
-                : categoryBannerSrc!
-          }
+          bannerSrc={resolvedEquipmentCategoryBannerSrc ?? catalogBannerSrc ?? "/media/catalog-banner.webp"}
           breadcrumbs={
             category === GAS_METERS_CATEGORY && subcategory
               ? gasMetersSubcategoryBreadcrumbs(subcategory)
@@ -371,6 +382,12 @@ function CatalogSectionInner({
               <p className="catalog-empty muted">
                 В этом разделе пока нет позиций.
               </p>
+            ) : usesEquipmentListingCards ? (
+              <div className="store-equipment-listing-grid">
+                {filteredProducts.map((product) => (
+                  <EquipmentListingProductCard key={product.id} product={product} />
+                ))}
+              </div>
             ) : (
               <ProductGrid products={filteredProducts} />
             )}

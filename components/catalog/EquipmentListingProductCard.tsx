@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { getProductPriceLabel } from "@/lib/product-price-label";
 import { getProductListingTitle } from "@/lib/product-listing-title";
 import { shouldHideProductCardDescription } from "@/lib/rasko-accessories";
@@ -58,6 +59,7 @@ export function EquipmentListingProductCard({ product, layout = "grid" }: Props)
 
   return (
     <article className="store-equipment-listing-card">
+      <FavoriteButton productId={product.id} className="store-equipment-listing-card__favorite" />
       <Link
         className="store-equipment-listing-card__media"
         href={`/products/${product.slug}`}

@@ -31,6 +31,75 @@ import {
   RGT_T_SHORT_DESCRIPTION
 } from "../lib/product-content/rgt-t";
 import {
+  SG_TK_CARD_IMAGE,
+  SG_TK_D_CARD_DESCRIPTION,
+  SG_TK_D_SLUG,
+  SG_TK_D_TITLE,
+  SG_TK_GALLERY,
+  SG_TK_R_CARD_DESCRIPTION,
+  SG_TK_R_SLUG,
+  SG_TK_R_TITLE,
+  SG_TK_SHORT_DESCRIPTION
+} from "../lib/product-content/sg-tk-kompleks";
+import {
+  SG_EK_CARD_DESCRIPTION,
+  SG_EK_CARD_IMAGE,
+  SG_EK_GALLERY,
+  SG_EK_SHORT_DESCRIPTION,
+  SG_EK_SLUG,
+  SG_EK_TITLE
+} from "../lib/product-content/sg-ek-kompleks";
+import {
+  GAS_METER_ACCESSORIES_CARD_IMAGE,
+  GAS_METER_ACCESSORIES_ROTARY_SLUG,
+  GAS_METER_ACCESSORIES_SHORT_DESCRIPTION,
+  GAS_METER_ACCESSORIES_TITLE,
+  GAS_METER_ACCESSORIES_TURBINE_SLUG
+} from "../lib/product-content/gas-meter-accessories";
+import {
+  GAS_METER_KPU_CARD_IMAGE,
+  GAS_METER_KPU_SHORT_DESCRIPTION,
+  GAS_METER_KPU_SLUG,
+  GAS_METER_KPU_TITLE,
+  GAS_METER_KPU_TURBINE_SHORT_DESCRIPTION,
+  GAS_METER_KPU_TURBINE_SLUG,
+  GAS_METER_KPU_TURBINE_TITLE,
+  GAS_METER_KPU_SG_SHORT_DESCRIPTION,
+  GAS_METER_KPU_SG_SLUG,
+  GAS_METER_KPU_SG_TITLE
+} from "../lib/product-content/gas-meter-kpu";
+import {
+  RASKO_FG_CARD_IMAGE,
+  RASKO_FG_GALLERY,
+  RASKO_FG_PRODUCTS,
+  RASKO_FG_SHORT_DESCRIPTION,
+  buildFgListingDescription,
+  buildFgSeedSpecs
+} from "../lib/product-content/rasko-fg-filters";
+import {
+  KORREKTOR_TS220_CARD_DESCRIPTION,
+  KORREKTOR_TS220_CARD_IMAGE,
+  KORREKTOR_TS220_GALLERY,
+  KORREKTOR_TS220_SLUG
+} from "../lib/product-content/korrektor-ts220";
+import {
+  KORREKTOR_EK270_CARD_DESCRIPTION,
+  KORREKTOR_EK270_CARD_IMAGE,
+  KORREKTOR_EK270_GALLERY,
+  KORREKTOR_EK270_SLUG
+} from "../lib/product-content/korrektor-ek270";
+import {
+  PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CARD_DESCRIPTION,
+  PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CARD_IMAGE,
+  PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_GALLERY,
+  PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_SLUG
+} from "../lib/product-content/preobrazovateli-i-kmch-dlya-korrektorov";
+import {
+  GAS_METER_PURPOSE_INDUSTRIAL,
+  GAS_METER_SUBCATEGORY_SG_TK_D,
+  GAS_METER_SUBCATEGORY_SG_TK_R
+} from "../lib/gas-meters-catalog";
+import {
   GRP_SH_04_IMAGE,
   GRP_SH_10MS_IMAGE,
   GRP_SH_32_IMAGE
@@ -71,6 +140,13 @@ const smtSmart110DetailsIntro = richContentIntro(SMT_SMART_110_CONTENT);
 const GRP_SHKAFNY_CATEGORY = "Газорегуляторные пункты шкафного исполнения";
 
 const CABLE_MANUFACTURER = "Техномер";
+const RASKO_MANUFACTURER = "РАСКО";
+
+const SMT_KOMPLEKS_TYPE_SIZES = "G4, G6, G10, G16, G25";
+const SMT_SMART_TYPE_SIZES = "G4, G6, G10";
+const SMT_SMART_110_TYPE_SIZES = "G4, G6";
+const SMT_KOMPLEKS_G40_TYPE_SIZES = "G40, G40-2";
+const SMT_KOMPLEKS_G65_G100_TYPE_SIZES = "G65, G100";
 
 const BPEK_EK_CABLE_DESCRIPTION =
   "Для подключения модулей телеметрии БПЭК к электронным корректорам ЕК260, ЕК270, ЕК280, ЕК290, счётчикам газа СМТ-Комплекс (до 50 м).";
@@ -1908,6 +1984,8 @@ const rgrRotaryMeterSeedProducts = RGR_R_PRODUCTS.map((product) => ({
   specs: {
     Серия: "РГ-Р",
     Подкатегория: "Ротационные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
     ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
   },
   leadTime: "по наличию, уточняется в заявке",
@@ -1928,6 +2006,8 @@ const rvgRotaryMeterSeedProducts = RVG_PRODUCTS.map((product) => ({
   specs: {
     Серия: "RVG",
     Подкатегория: "Ротационные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
     ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
   },
   leadTime: "по наличию, уточняется в заявке",
@@ -1948,6 +2028,8 @@ const raboRotaryMeterSeedProducts = RABO_PRODUCTS.map((product) => ({
   specs: {
     Серия: "RABO",
     Подкатегория: "Ротационные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
     ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
   },
   leadTime: "по наличию, уточняется в заявке",
@@ -1968,6 +2050,8 @@ const rgtTurbineMeterSeedProducts = RGT_T_PRODUCTS.map((product) => ({
   specs: {
     Серия: "РГ-Т",
     Подкатегория: "Турбинные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
     ...Object.fromEntries(product.extraSpecs.map((row) => [row.characteristic, row.value]))
   },
   leadTime: "по наличию, уточняется в заявке",
@@ -1977,6 +2061,183 @@ const rgtTurbineMeterSeedProducts = RGT_T_PRODUCTS.map((product) => ({
   gallery: RGT_T_GALLERY,
   featured: true
 }));
+
+const sgTkDSeedProduct = {
+  title: SG_TK_D_TITLE,
+  slug: SG_TK_D_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: SG_TK_D_CARD_DESCRIPTION,
+  details: SG_TK_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "СГ-ТК",
+    Подкатегория: GAS_METER_SUBCATEGORY_SG_TK_D,
+    Производитель: "ЭЛЬСТЕР",
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
+    Модель: "СГ-ТК-Д"
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: SG_TK_CARD_IMAGE,
+  gallery: SG_TK_GALLERY,
+  featured: true
+};
+
+const sgTkRSeedProduct = {
+  title: SG_TK_R_TITLE,
+  slug: SG_TK_R_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: SG_TK_R_CARD_DESCRIPTION,
+  details: SG_TK_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "СГ-ТК",
+    Подкатегория: GAS_METER_SUBCATEGORY_SG_TK_R,
+    Производитель: "ЭЛЬСТЕР",
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
+    Модель: "СГ-ТК-Р"
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: SG_TK_CARD_IMAGE,
+  gallery: SG_TK_GALLERY,
+  featured: true
+};
+
+const sgEkKompleksSeedProduct = {
+  title: SG_EK_TITLE,
+  slug: SG_EK_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: SG_EK_SHORT_DESCRIPTION,
+  details: `${SG_EK_SHORT_DESCRIPTION} ${SG_EK_CARD_DESCRIPTION}`,
+  specs: {
+    Серия: "СГ-ЭК",
+    Подкатегория: "Комплексы СГ-ЭК",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
+    Модель: "СГ-ЭК"
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: SG_EK_CARD_IMAGE,
+  gallery: SG_EK_GALLERY,
+  featured: true
+};
+
+function buildGasMeterAccessoriesSeedProduct(subcategory: "Ротационные" | "Турбинные", slug: string) {
+  return {
+    title: GAS_METER_ACCESSORIES_TITLE,
+    slug,
+    kind: "Товар",
+    category: "Счётчики газа",
+    description: GAS_METER_ACCESSORIES_SHORT_DESCRIPTION,
+    details: GAS_METER_ACCESSORIES_SHORT_DESCRIPTION,
+    specs: {
+      Серия: "Аксессуары",
+      Подкатегория: subcategory,
+      Производитель: RASKO_MANUFACTURER,
+      Назначение: GAS_METER_PURPOSE_INDUSTRIAL
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: GAS_METER_ACCESSORIES_CARD_IMAGE,
+    gallery: [GAS_METER_ACCESSORIES_CARD_IMAGE],
+    featured: false
+  };
+}
+
+const gasMeterAccessoriesRotarySeedProduct = buildGasMeterAccessoriesSeedProduct(
+  "Ротационные",
+  GAS_METER_ACCESSORIES_ROTARY_SLUG
+);
+const gasMeterAccessoriesTurbineSeedProduct = buildGasMeterAccessoriesSeedProduct(
+  "Турбинные",
+  GAS_METER_ACCESSORIES_TURBINE_SLUG
+);
+
+const gasMeterKpuSeedProduct = {
+  title: GAS_METER_KPU_TITLE,
+  slug: GAS_METER_KPU_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: GAS_METER_KPU_SHORT_DESCRIPTION,
+  details: GAS_METER_KPU_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "КПУ",
+    Подкатегория: "Ротационные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: GAS_METER_KPU_CARD_IMAGE,
+  gallery: [GAS_METER_KPU_CARD_IMAGE],
+  featured: false
+};
+
+const gasMeterKpuTurbineSeedProduct = {
+  title: GAS_METER_KPU_TURBINE_TITLE,
+  slug: GAS_METER_KPU_TURBINE_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: GAS_METER_KPU_TURBINE_SHORT_DESCRIPTION,
+  details: GAS_METER_KPU_TURBINE_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "КПУ",
+    Подкатегория: "Турбинные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: GAS_METER_KPU_CARD_IMAGE,
+  gallery: [GAS_METER_KPU_CARD_IMAGE],
+  featured: false
+};
+
+const raskoFgFilterSeedProducts = RASKO_FG_PRODUCTS.map((product) => ({
+  title: product.title,
+  slug: product.slug,
+  kind: "Товар",
+  category: "Фильтры",
+  description: buildFgListingDescription(product),
+  details: RASKO_FG_SHORT_DESCRIPTION,
+  specs: buildFgSeedSpecs(product),
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: RASKO_FG_CARD_IMAGE,
+  gallery: RASKO_FG_GALLERY,
+  featured: false
+}));
+
+const gasMeterKpuSgSeedProduct = {
+  title: GAS_METER_KPU_SG_TITLE,
+  slug: GAS_METER_KPU_SG_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: GAS_METER_KPU_SG_SHORT_DESCRIPTION,
+  details: GAS_METER_KPU_SG_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "КПУ",
+    Подкатегория: "Турбинные",
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: GAS_METER_KPU_CARD_IMAGE,
+  gallery: [GAS_METER_KPU_CARD_IMAGE],
+  featured: false
+};
 
 const products = [
   {
@@ -2074,49 +2335,64 @@ const products = [
     gallery: ["/media/services/proektirovanie-gazovogo-oborudovaniya.webp"],
     featured: true
   },
+  ...raskoFgFilterSeedProducts,
   {
-    title: "Фильтр газовый промышленный ФГ",
-    slug: "filtr-gazovyy-fg",
+    title: "Корректор ТС220",
+    slug: KORREKTOR_TS220_SLUG,
     kind: "Товар",
-    category: "Фильтры",
-    description:
-      "Фильтр для очистки природного газа от механических примесей перед регуляторами и измерительным оборудованием.",
-    details:
-      "Поставляем фильтры для установки в составе ГРПШ, узлов учета и отдельно стоящих технологических линий. Подбор зависит от расхода, давления и требуемой степени очистки.",
+    category: "Корректоры газа",
+    description: KORREKTOR_TS220_CARD_DESCRIPTION,
+    details: KORREKTOR_TS220_CARD_DESCRIPTION,
     specs: {
-      "Диаметр": "DN 25-100",
-      "Давление": "до 1,6 МПа",
-      "Материал": "сталь",
-      "Монтаж": "фланцевый",
-      "Обслуживание": "сменная кассета"
+      Серия: "ТС",
+      Модель: "ТС-220",
+      Производитель: "ЭЛЬСТЕР"
     },
-    leadTime: "от 5 рабочих дней",
-    price: "18400",
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
     unit: "шт.",
-    imageUrl: "/media/products/catalog/filtr-gazovyy-fg.webp",
-    gallery: ["/media/products/catalog/filtr-gazovyy-fg.webp"]
+    imageUrl: KORREKTOR_TS220_CARD_IMAGE,
+    gallery: KORREKTOR_TS220_GALLERY,
+    featured: false
   },
   {
-    title: "Клапан предохранительно-запорный КПЗ",
-    slug: "klapan-kpz",
+    title: "Корректор объема газа ЕК270",
+    slug: KORREKTOR_EK270_SLUG,
     kind: "Товар",
-    category: "Запорная арматура",
-    description:
-      "Защитная арматура для автоматического отключения подачи газа при отклонении давления от заданных пределов.",
-    details:
-      "Клапаны КПЗ применяются в составе пунктов редуцирования и газовых линий. Подбираются по условному проходу, давлению срабатывания и схеме установки.",
+    category: "Корректоры газа",
+    description: KORREKTOR_EK270_CARD_DESCRIPTION,
+    details: KORREKTOR_EK270_CARD_DESCRIPTION,
     specs: {
-      "Назначение": "аварийное отключение газа",
-      "Диаметр": "DN 25-100",
-      "Настройка": "по давлению объекта",
-      "Монтаж": "горизонтальный или вертикальный",
-      "Документы": "паспорт изделия"
+      Серия: "ЕК270",
+      Модель: "ЕК270",
+      Производитель: RASKO_MANUFACTURER
     },
-    leadTime: "5-12 рабочих дней",
-    price: "39800",
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
     unit: "шт.",
-    imageUrl: "/media/products/catalog/klapan-kpz.webp",
-    gallery: ["/media/products/catalog/klapan-kpz.webp"]
+    imageUrl: KORREKTOR_EK270_CARD_IMAGE,
+    gallery: KORREKTOR_EK270_GALLERY,
+    featured: false
+  },
+  {
+    title: "Преобразователи и КМЧ для корректоров",
+    slug: PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_SLUG,
+    kind: "Товар",
+    category: "Корректоры газа",
+    description: PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CARD_DESCRIPTION,
+    details: PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CARD_DESCRIPTION,
+    specs: {
+      Серия: "ЕК270",
+      Модель: "ЕК270",
+      Производитель: RASKO_MANUFACTURER,
+      Назначение: "Преобразователи и монтажные части"
+    },
+    leadTime: "по наличию, уточняется в заявке",
+    price: "0",
+    unit: "шт.",
+    imageUrl: PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CARD_IMAGE,
+    gallery: PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_GALLERY,
+    featured: false
   },
   {
     title: "Кран шаровой латунный LD Pride",
@@ -2942,7 +3218,15 @@ const products = [
   ...rgrRotaryMeterSeedProducts,
   ...rvgRotaryMeterSeedProducts,
   ...raboRotaryMeterSeedProducts,
+  gasMeterAccessoriesRotarySeedProduct,
+  gasMeterKpuSeedProduct,
   ...rgtTurbineMeterSeedProducts,
+  sgTkDSeedProduct,
+  sgTkRSeedProduct,
+  sgEkKompleksSeedProduct,
+  gasMeterAccessoriesTurbineSeedProduct,
+  gasMeterKpuTurbineSeedProduct,
+  gasMeterKpuSgSeedProduct,
   {
     title: "Счётчик газа микротермальный СМТ-Комплекс",
     slug: "smt-kompleks",
@@ -2953,7 +3237,8 @@ const products = [
     details: smtKompleksDetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_KOMPLEKS_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "48050",
@@ -2979,7 +3264,8 @@ const products = [
     details: smtKompleksKDetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_KOMPLEKS_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "66620",
@@ -3005,7 +3291,8 @@ const products = [
     details: smtKompleksG40DetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_KOMPLEKS_G40_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "192200",
@@ -3030,7 +3317,8 @@ const products = [
     details: smtSmartDetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_SMART_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "19350",
@@ -3056,7 +3344,8 @@ const products = [
     details: smtSmartKDetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_SMART_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "25690",
@@ -3082,7 +3371,8 @@ const products = [
     details: smtSmartDkzDetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_SMART_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "28190",
@@ -3109,7 +3399,8 @@ const products = [
       "Система безопасного использования газа (СБИГ) — комплекс для учёта природного газа, контроля загазованности и автоматического отключения подачи газа при аварийных ситуациях.",
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_SMART_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "0",
@@ -3774,7 +4065,8 @@ const products = [
     details: smtSmart110DetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_SMART_110_TYPE_SIZES
     },
     leadTime: "скоро в продаже",
     price: "0",
@@ -3800,7 +4092,8 @@ const products = [
     details: smtKompleksG65G100DetailsIntro,
     specs: {
       Производитель: "СМТ",
-      Подкатегория: "СМТ-Комплексы"
+      Подкатегория: "СМТ-Комплексы",
+      Типоразмеры: SMT_KOMPLEKS_G65_G100_TYPE_SIZES
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
     price: "244680",
@@ -4033,7 +4326,28 @@ const RETIRED_PRODUCT_SLUGS = [
   "grp-shkafnoy",
   "uzel-ucheta-gaza",
   "taugaz-vkr-g16-g25-g4",
-  "taugaz-vkr-g16-g25-g4t"
+  "taugaz-vkr-g16-g25-g4t",
+  "rabo-g10-dn40",
+  "filtr-gazovyy-fg",
+  "klapan-kpz",
+  "kmch-dlya-korrektorov",
+  "sg-ek-r-25-1-6",
+  "sg-ek-r-40-1-6",
+  "sg-ek-r-65-1-6",
+  "sg-ek-r-100-1-6",
+  "sg-ek-r-160-1-6",
+  "sg-ek-r-250-1-6",
+  "sg-ek-r-400-1-6",
+  "sg-ek-r-650-1-6",
+  "sg-ek-r-1000-1-6",
+  "sg-ek-r-1600-1-6",
+  "sg-tk-d-2-5-6",
+  "sg-tk-d-10",
+  "sg-tk-d-16",
+  "sg-tk-d-25",
+  "sg-tk-d-40",
+  "sg-tk-d-65",
+  "sg-tk-d-100"
 ];
 
 async function main() {

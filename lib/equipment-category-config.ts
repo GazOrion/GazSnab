@@ -7,12 +7,19 @@ import {
 } from "@/lib/pumps-catalog";
 import {
   collectGasMeterTypeSizeOptions,
+  gasMeterMatchesTypeFilter,
   gasMeterMatchesTypeSize,
+  GAS_METER_FILTER_TYPE_SG_EK,
+  GAS_METER_FILTER_TYPE_SG_TK,
   GAS_METER_SPEC_PURPOSE,
-  GAS_METER_TYPE_SIZE_FILTER
+  GAS_METER_PURPOSE_INDUSTRIAL,
+  GAS_METER_TYPE_SIZE_FILTER,
+  GAS_METERS_CATEGORY,
+  isRotaryGasMeterProduct,
+  isTurbineGasMeterProduct
 } from "@/lib/gas-meters-catalog";
 
-export const GAS_METERS_CATEGORY = "Счётчики газа";
+export { GAS_METERS_CATEGORY } from "@/lib/gas-meters-catalog";
 export const GAS_METERING_UNITS_CATEGORY = "ГРПШ";
 export const TELEMETRY_CATEGORY = "Телеметрия";
 export const SOFTWARE_CATEGORY = "ПО";
@@ -30,7 +37,7 @@ export type EquipmentCategorySlug =
   | "filters"
   | "pumps"
   | "ball-valves"
-  | "shutoff-valves";
+  | "gas-correctors";
 
 export type EquipmentCategoryFilterState = {
   priceMin: number;
@@ -50,6 +57,15 @@ export type EquipmentCategoryConfig = {
 };
 
 const GAS_METER_MANUFACTURERS = ["Техномер", "ТАУГАЗ", "РАСКО"] as const;
+const RASKO_GAS_METER_SERIES = new Set([
+  "РГ-Р",
+  "RVG",
+  "RABO",
+  "РГ-Т",
+  "ВК",
+  "КПУ",
+  "Аксессуары"
+]);
 
 export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig> = {
   "Счётчики газа": {
@@ -64,8 +80,15 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
       "Способ монтажа"
     ],
     filterSectionOptions: {
-      "Тип счётчика": ["Мембранные", "СМТ-Комплексы", "Ротационные", "Турбинные"],
-      Назначение: ["Бытовые", "Коммунальные"]
+      "Тип счётчика": [
+        "Мембранные",
+        "СМТ-Комплексы",
+        "Ротационные",
+        "Турбинные",
+        GAS_METER_FILTER_TYPE_SG_TK,
+        GAS_METER_FILTER_TYPE_SG_EK
+      ],
+      Назначение: ["Бытовые", "Коммунальные", GAS_METER_PURPOSE_INDUSTRIAL]
     },
     manufacturers: GAS_METER_MANUFACTURERS
   },
@@ -116,7 +139,12 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
     slug: "filters",
     searchPlaceholder: "Поиск по фильтрам",
     filterSections: ["Тип фильтра", "Диаметр", "Степень очистки"],
-    manufacturers: []
+    filterSectionOptions: {
+      "Тип фильтра": ["Газовый"],
+      Диаметр: ["50 мм", "80 мм", "100 мм"],
+      "Степень очистки": ["5 мкм", "80 мкм"]
+    },
+    manufacturers: ["РАСКО"]
   },
   [PUMPS_CATEGORY]: {
     category: PUMPS_CATEGORY,
@@ -132,12 +160,12 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
     filterSections: ["Диаметр", "Давление", "Тип резьбы"],
     manufacturers: ["LD Pride"]
   },
-  "Запорная арматура": {
-    category: "Запорная арматура",
-    slug: "shutoff-valves",
-    searchPlaceholder: "Поиск по арматуре",
-    filterSections: ["Тип арматуры", "Диаметр", "Давление"],
-    manufacturers: []
+  "Корректоры газа": {
+    category: "Корректоры газа",
+    slug: "gas-correctors",
+    searchPlaceholder: "Поиск по корректорам",
+    filterSections: [],
+    manufacturers: ["РАСКО", "ЭЛЬСТЕР"]
   }
 };
 
@@ -176,7 +204,8 @@ function productMatchesManufacturer(product: CatalogProduct, brand: string) {
     }
 
     if (brand === "РАСКО") {
-      return manufacturer === "РАСКО";
+      const series = specs["Серия"];
+      return manufacturer === "РАСКО" || (series ? RASKO_GAS_METER_SERIES.has(series) : false);
     }
   }
 
@@ -194,7 +223,7 @@ function productMatchesSectionFilter(
   value: string
 ) {
   if (section === "Тип счётчика") {
-    return product.specs?.["Подкатегория"] === value;
+    return gasMeterMatchesTypeFilter(product, value);
   }
 
   if (section === GAS_METER_TYPE_SIZE_FILTER) {
@@ -202,12 +231,23 @@ function productMatchesSectionFilter(
   }
 
   if (section === "Назначение") {
+    if (value === GAS_METER_PURPOSE_INDUSTRIAL) {
+      return (
+        product.specs?.[GAS_METER_SPEC_PURPOSE] === value ||
+        isRotaryGasMeterProduct(product.specs) ||
+        isTurbineGasMeterProduct(product.specs)
+      );
+    }
+
     return product.specs?.[GAS_METER_SPEC_PURPOSE] === value;
   }
 
   if (isPumpFilterSection(section)) {
     return pumpMatchesSectionFilter(product, section, value);
   }
+
+  const specValue = product.specs?.[section];
+  if (specValue === value) return true;
 
   return false;
 }

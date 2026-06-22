@@ -7,6 +7,7 @@ import { ProductCard } from "@/components/ProductCard";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { useFavorites } from "@/components/FavoritesProvider";
+import { CATALOG_ROUTES } from "@/lib/catalog";
 
 export default function FavoritesPage() {
   const { ids } = useFavorites();
@@ -54,7 +55,6 @@ export default function FavoritesPage() {
         <div className="container">
           <header className="store-section-head">
             <div>
-              <span className="eyebrow">Сохранённое</span>
               <h1>Избранное</h1>
               <p className="muted">
                 {ids.length
@@ -68,7 +68,7 @@ export default function FavoritesPage() {
             <p className="muted">Загрузка…</p>
           ) : products.length === 0 ? (
             <p className="catalog-empty muted">
-              Список пуст. <Link href="/">Перейти в каталог</Link>
+              Список пуст. <Link href={CATALOG_ROUTES.equipment}>Перейти в каталог</Link>
             </p>
           ) : (
             <div className="product-grid store-product-grid">

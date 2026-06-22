@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { ProductLineCatalog } from "@/lib/product-lines/types";
-import { formatPrice } from "@/lib/format";
+import { formatPrice, ON_REQUEST_PRICE_LABEL } from "@/lib/format";
 
 type Props = {
   catalog: ProductLineCatalog;
@@ -11,7 +11,7 @@ type Props = {
 
 function formatVariantPrice(price: number | null | undefined) {
   if (price == null || price <= 0) {
-    return "по запросу";
+    return ON_REQUEST_PRICE_LABEL;
   }
   return formatPrice(price);
 }

@@ -1,10 +1,10 @@
-import { formatPrice } from "@/lib/format";
+import { formatPrice, ON_REQUEST_PRICE_LABEL } from "@/lib/format";
 import { PUMPS_CATEGORY } from "@/lib/equipment-category-config";
 import { isOnRequestGasMeterProduct } from "@/lib/gas-meters-catalog";
 import { isRaskoVkFittingsSlug } from "@/lib/rasko-accessories";
 import { getProductLineCatalog, getProductLineMinPrice } from "@/lib/product-lines";
 
-export const ON_REQUEST_PRICE_LABEL = "по запросу";
+export { ON_REQUEST_PRICE_LABEL };
 
 export function isPumpProduct(slug?: string, category?: string) {
   return category === PUMPS_CATEGORY || (slug?.startsWith("nasos-") ?? false);
@@ -54,7 +54,7 @@ export function getProductPriceLabel(options: {
   const lineCatalog = getProductLineCatalog(slug);
   const lineMinPrice = lineCatalog ? getProductLineMinPrice(lineCatalog) : null;
 
-  if (lineMinPrice != null) {
+  if (lineMinPrice != null && lineMinPrice > 0) {
     return `от ${formatPrice(lineMinPrice)}`;
   }
 
@@ -84,6 +84,9 @@ export function getCategoryClusterPriceLabel(options: {
   }
 
   if (options.minPrice == null || options.minPrice <= 0) {
+    if ((options.count ?? 0) > 0) {
+      return ON_REQUEST_PRICE_LABEL;
+    }
     return null;
   }
 

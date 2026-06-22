@@ -55,7 +55,7 @@ export type ClusterPresentation = {
 
 export const EQUIPMENT_CLUSTER_PRESENTATION: Record<string, ClusterPresentation> = {
   "Газорегуляторные пункты": {
-    title: "Регуляторы давления",
+    title: "Датчики",
     teaser:
       "Газорегуляторные пункты и шкафы для стабильного давления газа на объекте любой мощности"
   },
@@ -100,10 +100,11 @@ export const EQUIPMENT_CLUSTER_PRESENTATION: Record<string, ClusterPresentation>
     title: "Краны шаровые",
     teaser: "Шаровые краны для перекрытия потока воды, пара и неагрессивных сред"
   },
-  "Запорная арматура": {
-    title: "Запорная арматура",
-    teaser: "Предохранительно-запорная арматура для защиты газовых линий и пунктов редуцирования"
-  }
+  "Корректоры газа": {
+    title: "Корректоры газа",
+    teaser:
+      "Корректоры объёма газа для приведения рабочего объёма к стандартным условиям при коммерческом учёте"
+  },
 };
 
 export const SERVICE_CLUSTER_PRESENTATION: Record<string, ClusterPresentation> = {
@@ -142,13 +143,13 @@ export const EQUIPMENT_CATEGORY_IMAGES: Partial<Record<string, string>> = {
   Телеметрия: "/media/products/smt/bpek-02-ck.webp",
   ПО: "/media/products/software/gazset-standart.webp",
   "Дополнительное оборудование": "/media/products/accessories/bpek-ek-cable.webp",
-  "Газорегуляторные пункты": "/media/categories/regulator-davleniya.webp",
+  "Газорегуляторные пункты": "/media/categories/datchiki.webp",
   ГРПШ: GAS_METERING_UNITS_CARD_IMAGE,
   "Узлы учета": "/media/categories/signalizator-zagazovannosti.webp",
   Фильтры: "/media/categories/filtr.webp",
   Насосы: "/media/categories/pumps.webp",
   "Краны шаровые": "/media/categories/zapornyy-kran.webp",
-  "Запорная арматура": "/media/categories/zapornaya-armatura.webp"
+  "Корректоры газа": "/media/categories/korrektory-gaza.webp"
 };
 
 export function resolveEquipmentClusterImage(name: string, fallback: string | null) {
@@ -185,7 +186,7 @@ export const EQUIPMENT_CLUSTER_ORDER = [
   "Фильтры",
   "Насосы",
   "Краны шаровые",
-  "Запорная арматура"
+  "Корректоры газа"
 ] as const;
 
 export const SERVICE_CLUSTER_ORDER = [
@@ -269,14 +270,14 @@ export const EQUIPMENT_HEADER_CATALOG_ITEMS = dedupeEquipmentCatalogNavItems([
     image: "/media/categories/pumps.webp"
   },
   {
-    name: "Запорная арматура",
-    label: "Запорная арматура",
-    image: "/media/categories/zapornaya-armatura.webp"
+    name: "Корректоры газа",
+    label: "Корректоры газа",
+    image: "/media/categories/korrektory-gaza.webp"
   },
   {
     name: "Газорегуляторные пункты",
-    label: "Регуляторы давления",
-    image: "/media/categories/regulator-davleniya.webp"
+    label: "Датчики",
+    image: "/media/categories/datchiki.webp"
   },
   {
     name: "ГРПШ",
@@ -294,7 +295,7 @@ export const EQUIPMENT_HEADER_CATALOG_ITEMS = dedupeEquipmentCatalogNavItems([
 export const HOME_CATEGORY_STRIP = [
   { name: "Счётчики газа", kind: PRODUCT_KIND.GOODS, label: "Счётчики газа" },
   { name: "Краны шаровые", kind: PRODUCT_KIND.GOODS, label: "Краны шаровые" },
-  { name: "Запорная арматура", kind: PRODUCT_KIND.GOODS, label: "Запорная арматура" },
+  { name: "Корректоры газа", kind: PRODUCT_KIND.GOODS, label: "Корректоры газа" },
   { name: "Газорегуляторные пункты", kind: PRODUCT_KIND.GOODS, label: "Газовые шкафы" },
   { name: "Фильтры", kind: PRODUCT_KIND.GOODS, label: "Фильтры" },
   { name: SERVICE_CATEGORY_METAL, kind: PRODUCT_KIND.SERVICE, label: "Металло обработка" }

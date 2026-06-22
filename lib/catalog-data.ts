@@ -338,7 +338,9 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
       goods,
       services,
       goodsCategoryStats,
+      goodsCategoryMinPrices,
       serviceCategoryStats,
+      serviceCategoryMinPrices,
       goodsTotal,
       servicesTotal,
       goodsSampleImages,
@@ -356,15 +358,23 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
         by: ["category"],
         where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.GOODS },
         _count: { id: true },
-        _min: { price: true },
         orderBy: { category: "asc" }
+      }),
+      prisma.product.groupBy({
+        by: ["category"],
+        where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.GOODS, price: { gt: 0 } },
+        _min: { price: true }
       }),
       prisma.product.groupBy({
         by: ["category"],
         where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.SERVICE },
         _count: { id: true },
-        _min: { price: true },
         orderBy: { category: "asc" }
+      }),
+      prisma.product.groupBy({
+        by: ["category"],
+        where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.SERVICE, price: { gt: 0 } },
+        _min: { price: true }
       }),
       prisma.product.count({ where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.GOODS } }),
       prisma.product.count({ where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.SERVICE } }),
@@ -381,7 +391,8 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
     ]);
 
     const buildClusters = (
-      stats: { category: string; _count: { id: number }; _min: { price: unknown } }[],
+      stats: { category: string; _count: { id: number } }[],
+      minPrices: { category: string; _min: { price: unknown } }[],
       samples: { category: string; imageUrl: string | null }[]
     ): CategoryCluster[] => {
       const imageByCategory = new Map<string, string>();
@@ -391,16 +402,27 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
         }
       }
 
+      const minPriceByCategory = new Map(
+        minPrices.map((row) => [
+          row.category,
+          row._min.price != null ? Number(row._min.price) : null
+        ])
+      );
+
       return stats.map((row) => ({
         name: row.category,
         count: row._count.id,
         imageUrl: imageByCategory.get(row.category) ?? null,
-        minPrice: row._min.price != null ? Number(row._min.price) : null
+        minPrice: minPriceByCategory.get(row.category) ?? null
       }));
     };
 
-    const goodsClusters = buildClusters(goodsCategoryStats, goodsSampleImages);
-    const serviceClusters = buildClusters(serviceCategoryStats, serviceSampleImages);
+    const goodsClusters = buildClusters(goodsCategoryStats, goodsCategoryMinPrices, goodsSampleImages);
+    const serviceClusters = buildClusters(
+      serviceCategoryStats,
+      serviceCategoryMinPrices,
+      serviceSampleImages
+    );
     const equipmentHubClusters = buildEquipmentHubClusters(goodsClusters);
     const serviceHubClusters = await buildServiceHubClusters();
 

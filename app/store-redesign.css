@@ -2210,10 +2210,16 @@
 .store-equipment-catalog-hero__banner--gas-alarms,
 .store-equipment-catalog-hero__banner--filters,
 .store-equipment-catalog-hero__banner--ball-valves,
+.store-equipment-catalog-hero__banner--gas-correctors,
 .store-equipment-catalog-hero__banner--software,
 .store-equipment-catalog-hero__banner--additional-equipment {
   background-position: right 28%;
   background-size: auto 105%;
+}
+
+.store-equipment-catalog-hero__banner--gas-correctors {
+  background-position: 100% center;
+  background-size: auto 108%;
 }
 
 .store-equipment-catalog-hero__banner--pumps {
@@ -2568,6 +2574,13 @@
   opacity: 0.45;
 }
 
+.store-equipment-listing-filters__note {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
 .store-equipment-listing-filters__more {
   margin-top: 8px;
   padding: 0;
@@ -2681,6 +2694,7 @@
 }
 
 .store-equipment-listing-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   min-height: 100%;
@@ -2834,6 +2848,13 @@
 .store-equipment-listing-card__stock-icon svg {
   display: block;
   stroke: currentColor;
+}
+
+.store-equipment-listing-card__favorite {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 3;
 }
 
 .store-equipment-listing-card__footer {
@@ -3137,10 +3158,16 @@
   .store-equipment-catalog-hero__banner--gas-alarms,
   .store-equipment-catalog-hero__banner--filters,
   .store-equipment-catalog-hero__banner--ball-valves,
+  .store-equipment-catalog-hero__banner--gas-correctors,
   .store-equipment-catalog-hero__banner--software,
   .store-equipment-catalog-hero__banner--additional-equipment {
     background-position: right 40%;
     background-size: auto 100%;
+  }
+
+  .store-equipment-catalog-hero__banner--gas-correctors {
+    background-position: 100% center;
+    background-size: auto 102%;
   }
 
   .store-equipment-catalog-hero__banner--pumps {
@@ -3778,6 +3805,27 @@
   align-items: flex-end;
   gap: 1px;
   flex-shrink: 0;
+}
+
+.header-pro-phones {
+  display: flex;
+  align-items: flex-start;
+  gap: clamp(12px, 1.8vw, 20px);
+}
+
+.header-pro-phone-item {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 1px;
+}
+
+.header-pro-phone-label {
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #8892a0;
+  white-space: nowrap;
 }
 
 .header-pro-phone {
@@ -4846,6 +4894,263 @@
   .store-home-category-card {
     min-height: 92px;
   }
+}
+
+/* —— Phone FAB (left) —— */
+.phone-fab {
+  position: fixed;
+  z-index: 54;
+  left: clamp(12px, 2vw, 28px);
+  bottom: clamp(12px, 2vw, 28px);
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.phone-fab__btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(145deg, #0d3b82 0%, #0a2f6a 100%);
+  color: #fff;
+  cursor: pointer;
+  box-shadow:
+    0 8px 24px rgba(13, 59, 130, 0.35),
+    0 2px 8px rgba(15, 23, 42, 0.12);
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.phone-fab__btn::before {
+  content: "";
+  position: absolute;
+  inset: -4px;
+  border-radius: 50%;
+  border: 2px solid rgba(13, 59, 130, 0.35);
+  animation: phone-fab-pulse 2.4s ease-out infinite;
+  pointer-events: none;
+}
+
+.phone-fab__btn:hover {
+  transform: translateY(-2px);
+  box-shadow:
+    0 12px 28px rgba(13, 59, 130, 0.4),
+    0 4px 12px rgba(15, 23, 42, 0.14);
+}
+
+.phone-fab__btn.is-open {
+  background: linear-gradient(145deg, #ff6a00 0%, #e85d00 100%);
+}
+
+.phone-fab__btn.is-open::before {
+  border-color: rgba(255, 106, 0, 0.45);
+  animation: none;
+}
+
+@keyframes phone-fab-pulse {
+  0% {
+    transform: scale(1);
+    opacity: 0.7;
+  }
+
+  70% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+
+  100% {
+    transform: scale(1.18);
+    opacity: 0;
+  }
+}
+
+.phone-fab__panel {
+  position: relative;
+  min-width: min(280px, calc(100vw - 88px));
+  padding: 14px 14px 12px;
+  border-radius: 16px;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  box-shadow:
+    0 16px 40px rgba(15, 23, 42, 0.14),
+    0 4px 12px rgba(15, 23, 42, 0.06);
+  animation: phone-fab-panel-in 0.28s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+@keyframes phone-fab-panel-in {
+  from {
+    opacity: 0;
+    transform: translateX(-8px) scale(0.98);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0) scale(1);
+  }
+}
+
+.phone-fab__panel-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: #8892a0;
+  cursor: pointer;
+}
+
+.phone-fab__panel-close:hover {
+  background: #f1f5f9;
+  color: #4a5568;
+}
+
+.phone-fab__title {
+  margin: 0 28px 4px 0;
+  font-size: 17px;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #1a202c;
+}
+
+.phone-fab__text {
+  margin: 0 0 12px;
+  font-size: 13px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.phone-fab__error {
+  margin: 0 0 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: #dc2626;
+}
+
+.phone-fab__form {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.phone-fab__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.phone-fab__field > span {
+  font-size: 12px;
+  font-weight: 600;
+  color: #4a5568;
+}
+
+.phone-fab__input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1a202c;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.phone-fab__input:focus {
+  outline: none;
+  border-color: rgba(13, 59, 130, 0.45);
+  box-shadow: 0 0 0 3px rgba(13, 59, 130, 0.12);
+}
+
+.phone-fab__input:disabled {
+  opacity: 0.65;
+}
+
+.phone-fab__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.phone-fab__consent-check {
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.phone-fab__consent-text {
+  font-size: 11px;
+  line-height: 1.4;
+  color: #64748b;
+}
+
+.phone-fab__consent-text a {
+  color: #0d3b82;
+  text-decoration: underline;
+}
+
+.phone-fab__consent-text a:hover {
+  color: #ff6a00;
+}
+
+.phone-fab__submit {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 16px;
+  border: none;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  background: linear-gradient(145deg, #ff6a00 0%, #e85d00 100%);
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+}
+
+.phone-fab__submit:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(255, 106, 0, 0.35);
+}
+
+.phone-fab__submit:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.phone-fab__success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 0 2px;
+  text-align: center;
+}
+
+.phone-fab__success-icon {
+  color: #16a34a;
+}
+
+.phone-fab__success .phone-fab__title {
+  margin: 0;
+}
+
+.phone-fab__success .phone-fab__text {
+  margin: 0;
 }
 
 /* —— Consultation popup (2 min) —— */

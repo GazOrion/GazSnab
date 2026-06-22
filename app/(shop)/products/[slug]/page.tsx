@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { notFound } from "next/navigation";
+import { notFound, redirect } from "next/navigation";
 import { ArrowLeft, Clock, PackageCheck, Ruler } from "lucide-react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
 import { ProductDetailTabs, type ProductDetailSectionId } from "@/components/ProductDetailTabs";
@@ -20,6 +20,7 @@ import {
   getPumpModelFromSpecs
 } from "@/lib/pumps-catalog";
 import { versionedPublicSrc } from "@/lib/versioned-media.server";
+import { getProductSlugRedirect } from "@/lib/product-slug-redirects";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
@@ -52,6 +53,11 @@ function buildProductGalleryImages(imageUrl: string | null, gallery: string[]) {
 
 export default async function ProductPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
+  const redirectSlug = getProductSlugRedirect(slug);
+  if (redirectSlug) {
+    redirect(`/products/${redirectSlug}`);
+  }
+
   const product = await prisma.product.findUnique({
     where: { slug }
   });

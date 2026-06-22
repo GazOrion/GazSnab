@@ -6,19 +6,42 @@ import { createUniqueTrackNumber } from "@/lib/create-order-track";
 import { normalizeRuPhoneDigits } from "@/lib/phone-mask";
 import { prisma } from "@/lib/prisma";
 
-const consultationSchema = z.object({
-  customerName: z
-    .string()
-    .trim()
-    .min(2)
-    .regex(/^[\p{L}\s\-'.]+$/u, "Укажите имя без цифр."),
-  phone: z
-    .string()
-    .trim()
-    .refine((value) => normalizeRuPhoneDigits(value).length === 11, "Некорректный телефон."),
-  contactMethod: contactMethodSchema,
-  source: z.enum(["home", "popup"]).optional()
-});
+const consultationSchema = z
+  .object({
+    customerName: z
+      .string()
+      .trim()
+      .min(2)
+      .regex(/^[\p{L}\s\-'.]+$/u, "Укажите имя без цифр.")
+      .optional(),
+    phone: z
+      .string()
+      .trim()
+      .refine((value) => normalizeRuPhoneDigits(value).length === 11, "Некорректный телефон."),
+    contactMethod: contactMethodSchema.optional(),
+    source: z.enum(["home", "popup", "phone-fab"]).optional()
+  })
+  .superRefine((data, ctx) => {
+    const source = data.source ?? "home";
+    if (source === "phone-fab") return;
+
+    const name = data.customerName?.trim() ?? "";
+    if (name.length < 2) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Укажите имя.",
+        path: ["customerName"]
+      });
+    }
+
+    if (!data.contactMethod) {
+      ctx.addIssue({
+        code: z.ZodIssueCode.custom,
+        message: "Выберите способ связи.",
+        path: ["contactMethod"]
+      });
+    }
+  });
 
 export async function POST(request: Request) {
   const parsed = consultationSchema.safeParse(await request.json());
@@ -39,17 +62,25 @@ export async function POST(request: Request) {
   }
 
   const trackNumber = await createUniqueTrackNumber();
+  const source = parsed.data.source ?? "home";
+  const customerName =
+    source === "phone-fab"
+      ? "Заявка на звонок"
+      : parsed.data.customerName!.trim();
+  const contactMethod = source === "phone-fab" ? "phone" : parsed.data.contactMethod!;
 
   const order = await prisma.order.create({
     data: {
       trackNumber,
-      customerName: parsed.data.customerName,
+      customerName,
       phone: parsed.data.phone,
-      contactMethod: parsed.data.contactMethod,
+      contactMethod,
       comment:
-        parsed.data.source === "popup"
-          ? "Заявка на консультацию из виджета на сайте."
-          : "Заявка на консультацию с главной страницы (имя и телефон).",
+        source === "phone-fab"
+          ? "Заявка на обратный звонок из виджета «Заказать звонок»."
+          : source === "popup"
+            ? "Заявка на консультацию из виджета на сайте."
+            : "Заявка на консультацию с главной страницы (имя и телефон).",
       total: 0,
       items: {
         create: [

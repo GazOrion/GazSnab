@@ -36,6 +36,28 @@ import { RGR_R_CONTENT_BY_SLUG } from "@/lib/product-content/rgr-r";
 import { RVG_CONTENT_BY_SLUG } from "@/lib/product-content/rvg";
 import { RABO_CONTENT_BY_SLUG } from "@/lib/product-content/rabo";
 import { RGT_T_CONTENT_BY_SLUG } from "@/lib/product-content/rgt-t";
+import { SG_TK_CONTENT_BY_SLUG } from "@/lib/product-content/sg-tk-kompleks";
+import { SG_EK_CONTENT, SG_EK_SLUG } from "@/lib/product-content/sg-ek-kompleks";
+import {
+  GAS_METER_ACCESSORIES_CONTENT,
+  GAS_METER_ACCESSORIES_ROTARY_SLUG,
+  GAS_METER_ACCESSORIES_TURBINE_SLUG
+} from "@/lib/product-content/gas-meter-accessories";
+import {
+  GAS_METER_KPU_CONTENT,
+  GAS_METER_KPU_SLUG,
+  GAS_METER_KPU_TURBINE_CONTENT,
+  GAS_METER_KPU_TURBINE_SLUG,
+  GAS_METER_KPU_SG_CONTENT,
+  GAS_METER_KPU_SG_SLUG
+} from "@/lib/product-content/gas-meter-kpu";
+import { KORREKTOR_TS220_CONTENT, KORREKTOR_TS220_SLUG } from "@/lib/product-content/korrektor-ts220";
+import { KORREKTOR_EK270_CONTENT, KORREKTOR_EK270_SLUG } from "@/lib/product-content/korrektor-ek270";
+import {
+  PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CONTENT,
+  PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_SLUG
+} from "@/lib/product-content/preobrazovateli-i-kmch-dlya-korrektorov";
+import { RASKO_FG_CONTENT_BY_SLUG } from "@/lib/product-content/rasko-fg-filters";
 import { RASKO_VK_CONTENT_BY_SLUG } from "@/lib/product-content/rasko-vk";
 import { TAUGAZ_VKR_CONTENT_BY_SLUG } from "@/lib/product-content/taugaz-vkr";
 
@@ -76,11 +98,22 @@ const RICH_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
   "kran-sharovoy-ld-pride-vv-r-gas-du40": KRAN_SHAROVOY_LD_PRIDE_VV_R_GAS_DU40_CONTENT,
   "kran-sharovoy-ld-pride-vv-r-gas-du50": KRAN_SHAROVOY_LD_PRIDE_VV_R_GAS_DU50_CONTENT,
   ...TAUGAZ_VKR_CONTENT_BY_SLUG,
+  [KORREKTOR_TS220_SLUG]: KORREKTOR_TS220_CONTENT,
+  [KORREKTOR_EK270_SLUG]: KORREKTOR_EK270_CONTENT,
+  [PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_SLUG]: PREOBRAZOVATELI_I_KMCH_DLYA_KORREKTOROV_CONTENT,
+  ...RASKO_FG_CONTENT_BY_SLUG,
   ...RASKO_VK_CONTENT_BY_SLUG,
   ...RGR_R_CONTENT_BY_SLUG,
   ...RVG_CONTENT_BY_SLUG,
   ...RABO_CONTENT_BY_SLUG,
-  ...RGT_T_CONTENT_BY_SLUG
+  ...RGT_T_CONTENT_BY_SLUG,
+  ...SG_TK_CONTENT_BY_SLUG,
+  [SG_EK_SLUG]: SG_EK_CONTENT,
+  [GAS_METER_ACCESSORIES_ROTARY_SLUG]: GAS_METER_ACCESSORIES_CONTENT,
+  [GAS_METER_ACCESSORIES_TURBINE_SLUG]: GAS_METER_ACCESSORIES_CONTENT,
+  [GAS_METER_KPU_SLUG]: GAS_METER_KPU_CONTENT,
+  [GAS_METER_KPU_TURBINE_SLUG]: GAS_METER_KPU_TURBINE_CONTENT,
+  [GAS_METER_KPU_SG_SLUG]: GAS_METER_KPU_SG_CONTENT
 };
 
 export function getProductRichContent(slug: string): ProductRichContent | null {

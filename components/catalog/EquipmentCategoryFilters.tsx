@@ -12,6 +12,10 @@ import {
   type EquipmentCategoryConfig,
   type EquipmentCategoryFilterState
 } from "@/lib/equipment-category-config";
+import {
+  countGasMeterProductsWithTypeSize,
+  GAS_METER_TYPE_SIZE_FILTER
+} from "@/lib/gas-meters-catalog";
 
 type Props = {
   products: CatalogProduct[];
@@ -326,6 +330,12 @@ export function EquipmentCategoryFilters({
             </button>
             <FilterCollapse open={sectionOpen}>
               <div className="store-equipment-listing-filters__body">
+                {title === GAS_METER_TYPE_SIZE_FILTER ? (
+                  <p className="store-equipment-listing-filters__note">
+                    Число у типоразмера — сколько позиций с этим G. С типоразмером:{" "}
+                    {countGasMeterProductsWithTypeSize(products)} из {products.length}.
+                  </p>
+                ) : null}
                 <ul className="store-equipment-listing-filters__checks">
                   {options.map((option) => {
                     const count = countBySectionFilter(products, title, option);

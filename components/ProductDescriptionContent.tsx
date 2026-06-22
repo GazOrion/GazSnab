@@ -93,10 +93,20 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
         }
 
         if (block.type === "data-table") {
+          const hasMergedCells = block.table.rows.some((row) =>
+            row.some(
+              (cell) =>
+                typeof cell === "object" &&
+                cell.colspan != null &&
+                cell.colspan > 1
+            )
+          );
+
           const wrapClass = [
             "product-data-table-wrap",
             block.highlight ? "product-data-table-wrap--highlight" : "",
-            block.matrix ? "product-data-table-wrap--matrix" : ""
+            block.matrix ? "product-data-table-wrap--matrix" : "",
+            hasMergedCells ? "product-data-table-wrap--merged" : ""
           ]
             .filter(Boolean)
             .join(" ");
@@ -162,8 +172,8 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
               ) : null}
               <div className="product-parts-catalog__rows">
                 {block.items.map((item) => (
-                  <div className="product-parts-catalog__row" key={item.code}>
-                    <div className="product-parts-catalog__code">{item.code}</div>
+                  <div className="product-parts-catalog__row" key={item.code || item.description}>
+                    {item.code ? <div className="product-parts-catalog__code">{item.code}</div> : null}
                     {item.description ? (
                       <div className="product-parts-catalog__description">{item.description}</div>
                     ) : null}

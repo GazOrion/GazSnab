@@ -33,7 +33,6 @@ export function CartItemRow({ item, onQuantityChange, onRemove, disabled }: Prop
           {item.title}
         </Link>
         <p className="cart-row-sku">Артикул: {article}</p>
-        <span className="cart-row-unit-badge">{item.unit}</span>
       </div>
 
       <div className="cart-row-actions">

@@ -7,17 +7,16 @@ import { ContactMethodField } from "@/components/ContactMethodField";
 import { PhoneInput } from "@/components/PhoneInput";
 import { company } from "@/lib/company";
 import { parseContactMethod } from "@/lib/contact-method";
-import { rememberTrackNumber } from "@/lib/order-history";
 
 export function ConsultationSection() {
   const [pending, setPending] = useState(false);
   const [error, setError] = useState("");
-  const [trackNumber, setTrackNumber] = useState("");
+  const [submitted, setSubmitted] = useState(false);
 
   async function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setError("");
-    setTrackNumber("");
+    setSubmitted(false);
 
     const formData = new FormData(event.currentTarget);
 
@@ -53,14 +52,7 @@ export function ConsultationSection() {
       return;
     }
 
-    const payload = (await response.json()) as { trackNumber?: string };
-    const track = payload.trackNumber ?? "";
-
-    if (track) {
-      rememberTrackNumber(track);
-    }
-
-    setTrackNumber(track);
+    setSubmitted(true);
     event.currentTarget.reset();
   }
 
@@ -90,21 +82,15 @@ export function ConsultationSection() {
           </div>
 
           <article className="store-consult-card">
-            {trackNumber ? (
+            {submitted ? (
               <div className="store-consult-success" role="status">
                 <h3>Заявка принята</h3>
-                <p className="muted">
-                  Номер для отслеживания: <strong>{trackNumber}</strong>. Менеджер свяжется с вами в
-                  ближайшее рабочее время.
-                </p>
+                <p className="muted">Менеджер свяжется с вами в ближайшее рабочее время.</p>
                 <div className="store-consult-success-actions">
-                  <Link className="button yellow" href="/zakazy">
-                    История заказов
-                  </Link>
                   <button
                     type="button"
                     className="button secondary"
-                    onClick={() => setTrackNumber("")}
+                    onClick={() => setSubmitted(false)}
                   >
                     Отправить ещё
                   </button>

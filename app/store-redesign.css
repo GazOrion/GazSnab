@@ -4608,6 +4608,21 @@
   color: var(--orange-300);
 }
 
+.store-footer-phones {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.store-footer-phone-label {
+  display: block;
+  margin-bottom: 2px;
+  font-size: 12px;
+  line-height: 1.4;
+  color: rgba(255, 255, 255, 0.55) !important;
+}
+
 /* —— Responsive —— */
 @media (max-width: 1200px) {
   .site-header-pro {

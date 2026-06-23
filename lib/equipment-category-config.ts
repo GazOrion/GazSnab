@@ -1,3 +1,8 @@
+import {
+  GAS_CORRECTOR_FILTER_MANUFACTURERS,
+  GAS_METER_FILTER_MANUFACTURERS,
+  PUMP_FILTER_MANUFACTURERS
+} from "@/lib/site-manufacturers";
 import type { CatalogProduct } from "@/components/ProductCard";
 import {
   collectPumpFilterOptions,
@@ -50,13 +55,12 @@ export type EquipmentCategoryFilterState = {
 export type EquipmentCategoryConfig = {
   category: string;
   slug: EquipmentCategorySlug;
-  searchPlaceholder: string;
   filterSections: readonly string[];
   filterSectionOptions?: Partial<Record<string, readonly string[]>>;
   manufacturers: readonly string[];
 };
 
-const GAS_METER_MANUFACTURERS = ["Техномер", "ТАУГАЗ", "РАСКО"] as const;
+const GAS_METER_MANUFACTURERS = GAS_METER_FILTER_MANUFACTURERS;
 const RASKO_GAS_METER_SERIES = new Set([
   "РГ-Р",
   "RVG",
@@ -71,7 +75,6 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
   "Счётчики газа": {
     category: "Счётчики газа",
     slug: "gas-meters",
-    searchPlaceholder: "Поиск по счетчикам",
     filterSections: [
       "Тип счётчика",
       GAS_METER_TYPE_SIZE_FILTER,
@@ -95,49 +98,42 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
   [TELEMETRY_CATEGORY]: {
     category: TELEMETRY_CATEGORY,
     slug: "telemetry",
-    searchPlaceholder: "Поиск по телеметрии",
     filterSections: [],
     manufacturers: GAS_METER_MANUFACTURERS
   },
   [SOFTWARE_CATEGORY]: {
     category: SOFTWARE_CATEGORY,
     slug: "software",
-    searchPlaceholder: "Поиск по программному обеспечению",
     filterSections: [],
     manufacturers: ["Техномер"]
   },
   [ADDITIONAL_EQUIPMENT_CATEGORY]: {
     category: ADDITIONAL_EQUIPMENT_CATEGORY,
     slug: "additional-equipment",
-    searchPlaceholder: "Поиск по дополнительному оборудованию",
     filterSections: [],
     manufacturers: ["Техномер"]
   },
   "Газорегуляторные пункты": {
     category: "Газорегуляторные пункты",
     slug: "regulators",
-    searchPlaceholder: "Поиск по регуляторам",
     filterSections: ["Тип регулятора", "Давление", "Пропускная способность"],
     manufacturers: []
   },
   [GAS_METERING_UNITS_CATEGORY]: {
     category: GAS_METERING_UNITS_CATEGORY,
     slug: "gas-metering-units",
-    searchPlaceholder: "Поиск по ГРПШ",
     filterSections: ["Тип узла", "Диаметр", "Пропускная способность", "Способ монтажа"],
     manufacturers: []
   },
   "Узлы учета": {
     category: "Узлы учета",
     slug: "gas-alarms",
-    searchPlaceholder: "Поиск по сигнализаторам",
     filterSections: ["Тип сигнализатора", "Назначение", "Способ монтажа"],
     manufacturers: []
   },
   Фильтры: {
     category: "Фильтры",
     slug: "filters",
-    searchPlaceholder: "Поиск по фильтрам",
     filterSections: ["Тип фильтра", "Диаметр", "Степень очистки"],
     filterSectionOptions: {
       "Тип фильтра": ["Газовый"],
@@ -149,23 +145,20 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
   [PUMPS_CATEGORY]: {
     category: PUMPS_CATEGORY,
     slug: "pumps",
-    searchPlaceholder: "Поиск по насосам",
     filterSections: PUMP_FILTER_SECTIONS,
-    manufacturers: []
+    manufacturers: PUMP_FILTER_MANUFACTURERS
   },
   "Краны шаровые": {
     category: "Краны шаровые",
     slug: "ball-valves",
-    searchPlaceholder: "Поиск по кранам",
     filterSections: ["Диаметр", "Давление", "Тип резьбы"],
     manufacturers: ["LD Pride"]
   },
   "Корректоры газа": {
     category: "Корректоры газа",
     slug: "gas-correctors",
-    searchPlaceholder: "Поиск по корректорам",
     filterSections: [],
-    manufacturers: ["РАСКО", "ЭЛЬСТЕР"]
+    manufacturers: GAS_CORRECTOR_FILTER_MANUFACTURERS
   }
 };
 
@@ -206,6 +199,10 @@ function productMatchesManufacturer(product: CatalogProduct, brand: string) {
     if (brand === "РАСКО") {
       const series = specs["Серия"];
       return manufacturer === "РАСКО" || (series ? RASKO_GAS_METER_SERIES.has(series) : false);
+    }
+
+    if (brand === "Юнипамп") {
+      return manufacturer === "Юнипамп" || manufacturer === "UNIPUMP";
     }
   }
 

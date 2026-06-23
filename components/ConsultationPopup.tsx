@@ -13,7 +13,6 @@ import {
   CONSULTATION_POPUP_IMAGE_SRC,
   CONSULTATION_POPUP_STORAGE_KEY
 } from "@/lib/consultation-popup";
-import { rememberTrackNumber } from "@/lib/order-history";
 import { isRuPhoneComplete, RU_PHONE_PLACEHOLDER } from "@/lib/phone-mask";
 
 type Phase = "promo" | "form" | "success";
@@ -93,11 +92,6 @@ export function ConsultationPopup() {
       const payload = await response.json().catch(() => null);
       setError(payload?.error || "Не удалось отправить. Попробуйте позже.");
       return;
-    }
-
-    const payload = (await response.json()) as { trackNumber?: string };
-    if (payload.trackNumber) {
-      rememberTrackNumber(payload.trackNumber);
     }
 
     form.reset();

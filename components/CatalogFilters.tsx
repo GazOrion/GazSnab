@@ -116,7 +116,7 @@ export function CatalogFilters({ categories }: CatalogFiltersProps) {
 
         <form className="filter-search-form" onSubmit={onSearchSubmit}>
           <label className="visually-hidden" htmlFor="catalog-search">
-            Поиск по названию и описанию
+            Поиск
           </label>
           <div className="filter-search-inner">
             <Search size={16} aria-hidden className="filter-search-icon" />
@@ -125,7 +125,7 @@ export function CatalogFilters({ categories }: CatalogFiltersProps) {
               className="filter-search-input"
               type="search"
               name="q"
-              placeholder="Поиск…"
+              placeholder="Поиск"
               value={draftQ}
               onChange={(event) => setDraftQ(event.target.value)}
               autoComplete="off"

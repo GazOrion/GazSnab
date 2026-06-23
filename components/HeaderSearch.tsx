@@ -275,7 +275,7 @@ export function HeaderSearch() {
         role="search"
       >
         <label className="visually-hidden" htmlFor="header-search-input">
-          Поиск по каталогу
+          Поиск
         </label>
         <Search size={20} aria-hidden className="header-search-icon" />
         <input
@@ -285,7 +285,7 @@ export function HeaderSearch() {
           type="text"
           inputMode="search"
           enterKeyHint="search"
-          placeholder="Поиск по каталогу"
+          placeholder="Поиск"
           value={value}
           onChange={(event) => {
             setValue(event.target.value);

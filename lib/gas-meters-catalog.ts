@@ -8,16 +8,28 @@ export const GAS_METER_SUBCATEGORY_SMT = "СМТ-Комплексы";
 export const GAS_METER_SUBCATEGORY_MEMBRANE = "Мембранные";
 export const GAS_METER_SUBCATEGORY_ROTARY = "Ротационные";
 export const GAS_METER_SUBCATEGORY_TURBINE = "Турбинные";
-export const GAS_METER_SUBCATEGORY_SG_TK_D = "Комплексы СГ-ТК-Д на базе диафрагменных счетчиков";
-export const GAS_METER_SUBCATEGORY_SG_TK_R = "Комплексы СГ-ТК на базе ротационных счетчиков";
+export const GAS_METER_SUBCATEGORY_SG_TK = "Комплексы СГ-ТК";
+export const GAS_METER_SUBCATEGORY_SG_TK_T = "СГ-ТК-Т (на базе турбинных счетчиков газа)";
+export const GAS_METER_SUBCATEGORY_SG_TK_R = "СГ-ТК-Р (на базе ротационных счетчиков газа)";
+export const GAS_METER_SUBCATEGORY_SG_TK_D = "СГ-ТК-Д (на базе диафрагменных счетчиков газа)";
+/** @deprecated Старое значение в БД — нормализуется в getGasMeterSubcategory */
+export const GAS_METER_SUBCATEGORY_SG_TK_D_LEGACY =
+  "Комплексы СГ-ТК-Д на базе диафрагменных счетчиков";
+/** @deprecated Старое значение в БД — нормализуется в getGasMeterSubcategory */
+export const GAS_METER_SUBCATEGORY_SG_TK_R_LEGACY =
+  "Комплексы СГ-ТК на базе ротационных счетчиков";
 export const GAS_METER_SUBCATEGORY_SG_EK = "Комплексы СГ-ЭК";
+const GAS_METER_SUBCATEGORY_SG_EK_LEGACY = "Комплекс СГ-ЭК";
 
-export const GAS_METER_FILTER_TYPE_SG_TK = "Комплексы СГ-ТК";
+export const GAS_METER_FILTER_TYPE_SG_TK = GAS_METER_SUBCATEGORY_SG_TK;
 export const GAS_METER_FILTER_TYPE_SG_EK = "Комплексы СГ-ЭК";
 
 const GAS_METER_SUBCATEGORIES_SG_TK = [
+  GAS_METER_SUBCATEGORY_SG_TK_T,
+  GAS_METER_SUBCATEGORY_SG_TK_R,
   GAS_METER_SUBCATEGORY_SG_TK_D,
-  GAS_METER_SUBCATEGORY_SG_TK_R
+  GAS_METER_SUBCATEGORY_SG_TK_D_LEGACY,
+  GAS_METER_SUBCATEGORY_SG_TK_R_LEGACY
 ] as const;
 
 export const GAS_METER_SPEC_SUBCATEGORY = "Подкатегория";
@@ -35,7 +47,27 @@ export function getProductSpecs(product: CatalogProduct): Record<string, string>
 }
 
 export function getGasMeterSubcategory(product: CatalogProduct): string | null {
-  return getProductSpecs(product)[GAS_METER_SPEC_SUBCATEGORY] ?? null;
+  const subcategory = getProductSpecs(product)[GAS_METER_SPEC_SUBCATEGORY] ?? null;
+  if (subcategory === GAS_METER_SUBCATEGORY_SG_EK_LEGACY) {
+    return GAS_METER_SUBCATEGORY_SG_EK;
+  }
+  if (subcategory === GAS_METER_SUBCATEGORY_SG_TK_D_LEGACY) {
+    return GAS_METER_SUBCATEGORY_SG_TK_D;
+  }
+  if (subcategory === GAS_METER_SUBCATEGORY_SG_TK_R_LEGACY) {
+    return GAS_METER_SUBCATEGORY_SG_TK_R;
+  }
+  return subcategory;
+}
+
+export function isGasMeterSgTkChildSubcategory(subcategory: string) {
+  return (
+    subcategory === GAS_METER_SUBCATEGORY_SG_TK_T ||
+    subcategory === GAS_METER_SUBCATEGORY_SG_TK_R ||
+    subcategory === GAS_METER_SUBCATEGORY_SG_TK_D ||
+    subcategory === GAS_METER_SUBCATEGORY_SG_TK_D_LEGACY ||
+    subcategory === GAS_METER_SUBCATEGORY_SG_TK_R_LEGACY
+  );
 }
 
 export function isSgTkGasMeterProduct(specs?: Record<string, string> | null) {
@@ -48,7 +80,8 @@ export function isSgTkGasMeterProduct(specs?: Record<string, string> | null) {
 }
 
 export function isSgEkGasMeterProduct(specs?: Record<string, string> | null) {
-  return specs?.[GAS_METER_SPEC_SUBCATEGORY] === GAS_METER_SUBCATEGORY_SG_EK;
+  const subcategory = specs?.[GAS_METER_SPEC_SUBCATEGORY];
+  return subcategory === GAS_METER_SUBCATEGORY_SG_EK || subcategory === GAS_METER_SUBCATEGORY_SG_EK_LEGACY;
 }
 
 export function gasMeterMatchesTypeFilter(product: CatalogProduct, value: string) {
@@ -77,13 +110,19 @@ export function isTurbineGasMeterProduct(specs?: Record<string, string> | null) 
   return specs?.[GAS_METER_SPEC_SUBCATEGORY] === GAS_METER_SUBCATEGORY_TURBINE;
 }
 
-export function isOnRequestGasMeterProduct(specs?: Record<string, string> | null) {
+export function isOnRequestGasMeterProduct(
+  specs?: Record<string, string> | null,
+  price?: number | null
+) {
+  if (price != null && price > 0) {
+    return false;
+  }
+
   return (
     isMembraneGasMeterProduct(specs) ||
     isRotaryGasMeterProduct(specs) ||
     isTurbineGasMeterProduct(specs) ||
-    specs?.[GAS_METER_SPEC_SUBCATEGORY] === GAS_METER_SUBCATEGORY_SG_TK_D ||
-    specs?.[GAS_METER_SPEC_SUBCATEGORY] === GAS_METER_SUBCATEGORY_SG_TK_R ||
+    isSgTkGasMeterProduct(specs) ||
     specs?.[GAS_METER_SPEC_SUBCATEGORY] === GAS_METER_SUBCATEGORY_SG_EK
   );
 }
@@ -94,6 +133,10 @@ export function filterGasMeterProducts(
 ) {
   if (!subcategory) return products;
   return products.filter((product) => getGasMeterSubcategory(product) === subcategory);
+}
+
+function filterSgTkGasMeterProducts(products: CatalogProduct[]) {
+  return products.filter((product) => isSgTkGasMeterProduct(product.specs));
 }
 
 function minPrice(products: CatalogProduct[]) {
@@ -107,8 +150,7 @@ export function buildGasMeterSubcategoryClusters(products: CatalogProduct[]): Ca
   const membraneProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_MEMBRANE);
   const rotaryProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_ROTARY);
   const turbineProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_TURBINE);
-  const sgTkDProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_SG_TK_D);
-  const sgTkRProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_SG_TK_R);
+  const sgTkProducts = filterSgTkGasMeterProducts(products);
   const sgEkProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_SG_EK);
 
   return [
@@ -171,33 +213,18 @@ export function buildGasMeterSubcategoryClusters(products: CatalogProduct[]): Ca
       })
     },
     {
-      hubId: "gas-meter-subcategory-sg-tk-d",
-      name: GAS_METER_SUBCATEGORY_SG_TK_D,
-      label: GAS_METER_SUBCATEGORY_SG_TK_D,
+      hubId: "gas-meter-subcategory-sg-tk",
+      name: GAS_METER_SUBCATEGORY_SG_TK,
+      label: GAS_METER_SUBCATEGORY_SG_TK,
       teaser:
-        "Комплексы СГ-ТК-Д на базе диафрагменных счетчиков газа BK с электронной коррекцией по температуре",
+        "Комплексы СГ-ТК с электронной коррекцией на базе турбинных, ротационных и диафрагменных счётчиков газа",
       imageUrl: "/media/products/sg-tk/sg-tk-01.webp",
-      count: sgTkDProducts.length,
-      minPrice: minPrice(sgTkDProducts),
+      count: sgTkProducts.length,
+      minPrice: minPrice(sgTkProducts),
       href: catalogPath({
         kind: PRODUCT_KIND.GOODS,
         category: GAS_METERS_CATEGORY,
-        subcategory: GAS_METER_SUBCATEGORY_SG_TK_D
-      })
-    },
-    {
-      hubId: "gas-meter-subcategory-sg-tk-r",
-      name: GAS_METER_SUBCATEGORY_SG_TK_R,
-      label: GAS_METER_SUBCATEGORY_SG_TK_R,
-      teaser:
-        "Комплексы СГ-ТК-Р на базе ротационных счетчиков газа с электронной коррекцией по температуре",
-      imageUrl: "/media/products/sg-tk/sg-tk-01.webp",
-      count: sgTkRProducts.length,
-      minPrice: minPrice(sgTkRProducts),
-      href: catalogPath({
-        kind: PRODUCT_KIND.GOODS,
-        category: GAS_METERS_CATEGORY,
-        subcategory: GAS_METER_SUBCATEGORY_SG_TK_R
+        subcategory: GAS_METER_SUBCATEGORY_SG_TK
       })
     },
     {
@@ -218,17 +245,95 @@ export function buildGasMeterSubcategoryClusters(products: CatalogProduct[]): Ca
   ];
 }
 
+export function buildGasMeterSgTkVariantClusters(products: CatalogProduct[]): CategoryCluster[] {
+  const sgTkTProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_SG_TK_T);
+  const sgTkRProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_SG_TK_R);
+  const sgTkDProducts = filterGasMeterProducts(products, GAS_METER_SUBCATEGORY_SG_TK_D);
+
+  return [
+    {
+      hubId: "gas-meter-sg-tk-variant-t",
+      name: GAS_METER_SUBCATEGORY_SG_TK_T,
+      label: GAS_METER_SUBCATEGORY_SG_TK_T,
+      teaser:
+        "Комплексы СГ-ТК-Т на базе турбинных счетчиков газа с электронной коррекцией по температуре",
+      imageUrl: "/media/products/rgt/rgt-turbine-01.webp",
+      count: sgTkTProducts.length,
+      minPrice: minPrice(sgTkTProducts),
+      href: catalogPath({
+        kind: PRODUCT_KIND.GOODS,
+        category: GAS_METERS_CATEGORY,
+        subcategory: GAS_METER_SUBCATEGORY_SG_TK_T
+      })
+    },
+    {
+      hubId: "gas-meter-sg-tk-variant-r",
+      name: GAS_METER_SUBCATEGORY_SG_TK_R,
+      label: GAS_METER_SUBCATEGORY_SG_TK_R,
+      teaser:
+        "Комплексы СГ-ТК-Р на базе ротационных счетчиков газа с электронной коррекцией по температуре",
+      imageUrl: "/media/products/sg-tk/sg-tk-01.webp",
+      count: sgTkRProducts.length,
+      minPrice: minPrice(sgTkRProducts),
+      href: catalogPath({
+        kind: PRODUCT_KIND.GOODS,
+        category: GAS_METERS_CATEGORY,
+        subcategory: GAS_METER_SUBCATEGORY_SG_TK_R
+      })
+    },
+    {
+      hubId: "gas-meter-sg-tk-variant-d",
+      name: GAS_METER_SUBCATEGORY_SG_TK_D,
+      label: GAS_METER_SUBCATEGORY_SG_TK_D,
+      teaser:
+        "Комплексы СГ-ТК-Д на базе диафрагменных счетчиков газа BK с электронной коррекцией по температуре",
+      imageUrl: "/media/products/sg-tk/sg-tk-01.webp",
+      count: sgTkDProducts.length,
+      minPrice: minPrice(sgTkDProducts),
+      href: catalogPath({
+        kind: PRODUCT_KIND.GOODS,
+        category: GAS_METERS_CATEGORY,
+        subcategory: GAS_METER_SUBCATEGORY_SG_TK_D
+      })
+    }
+  ];
+}
+
 export function gasMetersCategoryHref() {
   return catalogPath({ kind: PRODUCT_KIND.GOODS, category: GAS_METERS_CATEGORY });
 }
 
+export function gasMetersSgTkLandingHref() {
+  return catalogPath({
+    kind: PRODUCT_KIND.GOODS,
+    category: GAS_METERS_CATEGORY,
+    subcategory: GAS_METER_SUBCATEGORY_SG_TK
+  });
+}
+
 export function gasMetersSubcategoryBreadcrumbs(subcategory: string) {
-  return [
+  const crumbs: { label: string; href?: string }[] = [
     { label: "Главная", href: "/" },
     { label: "Каталог", href: CATALOG_ROUTES.equipment },
-    { label: "Счётчики газа", href: gasMetersCategoryHref() },
-    { label: subcategory }
+    { label: "Счётчики газа", href: gasMetersCategoryHref() }
   ];
+
+  if (subcategory === GAS_METER_SUBCATEGORY_SG_TK) {
+    crumbs.push({ label: GAS_METER_SUBCATEGORY_SG_TK });
+    return crumbs;
+  }
+
+  if (isGasMeterSgTkChildSubcategory(subcategory)) {
+    crumbs.push({
+      label: GAS_METER_SUBCATEGORY_SG_TK,
+      href: gasMetersSgTkLandingHref()
+    });
+    crumbs.push({ label: getGasMeterSubcategoryListingTitle(subcategory) });
+    return crumbs;
+  }
+
+  crumbs.push({ label: subcategory });
+  return crumbs;
 }
 
 export function getGasMeterSubcategoryListingTitle(subcategory: string) {
@@ -243,6 +348,12 @@ export function getGasMeterSubcategoryListingTitle(subcategory: string) {
   }
   if (subcategory === GAS_METER_SUBCATEGORY_SMT) {
     return GAS_METER_SUBCATEGORY_SMT;
+  }
+  if (subcategory === GAS_METER_SUBCATEGORY_SG_TK) {
+    return GAS_METER_SUBCATEGORY_SG_TK;
+  }
+  if (subcategory === GAS_METER_SUBCATEGORY_SG_TK_T) {
+    return GAS_METER_SUBCATEGORY_SG_TK_T;
   }
   if (subcategory === GAS_METER_SUBCATEGORY_SG_TK_D) {
     return GAS_METER_SUBCATEGORY_SG_TK_D;

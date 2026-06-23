@@ -152,7 +152,6 @@ export function EquipmentCategoryListing({
               filteredCount={filteredProducts.length}
               searchQuery={searchQuery}
               onSearchQueryChange={setSearchQuery}
-              searchPlaceholder={config.searchPlaceholder}
               layout={layout}
               onLayoutChange={setLayout}
             />

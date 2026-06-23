@@ -10,9 +10,11 @@ import { EquipmentCategoryGrid } from "@/components/catalog/EquipmentCategoryGri
 import { EquipmentCategoryListing } from "@/components/catalog/EquipmentCategoryListing";
 import { EquipmentListingProductCard } from "@/components/catalog/EquipmentListingProductCard";
 import { GasMetersCategoryLanding } from "@/components/catalog/GasMetersCategoryLanding";
+import { GasMetersSgTkLanding } from "@/components/catalog/GasMetersSgTkLanding";
 import { PumpsCategoryLanding } from "@/components/catalog/PumpsCategoryLanding";
 import {
   filterGasMeterProducts,
+  GAS_METER_SUBCATEGORY_SG_TK,
   gasMetersSubcategoryBreadcrumbs,
   getGasMeterSubcategoryListingTitle
 } from "@/lib/gas-meters-catalog";
@@ -121,6 +123,8 @@ function CatalogSectionInner({
   const equipmentCategoryConfig =
     category && variant === "equipment" ? getEquipmentCategoryConfig(category) : null;
   const isGasMetersLanding = isGasMetersCategoryView && !subcategory;
+  const isGasMetersSgTkLanding =
+    isGasMetersCategoryView && subcategory === GAS_METER_SUBCATEGORY_SG_TK;
   const isPumpsLanding = isPumpsCategoryView && !subcategory;
   const usesDedicatedCategoryPage =
     isGasMetersCategoryView || isPumpsCategoryView
@@ -128,7 +132,10 @@ function CatalogSectionInner({
       : variant === "equipment" && inCategoryView && Boolean(equipmentCategoryConfig);
 
   const isEquipmentCategoryListing =
-    usesDedicatedCategoryPage && !isGasMetersLanding && !isPumpsLanding;
+    usesDedicatedCategoryPage &&
+    !isGasMetersLanding &&
+    !isPumpsLanding &&
+    !isGasMetersSgTkLanding;
 
   const resolvedEquipmentCategoryBannerSrc =
     category && equipmentCategoryConfig
@@ -209,6 +216,10 @@ function CatalogSectionInner({
     >
       {isGasMetersLanding ? (
         <GasMetersCategoryLanding products={products} bannerSrc={gasMetersBannerSrc} />
+      ) : null}
+
+      {isGasMetersSgTkLanding ? (
+        <GasMetersSgTkLanding products={products} bannerSrc={gasMetersBannerSrc} />
       ) : null}
 
       {isPumpsLanding ? (

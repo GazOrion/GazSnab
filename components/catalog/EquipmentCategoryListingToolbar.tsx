@@ -13,7 +13,6 @@ type Props = {
   filteredCount: number;
   searchQuery: string;
   onSearchQueryChange: (value: string) => void;
-  searchPlaceholder?: string;
   layout: ListingLayoutMode;
   onLayoutChange: (layout: ListingLayoutMode) => void;
 };
@@ -29,7 +28,6 @@ export function EquipmentCategoryListingToolbar({
   filteredCount,
   searchQuery,
   onSearchQueryChange,
-  searchPlaceholder = "Поиск",
   layout,
   onLayoutChange
 }: Props) {
@@ -57,13 +55,13 @@ export function EquipmentCategoryListingToolbar({
 
       <form className="store-equipment-catalog-search" onSubmit={onSearchSubmit}>
         <label className="visually-hidden" htmlFor={searchInputId}>
-          {searchPlaceholder}
+          Поиск
         </label>
         <input
           id={searchInputId}
           className="store-equipment-catalog-search__input"
           type="search"
-          placeholder={searchPlaceholder}
+          placeholder="Поиск"
           value={searchQuery}
           onChange={(event) => onSearchQueryChange(event.target.value)}
           autoComplete="off"

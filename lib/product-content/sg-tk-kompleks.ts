@@ -11,11 +11,22 @@ export const SG_TK_GALLERY = [
   `${MEDIA_BASE}/sg-tk-04.webp`
 ];
 
+export const SG_TK_T_CARD_IMAGE = `${MEDIA_BASE}/sg-tk-04.webp`;
+
+export const SG_TK_T_GALLERY = [
+  SG_TK_T_CARD_IMAGE,
+  SG_TK_CARD_IMAGE,
+  `${MEDIA_BASE}/sg-tk-02.webp`,
+  `${MEDIA_BASE}/sg-tk-03.webp`
+];
+
 export const SG_TK_D_SLUG = "kompleksy-sg-tk-d";
 export const SG_TK_R_SLUG = "kompleksy-sg-tk-r";
+export const SG_TK_T_SLUG = "kompleksy-sg-tk-t";
 
-export const SG_TK_D_TITLE = "Комплексы СГ-ТК-Д на базе диафрагменных счетчиков";
-export const SG_TK_R_TITLE = "Комплексы СГ-ТК на базе ротационных счетчиков";
+export const SG_TK_D_TITLE = "СГ-ТК-Д (на базе диафрагменных счетчиков газа)";
+export const SG_TK_R_TITLE = "СГ-ТК-Р (на базе ротационных счетчиков газа)";
+export const SG_TK_T_TITLE = "СГ-ТК-Т (на базе турбинных счетчиков газа)";
 
 export const SG_TK_SHORT_DESCRIPTION =
   "Комплексы СГ-ТК, модификации СГ-ТК-Т (на базе турбинных счетчиков газа), СГ-ТК-Р (на базе ротационных счетчиков газа) и СГ-ТК-Д (на базе диафрагменных счетчиков газа), предназначены для измерения объема природного газа по ГОСТ 5542 и других неагрессивных, сухих и очищенных, одно- и многокомпонентных газов в единицах приведенного к стандартным условиям объема (количества) посредством автоматической электронной коррекции показаний турбинных, ротационных, диафрагменных счетчиков газа по температуре и при фиксированных значениях давления и коэффициента сжимаемости газа.";
@@ -25,6 +36,9 @@ export const SG_TK_D_CARD_DESCRIPTION =
 
 export const SG_TK_R_CARD_DESCRIPTION =
   "Комплексы СГ-ТК-Р на базе ротационных счетчиков газа с электронной коррекцией показаний по температуре.";
+
+export const SG_TK_T_CARD_DESCRIPTION =
+  "Комплексы СГ-ТК-Т на базе турбинных счетчиков газа с электронной коррекцией показаний по температуре.";
 
 const SG_TK_FUNCTIONS = [
   "Программирование и считывание информации с корректора с помощью оптического порта, установленного на передней панели прибора",
@@ -207,9 +221,27 @@ function formatSgTkVariantDescription(variant: SgTkVariant): string {
   return parts.join("; ");
 }
 
+const SG_TK_RD_MAIN_CHARACTERISTICS = [
+  "Диапазон рабочих расходов для модификаций СГ-ТК-Т на базе счетчика СГ: от 8 м³/ч до 4000 м³/ч (диапазон рабочих расходов Qmin/Qmax до 1:20)",
+  "Диапазон рабочих расходов для модификаций СГ-ТК-Т на базе счетчика TRZ: от 5 м³/ч до 6500 м³/ч (диапазон рабочих расходов Qmin/Qmax до 1:30)",
+  "Диапазон рабочих расходов для модификаций СГ-ТК-Р на базе счетчика RVG: от 0,6 м³/ч до 650 м³/ч (диапазон рабочих расходов Qmin/Qmax до 1:160)",
+  "Диапазон рабочих расходов для модификаций СГ-ТК-Р на базе счетчика RABO: от 0,4 м³/ч до 650 м³/ч (диапазон рабочих расходов Qmin/Qmax до 1:250)",
+  "Диапазон рабочих расходов для модификаций СГ-ТК-Д: от 0,016 м³/ч до 160 м³/ч (диапазон рабочих расходов Qmin/Qmax 1:160)",
+  "Погрешность измерения комплекса исполнения СГ-ТК-Т на базе счетчиков СГ, TRZ и исполнения СГ-ТК-Р на базе счетчика RVG, RABO: модификации СГ-ТК-Т на базе счетчиков TRZ исполнения «2У», СГ-ТК-Р на базе RABO исполнения «2У»: в диапазоне объемных расходов при рабочих условиях от Qмин до Qмакс: ±1,0%",
+  "Погрешность измерения модификации СГ-ТК-Т, СГ-ТК-Р на базе счетчиков RVG, СГ и счетчиков TRZ, RABO в диапазоне объемных расходов при рабочих условиях от Qмин до Qt: ±2,1%",
+  "Погрешность измерения модификации СГ-ТК-Т, СГ-ТК-Р на базе счетчиков RVG, СГ и счетчиков TRZ, RABO в диапазоне объемных расходов при рабочих условиях от Qt до Qмакс: ±1,1%",
+  "Погрешность измерения комплекса исполнения СГ-ТК-Д на базе счетчика ВК диапазон расходов от 0,1 Qnom до Qmax: ±1,6%",
+  "Погрешность измерения комплекса исполнения СГ-ТК-Д на базе счетчика ВК диапазон расходов от Qmin до 0,1 Qnom: ±2,2%",
+  "Подстановочное значение рабочего давления (избыточное) для исполнения СГ-ТК-Д (со счётчиком газа типа ВК): до 0,05 МПа",
+  "Подстановочное значение рабочего давления (избыточное) для исполнений СГ-ТК-Р(-Т) со счётчиками газа типа RVG, RABO (TRZ, СГ): до 0,1 МПа",
+  "Диапазон температур окружающей среды комплекса СГ-ТК: от −30°C до +60°C",
+  "Межповерочный интервал 5 лет",
+  "Комплекс СГ-ТК разрешён для установки во взрывоопасной зоне и имеет маркировку взрывозащищенности «1 Ex ib IIB T4»"
+];
+
 export const SG_TK_OPTIONS_TITLE = "Дополнительные опции и исполнения";
 
-function sgTkSharedDescription(): ProductDescriptionBlock[] {
+function sgTkSharedDescription(includeRdCharacteristics: boolean): ProductDescriptionBlock[] {
   return [
     {
       type: "paragraph",
@@ -233,22 +265,26 @@ function sgTkSharedDescription(): ProductDescriptionBlock[] {
       text: "Основные характеристики",
       level: 4
     },
-    {
-      type: "paragraph",
-      text: "Подстановочное значение рабочего давления (избыточное) в зависимости от исполнения комплекса: для исполнения СГ-ТК-Д — до 0,05 МПа; для исполнений СГ-ТК-Р(-Т) — до 0,1 МПа."
-    },
-    {
-      type: "paragraph",
-      text: "Диапазон температур окружающей среды комплекса СГ-ТК: от −30°C до +60°C."
-    },
-    {
-      type: "paragraph",
-      text: "Межповерочный интервал 5 лет."
-    },
-    {
-      type: "paragraph",
-      text: "Взрывозащищённость: комплекс СГ-ТК разрешён для установки во взрывоопасной зоне и имеет маркировку взрывозащищенности «1 Ex ib IIB T4»."
-    },
+    ...(includeRdCharacteristics
+      ? [{ type: "list" as const, items: SG_TK_RD_MAIN_CHARACTERISTICS }]
+      : [
+          {
+            type: "paragraph" as const,
+            text: "Подстановочное значение рабочего давления (избыточное) в зависимости от исполнения комплекса: для исполнения СГ-ТК-Д — до 0,05 МПа; для исполнений СГ-ТК-Р(-Т) — до 0,1 МПа."
+          },
+          {
+            type: "paragraph" as const,
+            text: "Диапазон температур окружающей среды комплекса СГ-ТК: от −30°C до +60°C."
+          },
+          {
+            type: "paragraph" as const,
+            text: "Межповерочный интервал 5 лет."
+          },
+          {
+            type: "paragraph" as const,
+            text: "Взрывозащищённость: комплекс СГ-ТК разрешён для установки во взрывоопасной зоне и имеет маркировку взрывозащищенности «1 Ex ib IIB T4»."
+          }
+        ]),
     {
       type: "heading",
       text: "Интерфейс",
@@ -300,6 +336,35 @@ function buildSgTkDOptionsDescription(): ProductDescriptionBlock[] {
   return blocks;
 }
 
+const SG_TK_T_VARIANTS: [string, string][] = [
+  ["СГ-ТК-Т-100/1,6", "Qmax=100 м³/ч; Ду=50 мм"],
+  ["СГ-ТК-Т-160/1,6", "Qmax=160 м³/ч; Ду=80 мм"],
+  ["СГ-ТК-Т-250/1,6", "Qmax=250 м³/ч; Ду=80 мм"],
+  ["СГ-ТК-Т-400/1,6", "Qmax=400 м³/ч; Ду=80 мм"],
+  ["СГ-ТК-Т-250/1,6", "Qmax=250 м³/ч; Ду=100 мм"],
+  ["СГ-ТК-Т-400/1,6", "Qmax=400 м³/ч; Ду=100 мм"],
+  ["СГ-ТК-Т-650/1,6", "Qmax=650 м³/ч; Ду=100 мм"],
+  ["СГ-ТК-Т-650/1,6", "Qmax=650 м³/ч; Ду=150 мм"],
+  ["СГ-ТК-Т-1000/1,6", "Qmax=1000 м³/ч; Ду=150 мм"],
+  ["СГ-ТК-Т-1600/1,6", "Qmax=1600 м³/ч; Ду=150 мм"]
+];
+
+function buildSgTkTOptionsDescription(): ProductDescriptionBlock[] {
+  return [
+    {
+      type: "paragraph",
+      text: "Комплексы СГ-ТК-Т на базе турбинных счётчиков газа. Конкретная конфигурация уточняется при заказе."
+    },
+    {
+      type: "data-table",
+      table: {
+        columns: ["Модель", "Параметры"],
+        rows: SG_TK_T_VARIANTS
+      }
+    }
+  ];
+}
+
 export const SG_TK_D_CONTENT: ProductRichContent = {
   descriptionTitle: "Подробное описание",
   description: [
@@ -307,7 +372,7 @@ export const SG_TK_D_CONTENT: ProductRichContent = {
       type: "paragraph",
       text: SG_TK_D_CARD_DESCRIPTION
     },
-    ...sgTkSharedDescription()
+    ...sgTkSharedDescription(true)
   ],
   optionsTitle: SG_TK_OPTIONS_TITLE,
   optionsDescription: buildSgTkDOptionsDescription()
@@ -320,11 +385,25 @@ export const SG_TK_R_CONTENT: ProductRichContent = {
       type: "paragraph",
       text: SG_TK_R_CARD_DESCRIPTION
     },
-    ...sgTkSharedDescription()
+    ...sgTkSharedDescription(true)
   ]
+};
+
+export const SG_TK_T_CONTENT: ProductRichContent = {
+  descriptionTitle: "Подробное описание",
+  description: [
+    {
+      type: "paragraph",
+      text: SG_TK_T_CARD_DESCRIPTION
+    },
+    ...sgTkSharedDescription(true)
+  ],
+  optionsTitle: SG_TK_OPTIONS_TITLE,
+  optionsDescription: buildSgTkTOptionsDescription()
 };
 
 export const SG_TK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
   [SG_TK_D_SLUG]: SG_TK_D_CONTENT,
-  [SG_TK_R_SLUG]: SG_TK_R_CONTENT
+  [SG_TK_R_SLUG]: SG_TK_R_CONTENT,
+  [SG_TK_T_SLUG]: SG_TK_T_CONTENT
 };

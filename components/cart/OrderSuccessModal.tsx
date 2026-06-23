@@ -1,25 +1,22 @@
 "use client";
 
 import clsx from "clsx";
-import { Check, CheckCircle2, Copy, X } from "lucide-react";
+import { CheckCircle2, X } from "lucide-react";
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 
 type Props = {
   open: boolean;
-  trackNumber: string;
   onClose: () => void;
 };
 
-export function OrderSuccessModal({ open, trackNumber, onClose }: Props) {
+export function OrderSuccessModal({ open, onClose }: Props) {
   const [render, setRender] = useState(open);
   const [active, setActive] = useState(false);
-  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     if (open) {
       setRender(true);
-      setCopied(false);
       const frame = requestAnimationFrame(() => setActive(true));
       return () => cancelAnimationFrame(frame);
     }
@@ -36,16 +33,6 @@ export function OrderSuccessModal({ open, trackNumber, onClose }: Props) {
       document.body.style.overflow = prev;
     };
   }, [render]);
-
-  async function copyTrack() {
-    try {
-      await navigator.clipboard.writeText(trackNumber);
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 2000);
-    } catch {
-      setCopied(false);
-    }
-  }
 
   if (!render || typeof document === "undefined") return null;
 
@@ -72,24 +59,6 @@ export function OrderSuccessModal({ open, trackNumber, onClose }: Props) {
           Спасибо! В ближайшее время с вами свяжется менеджер для уточнения деталей и подготовки
           предложения.
         </p>
-
-        <section className="order-track-box">
-          <span className="order-track-label">Трек-номер заявки</span>
-          <div className="order-track-row">
-            <code className="order-track-code">{trackNumber}</code>
-            <button
-              type="button"
-              className={clsx("button secondary order-track-copy", copied && "order-track-copy-done")}
-              onClick={copyTrack}
-            >
-              {copied ? <Check size={17} aria-hidden /> : <Copy size={17} aria-hidden />}
-              {copied ? "Скопировано" : "Копировать"}
-            </button>
-          </div>
-          <p className="muted order-track-hint">
-            Сохраните номер — по нему можно найти заказ в разделе «История заказов» на любом устройстве.
-          </p>
-        </section>
       </article>
     </section>,
     document.body

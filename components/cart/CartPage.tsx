@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { FormEvent, useState } from "react";
 import { useCart } from "@/components/CartProvider";
-import { rememberTrackNumber } from "@/lib/order-history";
 import { parseContactMethod } from "@/lib/contact-method";
 import { isRuPhoneComplete, RU_PHONE_PLACEHOLDER } from "@/lib/phone-mask";
 import { CartItemsList } from "./CartItemsList";
@@ -16,7 +15,6 @@ export function CartPage() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
-  const [successTrack, setSuccessTrack] = useState("");
   const [formKey, setFormKey] = useState(0);
 
   async function submitOrder(event: FormEvent<HTMLFormElement>) {
@@ -73,14 +71,6 @@ export function CartPage() {
       return;
     }
 
-    const payload = (await response.json()) as { trackNumber?: string };
-    const trackNumber = payload.trackNumber ?? "";
-
-    if (trackNumber) {
-      rememberTrackNumber(trackNumber);
-    }
-
-    setSuccessTrack(trackNumber);
     setSuccessOpen(true);
     clear();
     form.reset();
@@ -89,7 +79,6 @@ export function CartPage() {
 
   function closeSuccess() {
     setSuccessOpen(false);
-    setSuccessTrack("");
   }
 
   return (
@@ -114,7 +103,7 @@ export function CartPage() {
         )}
       </section>
 
-      <OrderSuccessModal open={successOpen} trackNumber={successTrack} onClose={closeSuccess} />
+      <OrderSuccessModal open={successOpen} onClose={closeSuccess} />
     </section>
   );
 }

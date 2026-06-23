@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { FooterBrand } from "@/components/FooterBrand";
-import { company } from "@/lib/company";
+import { company, companyPhoneHref } from "@/lib/company";
 
 export function SiteFooter() {
   return (
@@ -17,9 +17,14 @@ export function SiteFooter() {
         </div>
         <div>
           <strong>Телефон</strong>
-          <p>
-            <a href={`tel:${company.phone.replace(/\D/g, "")}`}>{company.phone}</a>
-          </p>
+          <div className="store-footer-phones">
+            {company.phones.map((entry) => (
+              <p key={entry.number} className="store-footer-phone">
+                <span className="store-footer-phone-label">{entry.label}</span>
+                <a href={companyPhoneHref(entry.number)}>{entry.number}</a>
+              </p>
+            ))}
+          </div>
         </div>
         <div>
           <strong>Email</strong>

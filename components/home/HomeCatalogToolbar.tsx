@@ -131,7 +131,7 @@ export function HomeCatalogToolbar({
           id={searchInputId}
           className="store-catalog-search-input"
           type="text"
-          placeholder="Поиск по названию…"
+          placeholder="Поиск"
           value={searchQuery}
           onChange={(event) => onSearchQueryChange(event.target.value)}
           autoComplete="off"

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { z } from "zod";
 import { CONSULTATION_PRODUCT_SLUG } from "@/lib/catalog";
 import { contactMethodSchema } from "@/lib/contact-method";
-import { createUniqueTrackNumber } from "@/lib/create-order-track";
+import { syncConsultationToOrionCrm } from "@/lib/orion-crm";
 import { normalizeRuPhoneDigits } from "@/lib/phone-mask";
 import { prisma } from "@/lib/prisma";
 
@@ -61,26 +61,25 @@ export async function POST(request: Request) {
     );
   }
 
-  const trackNumber = await createUniqueTrackNumber();
   const source = parsed.data.source ?? "home";
   const customerName =
     source === "phone-fab"
       ? "Заявка на звонок"
       : parsed.data.customerName!.trim();
   const contactMethod = source === "phone-fab" ? "phone" : parsed.data.contactMethod!;
+  const consultationMessage =
+    source === "phone-fab"
+      ? "Заявка на обратный звонок из виджета «Заказать звонок»."
+      : source === "popup"
+        ? "Заявка на консультацию из виджета на сайте."
+        : "Заявка на консультацию с главной страницы (имя и телефон).";
 
   const order = await prisma.order.create({
     data: {
-      trackNumber,
       customerName,
       phone: parsed.data.phone,
       contactMethod,
-      comment:
-        source === "phone-fab"
-          ? "Заявка на обратный звонок из виджета «Заказать звонок»."
-          : source === "popup"
-            ? "Заявка на консультацию из виджета на сайте."
-            : "Заявка на консультацию с главной страницы (имя и телефон).",
+      comment: consultationMessage,
       total: 0,
       items: {
         create: [
@@ -96,5 +95,17 @@ export async function POST(request: Request) {
     }
   });
 
-  return NextResponse.json({ trackNumber: order.trackNumber });
+  try {
+    await syncConsultationToOrionCrm({
+      customerName,
+      phone: parsed.data.phone,
+      contactMethod,
+      source,
+      message: consultationMessage
+    });
+  } catch (error) {
+    console.error("[consultation] Orion CRM sync failed:", error);
+  }
+
+  return NextResponse.json({ id: order.id, success: true });
 }

@@ -4,7 +4,6 @@ import Link from "next/link";
 import { FormEvent, useEffect, useRef, useState } from "react";
 import { CheckCircle2, Phone, X } from "lucide-react";
 import { PhoneInput } from "@/components/PhoneInput";
-import { rememberTrackNumber } from "@/lib/order-history";
 import { isRuPhoneComplete, RU_PHONE_PLACEHOLDER } from "@/lib/phone-mask";
 
 type Phase = "form" | "success";
@@ -78,11 +77,6 @@ export function PhoneFabWidget() {
       const payload = await response.json().catch(() => null);
       setError(payload?.error || "Не удалось отправить. Попробуйте позже.");
       return;
-    }
-
-    const payload = (await response.json()) as { trackNumber?: string };
-    if (payload.trackNumber) {
-      rememberTrackNumber(payload.trackNumber);
     }
 
     form.reset();

@@ -134,12 +134,7 @@ export const SHOP_NAV_LINKS: ShopNavItem[] = [
     label: "Главная",
     match: (pathname) => pathname === "/"
   },
-  ...HEADER_NAV_LINKS,
-  {
-    href: "/zakazy",
-    label: "История заказов",
-    match: (pathname) => pathname === "/zakazy"
-  }
+  ...HEADER_NAV_LINKS
 ];
 
 export function isShopNavActive(pathname: string, item: ShopNavItem, search = "") {

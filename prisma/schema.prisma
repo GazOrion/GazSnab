@@ -20,6 +20,7 @@ model Product {
   slug        String      @unique
   kind        String      @default("Товар")
   category    String
+  categoryId  String?
   description String
   details     String      @default("")
   specs       Json        @default("{}")
@@ -32,12 +33,49 @@ model Product {
   featured    Boolean     @default(false)
   createdAt   DateTime    @default(now())
   updatedAt   DateTime    @updatedAt
+  categoryRef CatalogCategory? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
+  media       ProductMedia[]
   orderItems  OrderItem[]
+
+  @@index([categoryId])
+  @@index([kind, category])
+  @@index([featured])
+}
+
+model CatalogCategory {
+  id          String         @id @default(cuid())
+  name        String
+  slug        String
+  kind        String         @default("Товар")
+  title       String
+  teaser      String         @default("")
+  imageUrl    String?
+  sortOrder   Int            @default(0)
+  isVisible   Boolean        @default(true)
+  createdAt   DateTime       @default(now())
+  updatedAt   DateTime       @updatedAt
+  products    Product[]
+
+  @@unique([kind, slug])
+  @@unique([kind, name])
+  @@index([kind, sortOrder])
+}
+
+model ProductMedia {
+  id        String   @id @default(cuid())
+  productId String
+  url       String
+  alt       String   @default("")
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+
+  @@index([productId, sortOrder])
 }
 
 model Order {
   id            String       @id @default(cuid())
-  trackNumber   String       @unique
   customerName  String
   phone         String
   contactMethod String       @default("phone")

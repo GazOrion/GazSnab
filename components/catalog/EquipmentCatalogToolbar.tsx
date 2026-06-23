@@ -53,13 +53,13 @@ export function EquipmentCatalogToolbar({
     <div className="store-equipment-catalog-toolbar" aria-label="Поиск и сортировка">
       <form className="store-equipment-catalog-search" onSubmit={onSearchSubmit}>
         <label className="visually-hidden" htmlFor={searchInputId}>
-          Поиск по каталогу
+          Поиск
         </label>
         <input
           id={searchInputId}
           className="store-equipment-catalog-search__input"
           type="search"
-          placeholder="Поиск по каталогу"
+          placeholder="Поиск"
           value={searchQuery}
           onChange={(event) => onSearchQueryChange(event.target.value)}
           autoComplete="off"

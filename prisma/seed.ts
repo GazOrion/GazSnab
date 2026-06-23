@@ -39,7 +39,12 @@ import {
   SG_TK_R_CARD_DESCRIPTION,
   SG_TK_R_SLUG,
   SG_TK_R_TITLE,
-  SG_TK_SHORT_DESCRIPTION
+  SG_TK_SHORT_DESCRIPTION,
+  SG_TK_T_CARD_DESCRIPTION,
+  SG_TK_T_CARD_IMAGE,
+  SG_TK_T_GALLERY,
+  SG_TK_T_SLUG,
+  SG_TK_T_TITLE
 } from "../lib/product-content/sg-tk-kompleks";
 import {
   SG_EK_CARD_DESCRIPTION,
@@ -97,7 +102,8 @@ import {
 import {
   GAS_METER_PURPOSE_INDUSTRIAL,
   GAS_METER_SUBCATEGORY_SG_TK_D,
-  GAS_METER_SUBCATEGORY_SG_TK_R
+  GAS_METER_SUBCATEGORY_SG_TK_R,
+  GAS_METER_SUBCATEGORY_SG_TK_T
 } from "../lib/gas-meters-catalog";
 import {
   GRP_SH_04_IMAGE,
@@ -2072,7 +2078,7 @@ const sgTkDSeedProduct = {
   specs: {
     Серия: "СГ-ТК",
     Подкатегория: GAS_METER_SUBCATEGORY_SG_TK_D,
-    Производитель: "ЭЛЬСТЕР",
+    Производитель: RASKO_MANUFACTURER,
     Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
     Модель: "СГ-ТК-Д"
   },
@@ -2094,7 +2100,7 @@ const sgTkRSeedProduct = {
   specs: {
     Серия: "СГ-ТК",
     Подкатегория: GAS_METER_SUBCATEGORY_SG_TK_R,
-    Производитель: "ЭЛЬСТЕР",
+    Производитель: RASKO_MANUFACTURER,
     Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
     Модель: "СГ-ТК-Р"
   },
@@ -2103,6 +2109,28 @@ const sgTkRSeedProduct = {
   unit: "шт.",
   imageUrl: SG_TK_CARD_IMAGE,
   gallery: SG_TK_GALLERY,
+  featured: true
+};
+
+const sgTkTSeedProduct = {
+  title: SG_TK_T_TITLE,
+  slug: SG_TK_T_SLUG,
+  kind: "Товар",
+  category: "Счётчики газа",
+  description: SG_TK_T_CARD_DESCRIPTION,
+  details: SG_TK_SHORT_DESCRIPTION,
+  specs: {
+    Серия: "СГ-ТК",
+    Подкатегория: GAS_METER_SUBCATEGORY_SG_TK_T,
+    Производитель: RASKO_MANUFACTURER,
+    Назначение: GAS_METER_PURPOSE_INDUSTRIAL,
+    Модель: "СГ-ТК-Т"
+  },
+  leadTime: "по наличию, уточняется в заявке",
+  price: "0",
+  unit: "шт.",
+  imageUrl: SG_TK_T_CARD_IMAGE,
+  gallery: SG_TK_T_GALLERY,
   featured: true
 };
 
@@ -2346,7 +2374,7 @@ const products = [
     specs: {
       Серия: "ТС",
       Модель: "ТС-220",
-      Производитель: "ЭЛЬСТЕР"
+      Производитель: RASKO_MANUFACTURER
     },
     leadTime: "по наличию, уточняется в заявке",
     price: "0",
@@ -3223,6 +3251,7 @@ const products = [
   ...rgtTurbineMeterSeedProducts,
   sgTkDSeedProduct,
   sgTkRSeedProduct,
+  sgTkTSeedProduct,
   sgEkKompleksSeedProduct,
   gasMeterAccessoriesTurbineSeedProduct,
   gasMeterKpuTurbineSeedProduct,

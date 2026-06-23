@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { z } from "zod";
 import { contactMethodSchema } from "@/lib/contact-method";
-import { createUniqueTrackNumber } from "@/lib/create-order-track";
+import { syncCartOrderToOrionCrm } from "@/lib/orion-crm";
 import { normalizeRuPhoneDigits } from "@/lib/phone-mask";
 import { prisma } from "@/lib/prisma";
 
@@ -38,7 +38,14 @@ export async function POST(request: Request) {
 
   const productIds = parsed.data.items.map((item) => item.productId);
   const products = await prisma.product.findMany({
-    where: { id: { in: productIds }, inStock: true }
+    where: { id: { in: productIds }, inStock: true },
+    select: {
+      id: true,
+      title: true,
+      price: true,
+      unit: true,
+      slug: true
+    }
   });
 
   if (products.length !== productIds.length) {
@@ -60,11 +67,9 @@ export async function POST(request: Request) {
   });
 
   const total = items.reduce((sum, item) => sum + Number(item.price) * item.quantity, 0);
-  const trackNumber = await createUniqueTrackNumber();
 
   const order = await prisma.order.create({
     data: {
-      trackNumber,
       customerName: parsed.data.customerName,
       phone: parsed.data.phone,
       contactMethod: parsed.data.contactMethod,
@@ -79,5 +84,31 @@ export async function POST(request: Request) {
     include: { items: true }
   });
 
-  return NextResponse.json({ id: order.id, trackNumber: order.trackNumber });
+  try {
+    await syncCartOrderToOrionCrm({
+      customerName: parsed.data.customerName,
+      phone: parsed.data.phone,
+      contactMethod: parsed.data.contactMethod,
+      total: Number(order.total),
+      email: parsed.data.email,
+      company: parsed.data.company,
+      comment: parsed.data.comment,
+      items: parsed.data.items.map((item) => {
+        const product = products.find((candidate) => candidate.id === item.productId);
+        if (!product) {
+          throw new Error("Product not found");
+        }
+        return {
+          title: product.title,
+          price: product.price,
+          quantity: item.quantity,
+          slug: product.slug
+        };
+      })
+    });
+  } catch (error) {
+    console.error("[orders] Orion CRM sync failed:", error);
+  }
+
+  return NextResponse.json({ id: order.id, success: true });
 }

@@ -237,25 +237,29 @@ export async function buildServiceHubClusters(): Promise<CategoryCluster[]> {
 /** Все разделы выпадающего «Каталог» для страницы /oborudovanie. */
 export function buildEquipmentHubClusters(goodsClusters: CategoryCluster[]): CategoryCluster[] {
   const byName = new Map(goodsClusters.map((cluster) => [cluster.name, cluster]));
+  const used = new Set<string>();
 
-  return EQUIPMENT_HEADER_CATALOG_ITEMS.map((item, index) => {
+  const configured = EQUIPMENT_HEADER_CATALOG_ITEMS.map((item, index) => {
     const cluster = byName.get(item.name);
     const card = hubCardPresentation(item);
     const imageUrl =
       "image" in item && item.image
         ? item.image
         : resolveEquipmentClusterImage(item.name, cluster?.imageUrl ?? null);
+    used.add(item.name);
 
     return {
       hubId: `equipment-hub-${index}`,
       name: item.name,
-      label: card.title,
-      teaser: card.teaser,
+      label: cluster?.label ?? card.title,
+      teaser: cluster?.teaser ?? card.teaser,
       count: cluster?.count ?? 0,
       imageUrl,
       minPrice: cluster?.minPrice ?? null
     };
   });
+
+  return [...configured, ...goodsClusters.filter((cluster) => !used.has(cluster.name))];
 }
 
 function buildEquipmentPromoCategories(
@@ -344,7 +348,8 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
       goodsTotal,
       servicesTotal,
       goodsSampleImages,
-      serviceSampleImages
+      serviceSampleImages,
+      catalogCategories
     ] = await Promise.all([
       prisma.product.findMany({
         where: goodsWhere,
@@ -387,10 +392,19 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
         where: { ...catalogVisibilityWhere, kind: PRODUCT_KIND.SERVICE, imageUrl: { not: null } },
         select: { category: true, imageUrl: true },
         orderBy: [{ featured: "desc" }, { createdAt: "desc" }]
+      }),
+      prisma.catalogCategory.findMany({
+        where: { isVisible: true },
+        orderBy: [{ kind: "asc" }, { sortOrder: "asc" }, { name: "asc" }]
       })
     ]);
 
+    const categoryByKey = new Map(
+      catalogCategories.map((category) => [`${category.kind}:${category.name}`, category])
+    );
+
     const buildClusters = (
+      kind: string,
       stats: { category: string; _count: { id: number } }[],
       minPrices: { category: string; _min: { price: unknown } }[],
       samples: { category: string; imageUrl: string | null }[]
@@ -409,16 +423,40 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
         ])
       );
 
-      return stats.map((row) => ({
-        name: row.category,
-        count: row._count.id,
-        imageUrl: imageByCategory.get(row.category) ?? null,
-        minPrice: minPriceByCategory.get(row.category) ?? null
-      }));
+      return stats
+        .map((row) => {
+          const category = categoryByKey.get(`${kind}:${row.category}`);
+          return {
+            name: row.category,
+            count: row._count.id,
+            imageUrl: category?.imageUrl ?? imageByCategory.get(row.category) ?? null,
+            minPrice: minPriceByCategory.get(row.category) ?? null,
+            label: category?.title,
+            teaser: category?.teaser,
+            hubId: category ? `managed-${category.id}` : undefined,
+            sortOrder: category?.sortOrder ?? Number.MAX_SAFE_INTEGER
+          };
+        })
+        .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ru"))
+        .map((cluster) => ({
+          name: cluster.name,
+          count: cluster.count,
+          imageUrl: cluster.imageUrl,
+          minPrice: cluster.minPrice,
+          label: cluster.label,
+          teaser: cluster.teaser,
+          hubId: cluster.hubId
+        }));
     };
 
-    const goodsClusters = buildClusters(goodsCategoryStats, goodsCategoryMinPrices, goodsSampleImages);
+    const goodsClusters = buildClusters(
+      PRODUCT_KIND.GOODS,
+      goodsCategoryStats,
+      goodsCategoryMinPrices,
+      goodsSampleImages
+    );
     const serviceClusters = buildClusters(
+      PRODUCT_KIND.SERVICE,
       serviceCategoryStats,
       serviceCategoryMinPrices,
       serviceSampleImages

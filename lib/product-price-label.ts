@@ -43,7 +43,7 @@ export function getProductPriceLabel(options: {
     return ON_REQUEST_PRICE_LABEL;
   }
 
-  if (isOnRequestGasMeterProduct(specs)) {
+  if (isOnRequestGasMeterProduct(specs, price)) {
     return ON_REQUEST_PRICE_LABEL;
   }
 

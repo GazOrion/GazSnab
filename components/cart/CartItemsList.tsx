@@ -13,7 +13,7 @@ type Props = {
 };
 
 export function CartItemsList({ disabled, onClearCart }: Props) {
-  const { items, total, count, updateQuantity, removeItem } = useCart();
+  const { items, total, updateQuantity, removeItem } = useCart();
   const lineCount = items.length;
 
   function handleClearCart() {
@@ -72,7 +72,6 @@ export function CartItemsList({ disabled, onClearCart }: Props) {
         <section className="cart-total-block">
           <span className="cart-total-label">Итого по заявке</span>
           <AnimatedPrice value={total} className="cart-total-value" />
-          <span className="muted cart-total-units">{count} шт.</span>
         </section>
       </footer>
     </article>

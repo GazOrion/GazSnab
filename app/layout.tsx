@@ -18,7 +18,12 @@ const spaceGrotesk = Space_Grotesk({
 
 export const metadata: Metadata = {
   title: "ГазСнаб | Производство газового оборудования",
-  description: "Интернет-магазин производственной компании ГазСнаб"
+  description: "Интернет-магазин производственной компании ГазСнаб",
+  icons: {
+    icon: "/favicon.ico",
+    shortcut: "/favicon.ico",
+    apple: "/favicon.ico"
+  }
 };
 
 export default function RootLayout({

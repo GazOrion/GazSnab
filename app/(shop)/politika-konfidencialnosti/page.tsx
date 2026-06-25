@@ -2,7 +2,12 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
-import { company } from "@/lib/company";
+import { company, companyPhoneHref } from "@/lib/company";
+import {
+  PRIVACY_POLICY_INTRO,
+  PRIVACY_POLICY_PAGE_URL,
+  PRIVACY_POLICY_SECTIONS
+} from "@/lib/site-pages/privacy-policy";
 
 export const metadata: Metadata = {
   title: "Политика конфиденциальности | ОРИОН ГАЗСНАБ",
@@ -15,32 +20,45 @@ export default function PrivacyPolicyPage() {
       <SiteHeader />
 
       <article className="section static-page">
-        <div className="container" style={{ maxWidth: 720 }}>
-          <header className="store-section-head">
-            <div>
-              <h1>Политика конфиденциальности</h1>
-              <p className="muted">
-                Настоящая политика описывает порядок обработки персональных данных при оформлении
-                заявок на сайте {company.name}.
-              </p>
-            </div>
-          </header>
+        <div className="container">
+          <h1>Политика конфиденциальности</h1>
+          <p className="lead">{PRIVACY_POLICY_INTRO}</p>
 
-          <div className="panel" style={{ padding: "24px 28px" }}>
+          {PRIVACY_POLICY_SECTIONS.map((section) => (
+            <section key={section.id} className="static-page-block">
+              <h2 className="static-page-block__title">{section.title}</h2>
+              <div>
+                {section.blocks.map((paragraph) => (
+                  <p key={paragraph}>{paragraph}</p>
+                ))}
+              </div>
+            </section>
+          ))}
+
+          <section className="static-page-block static-page-contacts">
+            <h2 className="static-page-block__title">Реквизиты оператора</h2>
             <p>
-              Мы обрабатываем имя и номер телефона исключительно для связи по вашей заявке, подготовки
-              коммерческого предложения и счёта. Данные не передаются третьим лицам, за исключением
-              случаев, предусмотренных законодательством РФ.
+              <strong>{company.name}</strong>
             </p>
-            <p className="muted" style={{ marginTop: 16 }}>
-              По вопросам обработки данных:{" "}
-              <a href={`mailto:${company.email}`}>{company.email}</a>, тел.{" "}
-              <a href={`tel:${company.phone.replace(/\D/g, "")}`}>{company.phone}</a>.
+            <p>ИНН {company.inn}</p>
+            <p>ОГРН {company.ogrn}</p>
+            <p>{company.address}</p>
+            <p>
+              E-mail: <a href={`mailto:${company.email}`}>{company.email}</a>
             </p>
-            <p style={{ marginTop: 24 }}>
-              <Link href="/cart">← Вернуться в корзину</Link>
+            <p>
+              Телефон: <a href={companyPhoneHref(company.phone)}>{company.phone}</a>
             </p>
-          </div>
+            <p className="muted">
+              Действующая редакция политики:{" "}
+              <a href={PRIVACY_POLICY_PAGE_URL}>{PRIVACY_POLICY_PAGE_URL}</a>
+            </p>
+            <p className="muted">г. Ростов-на-Дону</p>
+          </section>
+
+          <p style={{ marginTop: 24 }}>
+            <Link href="/">← На главную</Link>
+          </p>
         </div>
       </article>
 

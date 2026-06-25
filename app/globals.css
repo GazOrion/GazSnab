@@ -1480,6 +1480,16 @@ button { cursor: pointer; }
   letter-spacing: -0.02em;
 }
 
+.static-page-block p {
+  margin: 0 0 10px;
+  line-height: 1.65;
+  color: var(--ink);
+}
+
+.static-page-block p:last-child {
+  margin-bottom: 0;
+}
+
 .static-page-list {
   margin: 0;
   padding-left: 1.25rem;

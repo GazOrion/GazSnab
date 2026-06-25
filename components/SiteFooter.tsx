@@ -37,6 +37,9 @@ export function SiteFooter() {
           <p>Ростов-на-Дону, 14-я Линия, 30/48</p>
         </div>
       </div>
+      <div className="container store-footer-legal">
+        <Link href="/politika-konfidencialnosti">Политика конфиденциальности</Link>
+      </div>
     </footer>
   );
 }

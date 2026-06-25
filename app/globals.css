@@ -1,3 +1,6 @@
+@import "@fontsource-variable/inter/wght.css";
+@import "@fontsource-variable/space-grotesk/wght.css";
+
 /* ================================================================
    DESIGN TOKENS
 ================================================================ */
@@ -49,6 +52,10 @@
   /* Store layout */
   --store-radius: 16px;
   --store-radius-sm: 12px;
+
+  /* Fonts (self-hosted via @fontsource, no Google Fonts at build time) */
+  --font-inter: "Inter Variable", "Inter", system-ui, sans-serif;
+  --font-display: "Space Grotesk Variable", "Space Grotesk", system-ui, sans-serif;
 }
 
 /* ================================================================
@@ -66,6 +73,7 @@ body {
   margin: 0;
   color: var(--ink);
   background: var(--surface);
+  font-family: var(--font-inter);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

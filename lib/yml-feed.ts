@@ -1,27 +1,40 @@
 import type { Product } from "@prisma/client";
 import { company } from "@/lib/company";
-import { CONSULTATION_PRODUCT_SLUG, PRODUCT_KIND } from "@/lib/catalog";
+import { CONSULTATION_PRODUCT_SLUG, PRODUCT_KIND, catalogPath } from "@/lib/catalog";
+import { getEquipmentCategoryBannerSrc } from "@/lib/catalog-banner";
 import { getProductLineCatalog, getProductLineMinPrice } from "@/lib/product-lines";
 import { absoluteMediaUrl, absoluteUrl, getSiteUrl } from "@/lib/site-url";
 
 const PRODUCT_KIND_GOODS = PRODUCT_KIND.GOODS;
 const MAX_DESCRIPTION_LENGTH = 3000;
 const MAX_SALES_NOTES_LENGTH = 50;
+const MAX_COLLECTION_PICTURES = 5;
+const SHOP_NAME = "ОРИОНГАЗСНАБ";
 
 export type YmlFeedBuildResult = {
   xml: string;
   stats: {
     totalGoods: number;
     included: number;
-    skippedNoPrice: number;
+    includedWithPrice: number;
+    includedOnRequest: number;
     skippedNoImage: number;
     skippedHidden: number;
+    collections: number;
   };
 };
 
 type OfferBuildResult =
-  | { kind: "included"; xml: string }
-  | { kind: "skipped"; reason: "no-price" | "no-image" };
+  | { kind: "included"; xml: string; hasPrice: boolean }
+  | { kind: "skipped"; reason: "no-image" };
+
+type CategoryFeedMeta = {
+  id: number;
+  name: string;
+  collectionId: string;
+  pictures: string[];
+  productCount: number;
+};
 
 function escapeXml(value: string) {
   return value
@@ -61,6 +74,10 @@ function trimDescription(text: string) {
   return `${normalized.slice(0, MAX_DESCRIPTION_LENGTH - 1).trim()}…`;
 }
 
+function collectionIdFromCategoryId(categoryId: number) {
+  return `cat-${categoryId}`;
+}
+
 function resolveOfferPrice(product: Product) {
   const directPrice = Number(product.price);
   if (Number.isFinite(directPrice) && directPrice > 0) {
@@ -94,15 +111,62 @@ function buildParamElements(specs: Record<string, string>) {
     .join("\n");
 }
 
-function buildOffer(product: Product, categoryId: number): OfferBuildResult {
-  const priceInfo = resolveOfferPrice(product);
-  if (!priceInfo) {
-    return { kind: "skipped", reason: "no-price" };
-  }
-
+function collectProductPictures(product: Product, fallbackPicture?: string | null) {
   const pictures = [...new Set([product.imageUrl, ...product.gallery].filter(Boolean) as string[])]
     .map((url) => absoluteMediaUrl(url))
     .filter((url): url is string => Boolean(url));
+
+  if (!pictures.length && fallbackPicture) {
+    return [fallbackPicture];
+  }
+
+  return pictures;
+}
+
+function buildCategoryFeedMeta(
+  visibleGoods: Product[],
+  categoryMap: Map<string, number>
+): Map<string, CategoryFeedMeta> {
+  const metaByCategory = new Map<string, CategoryFeedMeta>();
+
+  for (const [categoryName, categoryId] of categoryMap.entries()) {
+    const productsInCategory = visibleGoods.filter((product) => product.category === categoryName);
+    const pictures = new Set<string>();
+
+    const banner = getEquipmentCategoryBannerSrc(categoryName);
+    if (banner) {
+      const absoluteBanner = absoluteMediaUrl(banner);
+      if (absoluteBanner) pictures.add(absoluteBanner);
+    }
+
+    for (const product of productsInCategory) {
+      for (const picture of collectProductPictures(product)) {
+        pictures.add(picture);
+        if (pictures.size >= MAX_COLLECTION_PICTURES) break;
+      }
+      if (pictures.size >= MAX_COLLECTION_PICTURES) break;
+    }
+
+    metaByCategory.set(categoryName, {
+      id: categoryId,
+      name: categoryName,
+      collectionId: collectionIdFromCategoryId(categoryId),
+      pictures: [...pictures].slice(0, MAX_COLLECTION_PICTURES),
+      productCount: productsInCategory.length
+    });
+  }
+
+  return metaByCategory;
+}
+
+function buildOffer(
+  product: Product,
+  categoryId: number,
+  collectionId: string,
+  fallbackPicture?: string | null
+): OfferBuildResult {
+  const priceInfo = resolveOfferPrice(product);
+  const pictures = collectProductPictures(product, fallbackPicture);
 
   if (!pictures.length) {
     return { kind: "skipped", reason: "no-image" };
@@ -112,26 +176,55 @@ function buildOffer(product: Product, categoryId: number): OfferBuildResult {
   const vendor = specs["Производитель"];
   const vendorCode = specs["Модель"] || specs["Артикул"];
   const description = trimDescription(product.details || product.description);
-  const salesNotes = priceInfo.onRequest ? "Цена по запросу" : "Безналичный расчёт";
+  const salesNotes =
+    !priceInfo || priceInfo.onRequest ? "Цена по запросу" : null;
   const paramsXml = buildParamElements(specs);
 
   const offerLines = [
     `      <offer id="${escapeXml(product.slug)}" available="${product.inStock ? "true" : "false"}">`,
     `        <url>${escapeXml(absoluteUrl(`/products/${product.slug}`))}</url>`,
-    `        <price>${formatPrice(priceInfo.price)}</price>`,
-    `        <currencyId>RUB</currencyId>`,
+    priceInfo
+      ? `        <price>${formatPrice(priceInfo.price)}</price>`
+      : "",
+    priceInfo ? `        <currencyId>RUB</currencyId>` : "",
     `        <categoryId>${categoryId}</categoryId>`,
+    `        <collectionId>${escapeXml(collectionId)}</collectionId>`,
     ...pictures.map((picture) => `        <picture>${escapeXml(picture)}</picture>`),
     `        <name>${escapeXml(product.title)}</name>`,
     vendor ? `        <vendor>${escapeXml(vendor)}</vendor>` : "",
     vendorCode ? `        <vendorCode>${escapeXml(vendorCode)}</vendorCode>` : "",
     `        <description>${escapeXml(description)}</description>`,
-    `        <sales_notes>${escapeXml(salesNotes.slice(0, MAX_SALES_NOTES_LENGTH))}</sales_notes>`,
+    salesNotes
+      ? `        <sales_notes>${escapeXml(salesNotes.slice(0, MAX_SALES_NOTES_LENGTH))}</sales_notes>`
+      : "",
     paramsXml,
     `      </offer>`
   ].filter(Boolean);
 
-  return { kind: "included", xml: offerLines.join("\n") };
+  return {
+    kind: "included",
+    xml: offerLines.join("\n"),
+    hasPrice: Boolean(priceInfo)
+  };
+}
+
+function buildCollectionsXml(categoryMeta: Map<string, CategoryFeedMeta>) {
+  return [...categoryMeta.values()]
+    .filter((meta) => meta.pictures.length > 0)
+    .sort((a, b) => a.id - b.id)
+    .map((meta) => {
+      const lines = [
+        `        <collection id="${escapeXml(meta.collectionId)}">`,
+        `          <url>${escapeXml(absoluteUrl(catalogPath({ kind: PRODUCT_KIND_GOODS, category: meta.name })))}</url>`,
+        ...meta.pictures.map((picture) => `          <picture>${escapeXml(picture)}</picture>`),
+        `          <name>${escapeXml(`${meta.name} в интернет-магазине ${SHOP_NAME}`)}</name>`,
+        `          <description>${escapeXml(`Каталог «${meta.name}»: ${meta.productCount} позиций. Поставка газового оборудования и комплектующих.`)}</description>`,
+        `        </collection>`
+      ];
+
+      return lines.join("\n");
+    })
+    .join("\n");
 }
 
 export function buildYmlFeed(products: Product[]): YmlFeedBuildResult {
@@ -143,6 +236,7 @@ export function buildYmlFeed(products: Product[]): YmlFeedBuildResult {
   );
 
   const categoryMap = buildCategoryMap(visibleGoods);
+  const categoryMeta = buildCategoryFeedMeta(visibleGoods, categoryMap);
   const categoriesXml = [...categoryMap.entries()]
     .map(([name, id]) => `      <category id="${id}">${escapeXml(name)}</category>`)
     .join("\n");
@@ -150,9 +244,11 @@ export function buildYmlFeed(products: Product[]): YmlFeedBuildResult {
   const stats = {
     totalGoods: visibleGoods.length,
     included: 0,
-    skippedNoPrice: 0,
+    includedWithPrice: 0,
+    includedOnRequest: 0,
     skippedNoImage: 0,
-    skippedHidden: products.length - visibleGoods.length
+    skippedHidden: products.length - visibleGoods.length,
+    collections: 0
   };
 
   const offersXml: string[] = [];
@@ -161,24 +257,32 @@ export function buildYmlFeed(products: Product[]): YmlFeedBuildResult {
     const categoryId = categoryMap.get(product.category);
     if (!categoryId) continue;
 
-    const offer = buildOffer(product, categoryId);
+    const meta = categoryMeta.get(product.category);
+    const fallbackPicture = meta?.pictures[0] ?? null;
+    const offer = buildOffer(product, categoryId, meta?.collectionId ?? collectionIdFromCategoryId(categoryId), fallbackPicture);
+
     if (offer.kind === "included") {
       stats.included += 1;
+      if (offer.hasPrice) {
+        stats.includedWithPrice += 1;
+      } else {
+        stats.includedOnRequest += 1;
+      }
       offersXml.push(offer.xml);
       continue;
     }
 
-    if (offer.reason === "no-price") {
-      stats.skippedNoPrice += 1;
-    } else {
-      stats.skippedNoImage += 1;
-    }
+    stats.skippedNoImage += 1;
   }
+
+  const collectionsWithPictures = [...categoryMeta.values()].filter((meta) => meta.pictures.length > 0);
+  const collectionsXml = buildCollectionsXml(categoryMeta);
+  stats.collections = collectionsWithPictures.length;
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <yml_catalog date="${formatFeedDate(new Date())}">
   <shop>
-    <name>ОРИОНГАЗСНАБ</name>
+    <name>${SHOP_NAME}</name>
     <company>${escapeXml(company.name)}</company>
     <url>${escapeXml(getSiteUrl())}</url>
     <currencies>
@@ -190,6 +294,9 @@ ${categoriesXml}
     <offers>
 ${offersXml.join("\n")}
     </offers>
+    <collections>
+${collectionsXml}
+    </collections>
   </shop>
 </yml_catalog>
 `;

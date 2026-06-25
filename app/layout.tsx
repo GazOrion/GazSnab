@@ -1,5 +1,8 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { ScrollRestoration } from "@/components/ScrollRestoration";
+import { SiteAnalytics } from "@/components/SiteAnalytics";
+import { YANDEX_METRIKA_CONSENT_BOOTSTRAP } from "@/lib/analytics/yandex-metrika";
 import "./globals.css";
 import "./store-redesign.css";
 
@@ -20,7 +23,13 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="ru">
+      <head>
+        <Script id="yandex-metrika-consent-bootstrap" strategy="beforeInteractive">
+          {YANDEX_METRIKA_CONSENT_BOOTSTRAP}
+        </Script>
+      </head>
       <body>
+        <SiteAnalytics />
         <ScrollRestoration />
         {children}
       </body>

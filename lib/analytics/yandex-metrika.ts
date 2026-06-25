@@ -1,12 +1,4 @@
-import {
-  COOKIE_PREFERENCES_KEY,
-  COOKIE_PREFERENCES_LEGACY_KEY,
-  hasAnalyticsConsent
-} from "@/lib/analytics/cookie-preferences";
-
 export const YANDEX_METRIKA_ID = 110145822;
-
-export { hasAnalyticsConsent };
 
 export const YANDEX_METRIKA_INIT_SCRIPT = `
 (function(m,e,t,r,i,k,a){
@@ -28,18 +20,8 @@ ym(${YANDEX_METRIKA_ID}, 'init', {
 });
 `.trim();
 
-export const YANDEX_METRIKA_CONSENT_BOOTSTRAP = `
+export const YANDEX_METRIKA_BOOTSTRAP = `
 try {
-  var analytics = false;
-  var raw = localStorage.getItem("${COOKIE_PREFERENCES_KEY}");
-  if (raw) {
-    var prefs = JSON.parse(raw);
-    analytics = !!(prefs.analytics || prefs.marketing);
-  } else if (localStorage.getItem("${COOKIE_PREFERENCES_LEGACY_KEY}") === "accepted") {
-    analytics = true;
-  }
-  if (analytics) {
-    ${YANDEX_METRIKA_INIT_SCRIPT}
-  }
+  ${YANDEX_METRIKA_INIT_SCRIPT}
 } catch (e) {}
 `.trim();

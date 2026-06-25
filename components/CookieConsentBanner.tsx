@@ -12,7 +12,7 @@ import {
 } from "@/lib/analytics/cookie-preferences";
 
 type Props = {
-  onPreferencesSaved: () => void;
+  onPreferencesSaved?: () => void;
 };
 
 type ViewMode = "banner" | "settings";
@@ -38,7 +38,7 @@ export function CookieConsentBanner({ onPreferencesSaved }: Props) {
   function persist(preferences: CookiePreferences) {
     saveCookiePreferences(preferences);
     setVisible(false);
-    onPreferencesSaved();
+    onPreferencesSaved?.();
   }
 
   const policyText = (

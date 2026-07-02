@@ -21,7 +21,7 @@ const mapping = [
   { from: "баннер для сигнализаторов.webp", to: "gas-alarm-banner.webp" },
   { from: "баннер фильтров.webp", to: "filters-banner.webp" },
   { from: "баннер для кранов шаровых.webp", to: "ball-valves-banner.webp" },
-  { from: "баннер для корректоров.webp", to: "korrektory-gaza-banner.webp" },
+  { from: "Баннер  для корректоров.webp", to: "korrektory-gaza-banner.webp" },
   { from: path.join("Новая папка", "баннер для насосов.webp"), to: "pumps-banner.webp" },
   { from: "vidget.png", to: "vidget.png" }
 ];

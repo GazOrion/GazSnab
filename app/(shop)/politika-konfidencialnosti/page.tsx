@@ -9,10 +9,11 @@ import {
   PRIVACY_POLICY_SECTIONS
 } from "@/lib/site-pages/privacy-policy";
 
-export const metadata: Metadata = {
-  title: "Политика конфиденциальности | ОРИОН ГАЗСНАБ",
-  description: `Политика обработки персональных данных ${company.name}`
-};
+import { buildPageMetadata } from "@/lib/site-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/politika-konfidencialnosti");
+}
 
 export default function PrivacyPolicyPage() {
   return (

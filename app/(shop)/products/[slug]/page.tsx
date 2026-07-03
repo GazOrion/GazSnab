@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
+import type { Metadata } from "next";
 import { ArrowLeft, Clock, PackageCheck, Ruler } from "lucide-react";
-import { CartQuantityControl } from "@/components/CartQuantityControl";
+import { ProductOrderActions } from "@/components/ProductOrderActions";
 import { ProductDetailTabs, type ProductDetailSectionId } from "@/components/ProductDetailTabs";
 import { ProductGallery } from "@/components/ProductGallery";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -21,9 +22,33 @@ import {
 } from "@/lib/pumps-catalog";
 import { versionedPublicSrc } from "@/lib/versioned-media.server";
 import { getProductSlugRedirect } from "@/lib/product-slug-redirects";
+import { buildProductPageMetadata } from "@/lib/site-seo";
 import { prisma } from "@/lib/prisma";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params
+}: {
+  params: Promise<{ slug: string }>;
+}): Promise<Metadata> {
+  const { slug } = await params;
+  const redirectSlug = getProductSlugRedirect(slug);
+  if (redirectSlug) {
+    return buildProductPageMetadata(redirectSlug);
+  }
+
+  const product = await prisma.product.findUnique({
+    where: { slug },
+    select: { inStock: true }
+  });
+
+  if (!product?.inStock) {
+    return { title: "Страница не найдена" };
+  }
+
+  return buildProductPageMetadata(slug);
+}
 
 function descriptionListItems(text: string) {
   return text
@@ -156,8 +181,8 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             </div>
 
             <div className="row-actions">
-              <CartQuantityControl
-                variant="accent"
+              <ProductOrderActions
+                kind={product.kind}
                 product={{
                   id: product.id,
                   title: product.title,

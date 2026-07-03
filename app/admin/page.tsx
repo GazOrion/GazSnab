@@ -5,6 +5,7 @@ import { HeaderBrand } from "@/components/HeaderBrand";
 import { LoginForm } from "@/components/LoginForm";
 import { getAdminSession } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { listSeoPagesForAdmin } from "@/lib/site-seo";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,7 @@ export default async function AdminPage() {
     return <LoginForm />;
   }
 
-  const [products, categories] = await Promise.all([
+  const [products, categories, seoPages] = await Promise.all([
     prisma.product.findMany({
       orderBy: { createdAt: "desc" },
       include: { media: { orderBy: { sortOrder: "asc" } } }
@@ -23,7 +24,8 @@ export default async function AdminPage() {
     prisma.catalogCategory.findMany({
       orderBy: [{ kind: "asc" }, { sortOrder: "asc" }, { name: "asc" }],
       include: { _count: { select: { products: true } } }
-    })
+    }),
+    listSeoPagesForAdmin()
   ]);
 
   const serializedProducts = products.map((product) => ({
@@ -89,7 +91,7 @@ export default async function AdminPage() {
           </div>
         </div>
 
-        <AdminProducts products={serializedProducts} categories={serializedCategories} />
+        <AdminProducts products={serializedProducts} categories={serializedCategories} seoPages={seoPages} />
       </div>
     </main>
   );

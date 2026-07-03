@@ -4,6 +4,8 @@ import Link from "next/link";
 import clsx from "clsx";
 import { useEffect, useState } from "react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
+import { ServiceOrderButton } from "@/components/ServiceOrderButton";
+import { PRODUCT_KIND } from "@/lib/catalog";
 import { FavoriteButton } from "@/components/FavoriteButton";
 import { getProductPriceLabel, isFromPriceProduct } from "@/lib/product-price-label";
 import { getProductListingTitle } from "@/lib/product-listing-title";
@@ -88,7 +90,11 @@ export function ProductCard({ product }: { product: CatalogProduct }) {
         </div>
 
         <div className="product-card-actions">
-          <CartQuantityControl product={cartProduct} compact block />
+          {product.kind === PRODUCT_KIND.SERVICE ? (
+            <ServiceOrderButton product={cartProduct} compact block />
+          ) : (
+            <CartQuantityControl product={cartProduct} compact block />
+          )}
         </div>
       </div>
     </article>

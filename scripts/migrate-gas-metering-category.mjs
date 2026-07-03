@@ -6,7 +6,7 @@
 import { PrismaClient } from "@prisma/client";
 
 const TARGET_CATEGORY = "ГРПШ";
-const SOURCE_CATEGORIES = ["Узлы учета", "Газорегуляторные пункты", "Узлы учета газа"];
+const SOURCE_CATEGORIES = ["Узлы учета", "Узлы учета газа"];
 const MEDIA_BASE = "/media/products/gas-metering-units";
 
 const IMAGE_BY_SLUG = {

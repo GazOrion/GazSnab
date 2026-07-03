@@ -1,8 +1,10 @@
 import clsx from "clsx";
 import Link from "next/link";
+import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 
 type Props = {
   bannerSrc: string;
+  mobileBannerSrc?: string | null;
   title: string;
   lead: string;
   titleId: string;
@@ -12,6 +14,7 @@ type Props = {
 
 export function CatalogHubHero({
   bannerSrc,
+  mobileBannerSrc,
   title,
   lead,
   titleId,
@@ -22,8 +25,12 @@ export function CatalogHubHero({
     <header className="store-equipment-catalog-hero">
       <div
         className={clsx("store-equipment-catalog-hero__banner", bannerClassName)}
-        style={{ backgroundImage: `url("${bannerSrc}")` }}
       >
+        <ResponsiveBannerImage
+          desktopSrc={bannerSrc}
+          mobileSrc={mobileBannerSrc}
+          className="store-equipment-catalog-hero__bg"
+        />
         <div className="store-equipment-catalog-hero__container">
           <div className="store-equipment-catalog-hero__copy">
             <nav className="store-equipment-catalog-breadcrumbs" aria-label="Хлебные крошки">

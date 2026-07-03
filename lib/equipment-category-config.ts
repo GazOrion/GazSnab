@@ -30,15 +30,30 @@ export const TELEMETRY_CATEGORY = "Телеметрия";
 export const SOFTWARE_CATEGORY = "ПО";
 export const ADDITIONAL_EQUIPMENT_CATEGORY = "Дополнительное оборудование";
 export const PUMPS_CATEGORY = "Насосы";
+export const SENSORS_CATEGORY = "Датчики";
+
+/** Разделы, убранные из публичного каталога. */
+export const REMOVED_EQUIPMENT_CATEGORIES = ["Узлы учета"] as const;
+
+const LEGACY_EQUIPMENT_CATEGORY_ALIASES: Record<string, string> = {
+  "Газорегуляторные пункты": SENSORS_CATEGORY
+};
+
+export function normalizeEquipmentCategory(category: string): string {
+  return LEGACY_EQUIPMENT_CATEGORY_ALIASES[category] ?? category;
+}
+
+export function isRemovedEquipmentCategory(category: string): boolean {
+  return (REMOVED_EQUIPMENT_CATEGORIES as readonly string[]).includes(category);
+}
 
 export type EquipmentCategorySlug =
   | "gas-meters"
   | "telemetry"
   | "software"
   | "additional-equipment"
-  | "regulators"
+  | "sensors"
   | "gas-metering-units"
-  | "gas-alarms"
   | "filters"
   | "pumps"
   | "ball-valves"
@@ -113,22 +128,16 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
     filterSections: [],
     manufacturers: ["Техномер"]
   },
-  "Газорегуляторные пункты": {
-    category: "Газорегуляторные пункты",
-    slug: "regulators",
-    filterSections: ["Тип регулятора", "Давление", "Пропускная способность"],
+  [SENSORS_CATEGORY]: {
+    category: SENSORS_CATEGORY,
+    slug: "sensors",
+    filterSections: [],
     manufacturers: []
   },
   [GAS_METERING_UNITS_CATEGORY]: {
     category: GAS_METERING_UNITS_CATEGORY,
     slug: "gas-metering-units",
     filterSections: ["Тип узла", "Диаметр", "Пропускная способность", "Способ монтажа"],
-    manufacturers: []
-  },
-  "Узлы учета": {
-    category: "Узлы учета",
-    slug: "gas-alarms",
-    filterSections: ["Тип сигнализатора", "Назначение", "Способ монтажа"],
     manufacturers: []
   },
   Фильтры: {
@@ -163,7 +172,7 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
 };
 
 export function getEquipmentCategoryConfig(category: string): EquipmentCategoryConfig | null {
-  return EQUIPMENT_CATEGORY_CONFIGS[category] ?? null;
+  return EQUIPMENT_CATEGORY_CONFIGS[normalizeEquipmentCategory(category)] ?? null;
 }
 
 export function getProductPriceBounds(products: CatalogProduct[]) {

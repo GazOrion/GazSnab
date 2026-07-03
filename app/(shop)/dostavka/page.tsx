@@ -4,10 +4,11 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { company } from "@/lib/company";
 
-export const metadata: Metadata = {
-  title: "Доставка и оплата | ГазСнаб",
-  description: "Условия доставки газового оборудования и способы оплаты"
-};
+import { buildPageMetadata } from "@/lib/site-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/dostavka");
+}
 
 const paymentMethods = [
   "Безналичный расчёт по счёту для юридических лиц и ИП",

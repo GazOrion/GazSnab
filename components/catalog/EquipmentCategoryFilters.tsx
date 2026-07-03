@@ -24,6 +24,8 @@ type Props = {
   config: EquipmentCategoryConfig;
   onChange: (next: EquipmentCategoryFilterState) => void;
   onReset: () => void;
+  className?: string;
+  showReset?: boolean;
 };
 
 const VISIBLE_BRANDS = 6;
@@ -73,7 +75,9 @@ export function EquipmentCategoryFilters({
   bounds,
   config,
   onChange,
-  onReset
+  onReset,
+  className,
+  showReset = true
 }: Props) {
   const priceMinId = useId();
   const priceMaxId = useId();
@@ -172,7 +176,10 @@ export function EquipmentCategoryFilters({
   const maxPercent = ((filters.priceMax - bounds.min) / rangeSpan) * 100;
 
   return (
-    <aside className="store-equipment-listing-filters" aria-label="Фильтры каталога">
+    <aside
+      className={clsx("store-equipment-listing-filters", className)}
+      aria-label="Фильтры каталога"
+    >
       {showPriceFilter ? (
       <div className="store-equipment-listing-filters__group">
         <button
@@ -398,10 +405,12 @@ export function EquipmentCategoryFilters({
         </FilterCollapse>
       </div>
 
-      <button type="button" className="store-equipment-listing-filters__reset" onClick={handleReset}>
-        <RotateCcw size={16} aria-hidden />
-        Сбросить фильтры
-      </button>
+      {showReset ? (
+        <button type="button" className="store-equipment-listing-filters__reset" onClick={handleReset}>
+          <RotateCcw size={16} aria-hidden />
+          Сбросить фильтры
+        </button>
+      ) : null}
     </aside>
   );
 }

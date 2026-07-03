@@ -1,9 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 import { PopularProductsBlock } from "@/components/home/PopularProductsBlock";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { CATALOG_ROUTES } from "@/lib/catalog";
+import { getMobileMetalworkingBannerSrc } from "@/lib/mobile-banners";
+
+const METALWORKING_BANNER = "/media/metalloobr.png";
 
 type Props = {
   popularServices: CatalogProduct[];
@@ -14,12 +17,10 @@ export function MetalworkingPromoSection({ popularServices }: Props) {
     <section className="store-metal-hero" aria-labelledby="store-metal-hero-heading">
       <div className="store-metal-hero__intro">
         <div className="store-metal-hero__banner">
-          <Image
-            src="/media/metalloobr.png"
-            alt=""
+          <ResponsiveBannerImage
+            desktopSrc={METALWORKING_BANNER}
+            mobileSrc={getMobileMetalworkingBannerSrc()}
             className="store-metal-hero__bg"
-            fill
-            sizes="100vw"
           />
           <div className="store-metal-hero__container">
             <div className="store-metal-hero__copy">

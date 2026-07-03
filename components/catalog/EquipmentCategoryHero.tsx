@@ -1,5 +1,6 @@
 import Link from "next/link";
 import clsx from "clsx";
+import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 
 export type CategoryBreadcrumb = {
   label: string;
@@ -8,6 +9,7 @@ export type CategoryBreadcrumb = {
 
 type Props = {
   bannerSrc: string;
+  mobileBannerSrc?: string | null;
   title: string;
   lead: string;
   breadcrumbs: CategoryBreadcrumb[];
@@ -15,8 +17,26 @@ type Props = {
   subtitle?: string;
 };
 
+function CategoryBreadcrumbs({ breadcrumbs }: { breadcrumbs: CategoryBreadcrumb[] }) {
+  return (
+    <nav className="store-equipment-catalog-breadcrumbs" aria-label="Хлебные крошки">
+      {breadcrumbs.map((item, index) => (
+        <span key={`${item.label}-${index}`} className="store-equipment-catalog-breadcrumbs__item">
+          {item.href ? (
+            <Link href={item.href}>{item.label}</Link>
+          ) : (
+            <span>{item.label}</span>
+          )}
+          {index < breadcrumbs.length - 1 ? <span aria-hidden>/</span> : null}
+        </span>
+      ))}
+    </nav>
+  );
+}
+
 export function EquipmentCategoryHero({
   bannerSrc,
+  mobileBannerSrc,
   title,
   lead,
   breadcrumbs,
@@ -25,27 +45,25 @@ export function EquipmentCategoryHero({
 }: Props) {
   return (
     <header className="store-equipment-catalog-hero">
+      <div className="store-equipment-catalog-hero__crumbs-bar">
+        <CategoryBreadcrumbs breadcrumbs={breadcrumbs} />
+      </div>
       <div
         className={clsx(
           "store-equipment-catalog-hero__banner",
           bannerModifier && `store-equipment-catalog-hero__banner--${bannerModifier}`
         )}
-        style={{ backgroundImage: `url("${bannerSrc}")` }}
       >
+        <ResponsiveBannerImage
+          desktopSrc={bannerSrc}
+          mobileSrc={mobileBannerSrc}
+          className="store-equipment-catalog-hero__bg"
+        />
         <div className="store-equipment-catalog-hero__container">
           <div className="store-equipment-catalog-hero__copy">
-            <nav className="store-equipment-catalog-breadcrumbs" aria-label="Хлебные крошки">
-              {breadcrumbs.map((item, index) => (
-                <span key={`${item.label}-${index}`} className="store-equipment-catalog-breadcrumbs__item">
-                  {item.href ? (
-                    <Link href={item.href}>{item.label}</Link>
-                  ) : (
-                    <span>{item.label}</span>
-                  )}
-                  {index < breadcrumbs.length - 1 ? <span aria-hidden>/</span> : null}
-                </span>
-              ))}
-            </nav>
+            <div className="store-equipment-catalog-hero__crumbs-in-banner">
+              <CategoryBreadcrumbs breadcrumbs={breadcrumbs} />
+            </div>
             <div className="store-equipment-catalog-hero__heading">
               <h1 className="store-equipment-catalog-hero__title">{title}</h1>
               {subtitle ? (

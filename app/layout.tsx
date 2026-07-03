@@ -5,6 +5,13 @@ import { SiteAnalytics } from "@/components/SiteAnalytics";
 import { YANDEX_METRIKA_BOOTSTRAP } from "@/lib/analytics/yandex-metrika";
 import "./globals.css";
 import "./store-redesign.css";
+import "./mobile-store.css";
+
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover"
+};
 
 export const metadata: Metadata = {
   title: "ГазСнаб | Производство газового оборудования",

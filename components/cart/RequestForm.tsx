@@ -6,6 +6,7 @@ import { FormEvent } from "react";
 import { ContactMethodField } from "@/components/ContactMethodField";
 import { NameInput } from "@/components/NameInput";
 import { PhoneInput } from "@/components/PhoneInput";
+import { CATALOG_ROUTES } from "@/lib/catalog";
 
 type Props = {
   pending: boolean;
@@ -61,7 +62,7 @@ export function RequestForm({ pending, onSubmit }: Props) {
           <Send size={18} aria-hidden />
           {pending ? "Отправляем…" : "Отправить заявку"}
         </button>
-        <Link className="button secondary cart-continue-btn" href="/">
+        <Link className="button secondary cart-continue-btn" href={CATALOG_ROUTES.equipment}>
           Продолжить подбор
         </Link>
 

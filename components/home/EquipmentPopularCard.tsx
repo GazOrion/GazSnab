@@ -4,6 +4,7 @@ import Link from "next/link";
 import { Check } from "lucide-react";
 import { useEffect, useState } from "react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
+import { ServiceOrderButton } from "@/components/ServiceOrderButton";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { POPULAR_CARD_COVER_IMAGE_SLUGS } from "@/lib/catalog-data";
 import { getProductPriceLabel } from "@/lib/product-price-label";
@@ -83,7 +84,11 @@ export function EquipmentPopularCard({ product }: Props) {
         </div>
 
         <div className="store-equipment-popular-card__footer">
-          <CartQuantityControl product={cartProduct} variant="equipment" />
+          {isService ? (
+            <ServiceOrderButton product={cartProduct} variant="equipment" />
+          ) : (
+            <CartQuantityControl product={cartProduct} variant="equipment" />
+          )}
         </div>
       </div>
     </article>

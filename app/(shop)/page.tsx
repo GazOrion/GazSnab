@@ -7,14 +7,13 @@ import { PromoHomeSections } from "@/components/home/PromoHomeSections";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { loadPromoPageData } from "@/lib/catalog-data";
+import { buildPageMetadata } from "@/lib/site-seo";
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "ОРИОН ГАЗСНАБ — газовое оборудование и металлообработка",
-  description:
-    "Поставка газового оборудования, металлообработка и сервис для промышленных объектов в Ростовской области"
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/");
+}
 
 export default async function Home() {
   let promoData;

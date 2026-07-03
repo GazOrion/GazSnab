@@ -3,10 +3,11 @@ import { CartPage } from "@/components/cart/CartPage";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
-export const metadata: Metadata = {
-  title: "Корзина | ГазСнаб",
-  description: "Оформление заявки на газовое оборудование и услуги"
-};
+import { buildPageMetadata } from "@/lib/site-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/cart");
+}
 
 export default function CartRoutePage() {
   return (

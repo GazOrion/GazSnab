@@ -1,6 +1,8 @@
 import Link from "next/link";
+import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 import { CATALOG_ROUTES } from "@/lib/catalog";
 import { getMainBannerSrc } from "@/lib/main-banner";
+import { getMobileMainBannerSrc } from "@/lib/mobile-banners";
 import type { CatalogProduct } from "@/components/ProductCard";
 import type { EquipmentPromoCategory } from "@/lib/catalog-data";
 import { EquipmentCategoryStrip } from "./EquipmentCategoryStrip";
@@ -17,12 +19,10 @@ export function HeroSection({ categories, popularProducts }: Props) {
     <section className="store-hero-industrial" aria-labelledby="store-hero-heading">
       <div className="store-hero-industrial__main">
         <div className="store-hero-industrial__banner">
-          {/* eslint-disable-next-line @next/next/no-img-element -- static banner, no optimizer cache */}
-          <img
-            src={getMainBannerSrc()}
-            alt=""
+          <ResponsiveBannerImage
+            desktopSrc={getMainBannerSrc()}
+            mobileSrc={getMobileMainBannerSrc()}
             className="store-hero-industrial__bg"
-            decoding="async"
             fetchPriority="high"
           />
           <div className="store-hero-industrial__container">

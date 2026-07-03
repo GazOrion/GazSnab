@@ -2367,15 +2367,20 @@ button { cursor: pointer; }
 }
 
 .product-detail-sections__nav {
-  position: sticky;
-  top: 84px;
-  z-index: 15;
   display: flex;
   flex-wrap: wrap;
   gap: 8px 32px;
   padding: 8px 0 0;
   background: #fff;
   border-bottom: 1px solid var(--line);
+}
+
+@media (min-width: 769px) {
+  .product-detail-sections__nav {
+    position: sticky;
+    top: 84px;
+    z-index: 15;
+  }
 }
 
 .product-detail-sections__link {
@@ -4182,6 +4187,102 @@ button { cursor: pointer; }
   line-height: 1.55;
 }
 
+.order-success-dialog--form {
+  width: min(480px, 100%);
+  padding: 28px 24px 24px;
+  text-align: left;
+}
+
+.contact-request-modal__title {
+  margin: 0 0 8px;
+  padding-right: 28px;
+  font-size: clamp(22px, 4vw, 28px);
+  color: var(--blue-950);
+}
+
+.contact-request-modal__desc {
+  margin: 0 0 16px;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.contact-request-modal__error {
+  margin: 0 0 12px;
+  font-size: 14px;
+  color: #b42318;
+}
+
+.contact-request-modal__form {
+  display: grid;
+  gap: 14px;
+}
+
+.contact-request-modal__field {
+  display: grid;
+  gap: 6px;
+}
+
+.contact-request-modal__field > span {
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.contact-request-modal__input {
+  width: 100%;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: 14px;
+  color: #1a202c;
+  background: #fff;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.contact-request-modal__input:focus {
+  outline: none;
+  border-color: rgba(13, 59, 130, 0.45);
+  box-shadow: 0 0 0 3px rgba(13, 59, 130, 0.12);
+}
+
+.contact-request-modal__input:disabled {
+  opacity: 0.65;
+}
+
+.contact-request-modal__consent {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  cursor: pointer;
+}
+
+.contact-request-modal__consent-check {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+
+.contact-request-modal__consent-text {
+  font-size: 12px;
+  line-height: 1.45;
+  color: #64748b;
+}
+
+.contact-request-modal__consent-text a {
+  color: var(--blue-700);
+  text-decoration: underline;
+}
+
+.contact-request-modal__submit {
+  width: 100%;
+  justify-content: center;
+}
+
+.contact-request-modal__field.contact-method-field .contact-method-field__select {
+  min-height: 42px;
+  padding-right: 36px;
+}
+
 .order-track-box {
   margin-top: 8px;
   padding: 16px;
@@ -5401,6 +5502,184 @@ button { cursor: pointer; }
   gap: 12px;
 }
 
+.admin-step-buttons--three {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-seo {
+  display: grid;
+  gap: 16px;
+  padding: 20px;
+}
+
+.admin-seo-search {
+  display: grid;
+  gap: 6px;
+}
+
+.admin-seo-search__input {
+  width: 100%;
+  max-width: 520px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  font: inherit;
+}
+
+.admin-seo-search__count {
+  font-size: 0.9rem;
+}
+
+.admin-seo-table-wrap {
+  overflow: hidden;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: #fff;
+}
+
+.admin-seo-table {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+}
+
+.admin-seo-table th,
+.admin-seo-table td {
+  vertical-align: top;
+  border-bottom: 1px solid var(--line);
+  text-align: left;
+  overflow: hidden;
+}
+
+.admin-seo-table thead th {
+  position: relative;
+  padding: 12px 14px;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: #64748b;
+  background: #f8fafc;
+}
+
+.admin-seo-table__head-cell {
+  padding-right: 12px;
+}
+
+.admin-seo-table__col-resizer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: col-resize;
+  touch-action: none;
+}
+
+.admin-seo-table__col-resizer::after {
+  content: "";
+  position: absolute;
+  top: 18%;
+  right: 4px;
+  width: 2px;
+  height: 64%;
+  border-radius: 999px;
+  background: #cbd5e1;
+  transition: background 0.15s ease;
+}
+
+.admin-seo-table__col-resizer:hover::after,
+body.admin-seo-col-resizing .admin-seo-table__col-resizer::after {
+  background: #3b82f6;
+}
+
+body.admin-seo-col-resizing {
+  cursor: col-resize;
+  user-select: none;
+}
+
+.admin-seo-table tbody th,
+.admin-seo-table tbody td {
+  padding: 0;
+}
+
+.admin-seo-table__path {
+  padding: 12px 14px;
+  background: #fbfdff;
+}
+
+.admin-seo-table__label {
+  display: block;
+  margin-bottom: 4px;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--blue-950);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-seo-table__path code {
+  display: block;
+  font-size: 12px;
+  color: var(--blue-700);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-seo-table__cell {
+  padding: 10px 14px;
+  cursor: text;
+}
+
+.admin-seo-table__cell.is-editing {
+  padding: 8px 10px;
+  background: #fffdf8;
+  overflow: visible;
+}
+
+.admin-seo-table__value {
+  display: block;
+  font-size: 14px;
+  line-height: 1.45;
+  color: #1e293b;
+}
+
+.admin-seo-table__value--title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.admin-seo-table__value--desc {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  white-space: normal;
+}
+
+.admin-seo-table__input,
+.admin-seo-table__textarea {
+  width: 100%;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 8px 10px;
+  font: inherit;
+  color: #0f172a;
+  background: #fff;
+}
+
+.admin-seo-table__textarea {
+  resize: vertical;
+  min-height: 72px;
+}
+
 .admin-step-button {
   display: grid;
   gap: 6px;
@@ -5500,6 +5779,31 @@ button { cursor: pointer; }
 
 .admin-panel-title {
   margin-bottom: 16px;
+}
+
+.admin-back-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 0 0 10px;
+  padding: 0;
+  border: none;
+  background: none;
+  color: var(--blue-700);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.admin-back-link:hover {
+  color: var(--blue-900);
+}
+
+.admin-saved-notice {
+  margin: 0;
+  color: #15803d;
+  font-size: 14px;
+  font-weight: 600;
 }
 
 .admin-form-section {
@@ -5903,7 +6207,8 @@ button { cursor: pointer; }
     grid-template-columns: 1fr;
   }
 
-  .admin-step-buttons {
+  .admin-step-buttons,
+  .admin-step-buttons--three {
     grid-template-columns: 1fr;
   }
 

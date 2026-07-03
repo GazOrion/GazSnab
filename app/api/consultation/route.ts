@@ -23,15 +23,16 @@ const consultationSchema = z
   })
   .superRefine((data, ctx) => {
     const source = data.source ?? "home";
-    if (source === "phone-fab") return;
 
-    const name = data.customerName?.trim() ?? "";
-    if (name.length < 2) {
-      ctx.addIssue({
-        code: z.ZodIssueCode.custom,
-        message: "Укажите имя.",
-        path: ["customerName"]
-      });
+    if (source !== "phone-fab") {
+      const name = data.customerName?.trim() ?? "";
+      if (name.length < 2) {
+        ctx.addIssue({
+          code: z.ZodIssueCode.custom,
+          message: "Укажите имя.",
+          path: ["customerName"]
+        });
+      }
     }
 
     if (!data.contactMethod) {
@@ -66,7 +67,7 @@ export async function POST(request: Request) {
     source === "phone-fab"
       ? "Заявка на звонок"
       : parsed.data.customerName!.trim();
-  const contactMethod = source === "phone-fab" ? "phone" : parsed.data.contactMethod!;
+  const contactMethod = parsed.data.contactMethod!;
   const consultationMessage =
     source === "phone-fab"
       ? "Заявка на обратный звонок из виджета «Заказать звонок»."

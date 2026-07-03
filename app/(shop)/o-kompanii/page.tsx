@@ -4,11 +4,11 @@ import { CompanyRequisites } from "@/components/CompanyRequisites";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { company } from "@/lib/company";
+import { buildPageMetadata } from "@/lib/site-seo";
 
-export const metadata: Metadata = {
-  title: "О компании | ГазСнаб",
-  description: `${company.name} — производство, поставка и сервис`
-};
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/o-kompanii");
+}
 
 export default function CompanyPage() {
   return (

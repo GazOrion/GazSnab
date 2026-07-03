@@ -15,8 +15,8 @@ export function SiteFooter() {
             Оставить заявку
           </Link>
         </div>
-        <div>
-          <strong>Телефон</strong>
+        <div className="store-footer-block">
+          <strong className="store-footer-block__title">Телефон</strong>
           <div className="store-footer-phones">
             {company.phones.map((entry) => (
               <p key={entry.number} className="store-footer-phone">
@@ -26,15 +26,15 @@ export function SiteFooter() {
             ))}
           </div>
         </div>
-        <div>
-          <strong>Email</strong>
-          <p>
+        <div className="store-footer-block">
+          <strong className="store-footer-block__title">Email</strong>
+          <p className="store-footer-block__value">
             <a href={`mailto:${company.email}`}>{company.email}</a>
           </p>
         </div>
-        <div>
-          <strong>Адрес</strong>
-          <p>Ростов-на-Дону, 14-я Линия, 30/48</p>
+        <div className="store-footer-block">
+          <strong className="store-footer-block__title">Адрес</strong>
+          <p className="store-footer-block__value">Ростов-на-Дону, 14-я Линия, 30/48</p>
         </div>
       </div>
       <div className="container store-footer-legal">

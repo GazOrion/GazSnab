@@ -4,10 +4,11 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 import { company } from "@/lib/company";
 
-export const metadata: Metadata = {
-  title: "Гарантии и возврат | ГазСнаб",
-  description: "Гарантийные обязательства и условия возврата поставляемого оборудования"
-};
+import { buildPageMetadata } from "@/lib/site-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/garantii");
+}
 
 const warrantyTerms = [
   "Гарантия распространяется на оборудование при соблюдении условий транспортировки, хранения и монтажа по документации производителя.",

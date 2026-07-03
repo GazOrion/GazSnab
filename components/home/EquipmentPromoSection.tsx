@@ -1,9 +1,12 @@
-import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 import { PopularProductsBlock } from "@/components/home/PopularProductsBlock";
-import { CATALOG_ROUTES } from "@/lib/catalog";
 import type { CatalogProduct } from "@/components/ProductCard";
+import { CATALOG_ROUTES } from "@/lib/catalog";
+import { getMobileEquipmentPromoBannerSrc } from "@/lib/mobile-banners";
+
+const EQUIPMENT_PROMO_BANNER = "/media/gotovoe-oborudovanie.png";
 
 type Props = {
   popularProducts: CatalogProduct[];
@@ -14,12 +17,10 @@ export function EquipmentPromoSection({ popularProducts }: Props) {
     <section className="store-equipment-hero" aria-labelledby="store-equipment-hero-heading">
       <div className="store-equipment-hero__intro">
         <div className="store-equipment-hero__banner">
-          <Image
-            src="/media/gotovoe-oborudovanie.png"
-            alt=""
+          <ResponsiveBannerImage
+            desktopSrc={EQUIPMENT_PROMO_BANNER}
+            mobileSrc={getMobileEquipmentPromoBannerSrc()}
             className="store-equipment-hero__bg"
-            fill
-            sizes="100vw"
           />
           <div className="store-equipment-hero__container">
             <div className="store-equipment-hero__copy">

@@ -6,6 +6,11 @@ import {
   getEquipmentCategoryBannerMap,
   getServicesCatalogBannerSrc
 } from "@/lib/catalog-banner";
+import {
+  getMobileCatalogBannerSrc,
+  getMobileEquipmentCategoryBannerMap,
+  getMobileServicesCatalogBannerSrc
+} from "@/lib/mobile-banners";
 import { CatalogSectionClient } from "./CatalogSectionClient";
 
 type Props = {
@@ -31,14 +36,24 @@ export function CatalogSection(props: Props) {
       : props.variant === "services"
         ? getServicesCatalogBannerSrc() ?? undefined
         : undefined;
+  const catalogMobileBannerSrc =
+    props.variant === "equipment"
+      ? getMobileCatalogBannerSrc() ?? undefined
+      : props.variant === "services"
+        ? getMobileServicesCatalogBannerSrc() ?? undefined
+        : undefined;
   const equipmentCategoryBanners =
     props.variant === "equipment" ? getEquipmentCategoryBannerMap() : {};
+  const equipmentCategoryMobileBanners =
+    props.variant === "equipment" ? getMobileEquipmentCategoryBannerMap() : {};
 
   return (
     <CatalogSectionClient
       {...props}
       catalogBannerSrc={catalogBannerSrc}
+      catalogMobileBannerSrc={catalogMobileBannerSrc}
       equipmentCategoryBanners={equipmentCategoryBanners}
+      equipmentCategoryMobileBanners={equipmentCategoryMobileBanners}
     />
   );
 }

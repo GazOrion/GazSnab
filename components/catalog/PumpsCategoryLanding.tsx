@@ -12,9 +12,10 @@ import { buildPumpSubcategoryClusters } from "@/lib/pumps-catalog";
 type Props = {
   products: CatalogProduct[];
   bannerSrc: string;
+  mobileBannerSrc?: string | null;
 };
 
-export function PumpsCategoryLanding({ products, bannerSrc }: Props) {
+export function PumpsCategoryLanding({ products, bannerSrc, mobileBannerSrc }: Props) {
   const presentation = clusterPresentation(PUMPS_CATEGORY, PRODUCT_KIND.GOODS);
   const subcategoryClusters = useMemo(() => buildPumpSubcategoryClusters(products), [products]);
 
@@ -22,6 +23,7 @@ export function PumpsCategoryLanding({ products, bannerSrc }: Props) {
     <div className="store-equipment-category-page store-pumps-landing">
       <EquipmentCategoryHero
         bannerSrc={bannerSrc}
+        mobileBannerSrc={mobileBannerSrc}
         title={presentation.title}
         lead={presentation.teaser}
         bannerModifier="pumps"
@@ -32,18 +34,20 @@ export function PumpsCategoryLanding({ products, bannerSrc }: Props) {
         ]}
       />
 
-      <div className="container store-pumps-landing__subcategories-wrap">
+      <div className="store-pumps-landing__subcategories-wrap">
         <EquipmentCategoryGrid
           clusters={subcategoryClusters}
           kind={PRODUCT_KIND.GOODS}
-          layout="grid"
+          layout="list"
         />
       </div>
 
       <EquipmentCategoryListing
+        className="store-pumps-landing__listing"
         category={PUMPS_CATEGORY}
         products={products}
         bannerSrc={bannerSrc}
+        mobileBannerSrc={mobileBannerSrc}
         hideHero
         listingTitle="Все насосы"
       />

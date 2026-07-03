@@ -12,9 +12,10 @@ import { GAS_METERS_CATEGORY } from "@/lib/equipment-category-config";
 type Props = {
   products: CatalogProduct[];
   bannerSrc: string;
+  mobileBannerSrc?: string | null;
 };
 
-export function GasMetersCategoryLanding({ products, bannerSrc }: Props) {
+export function GasMetersCategoryLanding({ products, bannerSrc, mobileBannerSrc }: Props) {
   const presentation = clusterPresentation(GAS_METERS_CATEGORY, PRODUCT_KIND.GOODS);
   const subcategoryClusters = useMemo(
     () => buildGasMeterSubcategoryClusters(products),
@@ -25,6 +26,7 @@ export function GasMetersCategoryLanding({ products, bannerSrc }: Props) {
     <div className="store-equipment-category-page store-gas-meters-landing">
       <EquipmentCategoryHero
         bannerSrc={bannerSrc}
+        mobileBannerSrc={mobileBannerSrc}
         title={presentation.title}
         lead={presentation.teaser}
         bannerModifier="gas-meters"
@@ -35,18 +37,20 @@ export function GasMetersCategoryLanding({ products, bannerSrc }: Props) {
         ]}
       />
 
-      <div className="container store-gas-meters-landing__subcategories-wrap">
+      <div className="store-gas-meters-landing__subcategories-wrap">
         <EquipmentCategoryGrid
           clusters={subcategoryClusters}
           kind={PRODUCT_KIND.GOODS}
-          layout="grid"
+          layout="list"
         />
       </div>
 
       <EquipmentCategoryListing
+        className="store-gas-meters-landing__listing"
         category={GAS_METERS_CATEGORY}
         products={products}
         bannerSrc={bannerSrc}
+        mobileBannerSrc={mobileBannerSrc}
         hideHero
         listingTitle="Все счётчики газа"
       />

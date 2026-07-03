@@ -13,6 +13,11 @@ import {
   resolveEquipmentClusterImage,
   SERVICE_CATEGORY_METAL
 } from "@/lib/catalog";
+import {
+  isRemovedEquipmentCategory,
+  normalizeEquipmentCategory,
+  SENSORS_CATEGORY
+} from "@/lib/equipment-category-config";
 import { prisma } from "@/lib/prisma";
 import { HEADER_SERVICES_CHILDREN } from "@/lib/shop-nav";
 
@@ -109,11 +114,20 @@ function buildSectionWhere(filters?: SectionCatalogFilters): Prisma.ProductWhere
       }
     : {};
 
+  const categoryFilter = (() => {
+    if (!filters?.category) return {};
+    const category = normalizeEquipmentCategory(filters.category);
+    if (category === SENSORS_CATEGORY) {
+      return { category: { in: [SENSORS_CATEGORY, "Газорегуляторные пункты"] } };
+    }
+    return { category };
+  })();
+
   return {
     inStock: true,
     slug: { not: CONSULTATION_PRODUCT_SLUG },
     ...searchFilter,
-    ...(filters?.category ? { category: filters.category } : {})
+    ...categoryFilter
   };
 }
 
@@ -423,20 +437,52 @@ export async function loadHomeCatalogData(filters: HomeCatalogFilters): Promise<
         ])
       );
 
-      return stats
+      const rows = stats
+        .filter((row) => !(kind === PRODUCT_KIND.GOODS && isRemovedEquipmentCategory(row.category)))
         .map((row) => {
-          const category = categoryByKey.get(`${kind}:${row.category}`);
+          const normalizedName =
+            kind === PRODUCT_KIND.GOODS ? normalizeEquipmentCategory(row.category) : row.category;
+          const managedCategory =
+            categoryByKey.get(`${kind}:${normalizedName}`) ??
+            categoryByKey.get(`${kind}:${row.category}`);
+          const minPrice = minPriceByCategory.get(row.category) ?? null;
+
           return {
-            name: row.category,
+            name: normalizedName,
             count: row._count.id,
-            imageUrl: category?.imageUrl ?? imageByCategory.get(row.category) ?? null,
-            minPrice: minPriceByCategory.get(row.category) ?? null,
-            label: category?.title,
-            teaser: category?.teaser,
-            hubId: category ? `managed-${category.id}` : undefined,
-            sortOrder: category?.sortOrder ?? Number.MAX_SAFE_INTEGER
+            imageUrl:
+              managedCategory?.imageUrl ?? imageByCategory.get(row.category) ?? null,
+            minPrice,
+            label: managedCategory?.title,
+            teaser: managedCategory?.teaser,
+            hubId: managedCategory ? `managed-${managedCategory.id}` : undefined,
+            sortOrder: managedCategory?.sortOrder ?? Number.MAX_SAFE_INTEGER
           };
-        })
+        });
+
+      const merged = new Map<string, (typeof rows)[number]>();
+      for (const row of rows) {
+        const existing = merged.get(row.name);
+        if (!existing) {
+          merged.set(row.name, row);
+          continue;
+        }
+        merged.set(row.name, {
+          ...existing,
+          count: existing.count + row.count,
+          minPrice:
+            existing.minPrice != null && row.minPrice != null
+              ? Math.min(existing.minPrice, row.minPrice)
+              : (existing.minPrice ?? row.minPrice),
+          imageUrl: existing.imageUrl ?? row.imageUrl,
+          label: existing.label ?? row.label,
+          teaser: existing.teaser ?? row.teaser,
+          hubId: existing.hubId ?? row.hubId,
+          sortOrder: Math.min(existing.sortOrder, row.sortOrder)
+        });
+      }
+
+      return [...merged.values()]
         .sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name, "ru"))
         .map((cluster) => ({
           name: cluster.name,

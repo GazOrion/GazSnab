@@ -6,6 +6,8 @@ import { ArrowLeft, Eye, EyeOff, Pencil, Plus, Search, Trash2 } from "lucide-rea
 import { formatPrice } from "@/lib/format";
 import { slugify } from "@/lib/slugify";
 import { AdminMediaUploader, type AdminMediaItem } from "@/components/AdminMediaUploader";
+import { AdminSeo } from "@/components/AdminSeo";
+import type { SeoPageRow } from "@/lib/site-seo";
 
 export type AdminCategoryOption = {
   id: string;
@@ -120,13 +122,15 @@ function getCategoryLabel(
 
 export function AdminProducts({
   products,
-  categories
+  categories,
+  seoPages
 }: {
   products: Product[];
   categories: AdminCategoryOption[];
+  seoPages: SeoPageRow[];
 }) {
   const router = useRouter();
-  const [selectedKind, setSelectedKind] = useState<"Товар" | "Услуга" | null>(null);
+  const [selectedKind, setSelectedKind] = useState<"Товар" | "Услуга" | "seo" | null>(null);
   const [mode, setMode] = useState<"list" | "edit">("list");
   const [editing, setEditing] = useState<Product>(createEmptyProduct("Товар"));
   const [specRows, setSpecRows] = useState<SpecRow[]>(specsToRows({}));
@@ -183,11 +187,13 @@ export function AdminProducts({
     listScrollYRef.current = window.scrollY;
   }
 
-  function pickKind(kind: "Товар" | "Услуга") {
+  function pickKind(kind: "Товар" | "Услуга" | "seo") {
     setSelectedKind(kind);
-    setMode("list");
-    setQuery("");
-    setCategoryFilter("all");
+    if (kind !== "seo") {
+      setMode("list");
+      setQuery("");
+      setCategoryFilter("all");
+    }
     setError("");
   }
 
@@ -345,7 +351,7 @@ export function AdminProducts({
             <h2>Что хотите добавить или отредактировать?</h2>
           </div>
         </div>
-        <div className="admin-step-buttons">
+        <div className="admin-step-buttons admin-step-buttons--three">
           <button className="button admin-step-button" type="button" onClick={() => pickKind("Товар")}>
             <strong>Товары</strong>
             <span>Список товаров, редактирование и скрытие из каталога.</span>
@@ -354,9 +360,17 @@ export function AdminProducts({
             <strong>Услуги</strong>
             <span>Список услуг, редактирование и скрытие из каталога.</span>
           </button>
+          <button className="button admin-step-button" type="button" onClick={() => pickKind("seo")}>
+            <strong>SEO</strong>
+            <span>Title и description страниц сайта.</span>
+          </button>
         </div>
       </section>
     );
+  }
+
+  if (selectedKind === "seo") {
+    return <AdminSeo initialPages={seoPages} onBack={() => setSelectedKind(null)} />;
   }
 
   if (mode === "list") {

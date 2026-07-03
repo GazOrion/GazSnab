@@ -1,6 +1,6 @@
 import fs from "fs";
 import path from "path";
-import { EQUIPMENT_CLUSTER_ORDER } from "@/lib/catalog";
+import { EQUIPMENT_CLUSTER_ORDER, SENSORS_CATEGORY } from "@/lib/catalog";
 
 const mediaDir = path.join(process.cwd(), "public", "media");
 
@@ -10,9 +10,8 @@ export const EQUIPMENT_CATEGORY_BANNER_FILES: Record<string, string> = {
   Телеметрия: "telemetry-banner.webp",
   ПО: "software-banner.webp",
   "Дополнительное оборудование": "additional-equipment-banner.webp",
-  "Газорегуляторные пункты": "regulators-banner.webp",
+  [SENSORS_CATEGORY]: "regulators-banner.webp",
   ГРПШ: "gas-metering-units-banner.webp",
-  "Узлы учета": "gas-alarm-banner.webp",
   Фильтры: "filters-banner.webp",
   Насосы: "pumps-banner.webp",
   "Краны шаровые": "ball-valves-banner.webp",

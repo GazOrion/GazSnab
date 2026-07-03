@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { ShoppingCart } from "lucide-react";
+import { CATALOG_ROUTES } from "@/lib/catalog";
 
 export function EmptyCartState() {
   return (
@@ -11,7 +12,7 @@ export function EmptyCartState() {
       <p className="muted">
         Добавьте позиции из каталога, чтобы отправить заявку менеджеру.
       </p>
-      <Link className="button" href="/">
+      <Link className="button" href={CATALOG_ROUTES.equipment}>
         Перейти в каталог
       </Link>
     </section>

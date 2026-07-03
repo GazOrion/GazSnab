@@ -40,6 +40,15 @@
   background-color: #fff;
 }
 
+.store-hero-industrial__banner > picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .store-hero-industrial__bg {
   position: absolute;
   inset: 0;
@@ -413,9 +422,20 @@
   background: #1a2332;
 }
 
+.store-metal-hero__banner > picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .store-metal-hero__bg {
-  width: 100% !important;
-  height: 100% !important;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: center center;
   z-index: 0;
@@ -513,7 +533,20 @@
   background: #fff;
 }
 
+.store-equipment-hero__banner > picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
 .store-equipment-hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
   object-fit: cover;
   object-position: right center;
   z-index: 0;
@@ -876,6 +909,30 @@
 }
 
 .store-equipment-popular-card__cart:hover {
+  background: #e85f00;
+  transform: translateY(-1px);
+}
+
+.store-service-order-btn {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  min-width: 38px;
+  height: 38px;
+  padding: 0 14px;
+  border: none;
+  border-radius: 8px;
+  background: #ff6a00;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.2s ease, transform 0.2s ease;
+}
+
+.store-service-order-btn:hover {
   background: #e85f00;
   transform: translateY(-1px);
 }
@@ -1907,6 +1964,10 @@
   margin: 0 0 28px;
 }
 
+.store-equipment-catalog-hero__crumbs-bar {
+  display: none;
+}
+
 .store-equipment-catalog-hero__banner {
   --store-equipment-catalog-banner-h: clamp(280px, 34vw, 400px);
   position: relative;
@@ -1916,15 +1977,37 @@
   min-height: var(--store-equipment-catalog-banner-h);
   overflow: hidden;
   background-color: #fff;
-  background-repeat: no-repeat;
-  background-position: 92% 30%;
-  background-size: auto 108%;
 }
 
-/* Только фон — убираем белую полосу справа на services-banner.webp */
-.store-equipment-catalog-hero__banner--services {
-  background-position: 100% 28%;
-  background-size: auto 118%;
+.store-equipment-catalog-hero__banner > picture {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  display: block;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.store-equipment-catalog-hero__bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center center;
+  z-index: 0;
+}
+
+@media (min-width: 769px) {
+  .store-equipment-catalog-hero__bg {
+    object-fit: contain;
+    object-position: 92% 30%;
+  }
+
+  .store-equipment-catalog-hero__banner--services .store-equipment-catalog-hero__bg {
+    object-position: 100% 28%;
+  }
 }
 
 .store-equipment-catalog-hero__container {
@@ -2204,32 +2287,30 @@
   margin-bottom: 48px;
 }
 
-.store-equipment-catalog-hero__banner--gas-meters,
-.store-equipment-catalog-hero__banner--regulators,
-.store-equipment-catalog-hero__banner--gas-metering-units,
-.store-equipment-catalog-hero__banner--gas-alarms,
-.store-equipment-catalog-hero__banner--filters,
-.store-equipment-catalog-hero__banner--ball-valves,
-.store-equipment-catalog-hero__banner--gas-correctors,
-.store-equipment-catalog-hero__banner--software,
-.store-equipment-catalog-hero__banner--additional-equipment {
-  background-position: right 28%;
-  background-size: auto 105%;
-}
+@media (min-width: 769px) {
+  .store-equipment-catalog-hero__banner--gas-meters .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--sensors .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--gas-metering-units .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--filters .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--ball-valves .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--software .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--additional-equipment .store-equipment-catalog-hero__bg {
+    object-position: right 28%;
+  }
 
-.store-equipment-catalog-hero__banner--gas-correctors {
-  background-position: 100% center;
-  background-size: auto 108%;
-}
+  .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg {
+    object-position: 100% center;
+  }
 
-.store-equipment-catalog-hero__banner--pumps {
-  background-position: right center;
-  background-size: contain;
-}
+  .store-equipment-catalog-hero__banner--pumps .store-equipment-catalog-hero__bg {
+    object-position: right center;
+    object-fit: contain;
+  }
 
-.store-equipment-catalog-hero__banner--telemetry {
-  background-position: 100% 68%;
-  background-size: auto 96%;
+  .store-equipment-catalog-hero__banner--telemetry .store-equipment-catalog-hero__bg {
+    object-position: 100% 68%;
+  }
 }
 
 .store-catalog-equipment-category .store-equipment-catalog-hero__container {
@@ -3130,13 +3211,6 @@
 @media (max-width: 960px) {
   .store-equipment-catalog-hero__banner {
     --store-equipment-catalog-banner-h: clamp(240px, 52vw, 320px);
-    background-position: 82% 44%;
-    background-size: cover;
-  }
-
-  .store-equipment-catalog-hero__banner--services {
-    background-position: 100% 40%;
-    background-size: auto 115%;
   }
 
   .store-equipment-catalog-hero__copy {
@@ -3152,32 +3226,35 @@
     grid-template-columns: 1fr;
   }
 
-  .store-equipment-catalog-hero__banner--gas-meters,
-  .store-equipment-catalog-hero__banner--regulators,
-  .store-equipment-catalog-hero__banner--gas-metering-units,
-  .store-equipment-catalog-hero__banner--gas-alarms,
-  .store-equipment-catalog-hero__banner--filters,
-  .store-equipment-catalog-hero__banner--ball-valves,
-  .store-equipment-catalog-hero__banner--gas-correctors,
-  .store-equipment-catalog-hero__banner--software,
-  .store-equipment-catalog-hero__banner--additional-equipment {
-    background-position: right 40%;
-    background-size: auto 100%;
-  }
+  @media (min-width: 769px) {
+    .store-equipment-catalog-hero__bg {
+      object-fit: cover;
+      object-position: 82% 44%;
+    }
 
-  .store-equipment-catalog-hero__banner--gas-correctors {
-    background-position: 100% center;
-    background-size: auto 102%;
-  }
+    .store-equipment-catalog-hero__banner--gas-meters .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--sensors .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--gas-metering-units .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--filters .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--ball-valves .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--software .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--additional-equipment .store-equipment-catalog-hero__bg {
+      object-position: right 40%;
+    }
 
-  .store-equipment-catalog-hero__banner--pumps {
-    background-position: right center;
-    background-size: contain;
-  }
+    .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg {
+      object-position: 100% center;
+    }
 
-  .store-equipment-catalog-hero__banner--telemetry {
-    background-position: 100% 72%;
-    background-size: auto 92%;
+    .store-equipment-catalog-hero__banner--pumps .store-equipment-catalog-hero__bg {
+      object-position: right center;
+      object-fit: contain;
+    }
+
+    .store-equipment-catalog-hero__banner--telemetry .store-equipment-catalog-hero__bg {
+      object-position: 100% 72%;
+    }
   }
 
   .store-equipment-category-layout {
@@ -3205,16 +3282,12 @@
     justify-self: stretch;
   }
 
-  .store-equipment-listing-grid {
+  .store-equipment-listing-grid:not(.store-equipment-listing-grid--list) {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
 @media (max-width: 560px) {
-  .store-equipment-listing-grid {
-    grid-template-columns: 1fr;
-  }
-
   .store-equipment-listing-grid--list .store-equipment-listing-card {
     flex-direction: column;
   }
@@ -4612,7 +4685,34 @@
   display: flex;
   flex-direction: column;
   gap: 12px;
-  margin-top: 8px;
+  margin: 0;
+}
+
+.store-footer-block {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.store-footer-block__title {
+  display: block;
+  margin: 0 !important;
+  color: rgba(255, 255, 255, 0.45);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+.store-footer .footer-grid .store-footer-block__value {
+  margin: 0;
+  color: rgba(255, 255, 255, 0.9);
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+.store-footer-phone {
+  margin: 0;
 }
 
 .store-footer-phone-label {
@@ -4673,25 +4773,40 @@
 
 @media (max-width: 1100px) {
   .site-header-pro {
-    --store-header-pro-h: 132px;
+    --store-header-pro-h: 56px;
   }
 
   .header-pro-inner {
-    display: flex;
-    flex-wrap: wrap;
+    display: grid;
+    grid-template-columns: auto auto 1fr auto;
     align-items: center;
-    gap: 12px 16px;
-    min-height: 0;
-    padding: 12px 0 14px;
+    gap: 8px 4px;
+    min-height: var(--store-header-pro-h);
+    padding: 8px 0;
   }
 
   .header-pro-start {
-    flex: 1 1 auto;
-    min-width: 0;
+    display: contents;
   }
 
   .site-header-pro .header-menu-btn {
     display: inline-flex;
+    grid-column: 1;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 0;
+  }
+
+  .header-menu-btn-label {
+    display: none;
+  }
+
+  .header-pro-brand {
+    grid-column: 2;
+    justify-self: start;
+    width: auto;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .header-pro-nav {
@@ -4699,7 +4814,9 @@
   }
 
   .header-pro-actions {
-    margin-left: auto;
+    grid-column: 4;
+    margin-left: 0;
+    padding-right: 2px;
   }
 
   .header-pro-phone-block {
@@ -4708,6 +4825,28 @@
 
   .header-pro-brand-tagline {
     display: none;
+  }
+
+  .header-pro-cart-label {
+    display: none;
+  }
+
+  .header-pro-cart {
+    gap: 0;
+    min-width: 48px;
+    width: auto;
+    height: 44px;
+    padding: 0 14px;
+    justify-content: center;
+  }
+
+  .header-pro-icon-action {
+    width: 44px;
+    height: 44px;
+  }
+
+  .header-pro-user-actions {
+    gap: 6px;
   }
 }
 
@@ -5665,11 +5804,18 @@
 @media (max-width: 560px) {
   .consult-popup {
     right: 12px;
-    left: 12px;
-    width: auto;
+    left: auto;
+    width: max-content;
+    max-width: calc(100vw - 24px);
   }
 
   .consult-popup__card {
+    grid-template-columns: minmax(0, 1fr) clamp(118px, 32vw, 168px);
+    min-height: 148px;
+  }
+
+  .consult-popup__card--form,
+  .consult-popup__card--success {
     grid-template-columns: 1fr;
     min-height: 0;
   }
@@ -5678,21 +5824,39 @@
     justify-self: stretch;
     width: auto;
     max-width: none;
-    padding: 18px 16px 12px;
+    padding: 14px 8px 14px 14px;
   }
 
   .consult-popup--form .consult-popup__content,
   .consult-popup--success .consult-popup__content {
     max-width: none;
+    padding: 18px 16px 12px;
+  }
+
+  .consult-popup__title {
+    font-size: clamp(13px, 3.6vw, 15px);
+    padding-right: 28px;
+  }
+
+  .consult-popup__text {
+    font-size: 12px;
+    line-height: 1.35;
+  }
+
+  .consult-popup__cta {
+    width: 100%;
+    min-height: 40px;
+    padding: 0 12px;
+    font-size: 10px;
   }
 
   .consult-popup__media {
-    width: 100%;
-    height: 180px;
+    width: auto;
+    min-height: 148px;
   }
 
   .consult-popup__img {
     object-position: bottom center;
-    transform: translateY(12px);
+    transform: none;
   }
 }

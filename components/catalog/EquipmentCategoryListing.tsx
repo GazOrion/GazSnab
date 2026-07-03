@@ -4,6 +4,8 @@ import clsx from "clsx";
 import { useEffect, useMemo, useState } from "react";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { EquipmentCategoryFilters } from "@/components/catalog/EquipmentCategoryFilters";
+import { EquipmentCategoryFilterDrawer } from "@/components/catalog/EquipmentCategoryFilterDrawer";
+import { EquipmentCategoryMobileBar } from "@/components/catalog/EquipmentCategoryMobileBar";
 import { EquipmentCategoryHero } from "@/components/catalog/EquipmentCategoryHero";
 import {
   EquipmentCategoryListingToolbar,
@@ -22,6 +24,10 @@ import {
 } from "@/lib/equipment-category-config";
 import { sortEquipmentProducts } from "@/lib/equipment-catalog";
 import { prioritizeRaskoVkFittingsProducts } from "@/lib/rasko-accessories";
+import {
+  buildEquipmentFilterChips,
+  countActiveEquipmentFilters
+} from "@/lib/equipment-filter-chips";
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
 
 const PAGE_SIZE_OPTIONS = [12, 24, 48] as const;
@@ -30,22 +36,26 @@ type Props = {
   category: string;
   products: CatalogProduct[];
   bannerSrc: string;
+  mobileBannerSrc?: string | null;
   hideHero?: boolean;
   breadcrumbs?: CategoryBreadcrumb[];
   listingTitle?: string;
   heroTitle?: string;
   heroSubtitle?: string;
+  className?: string;
 };
 
 export function EquipmentCategoryListing({
   category,
   products,
   bannerSrc,
+  mobileBannerSrc,
   hideHero = false,
   breadcrumbs,
   listingTitle,
   heroTitle,
-  heroSubtitle
+  heroSubtitle,
+  className
 }: Props) {
   const config = getEquipmentCategoryConfig(category);
   const presentation = clusterPresentation(category, PRODUCT_KIND.GOODS);
@@ -58,8 +68,15 @@ export function EquipmentCategoryListing({
   );
   const [searchQuery, setSearchQuery] = useState("");
   const [layout, setLayout] = useState<ListingLayoutMode>("grid");
+
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      setLayout("list");
+    }
+  }, []);
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(12);
+  const [filtersOpen, setFiltersOpen] = useState(false);
 
   useEffect(() => {
     setFilters(createEquipmentCategoryFilterState(products));
@@ -91,6 +108,44 @@ export function EquipmentCategoryListing({
     setSearchQuery("");
   }
 
+  const activeFilterCount = useMemo(
+    () =>
+      config ? countActiveEquipmentFilters(filters, bounds, config, searchQuery) : 0,
+    [config, filters, bounds, searchQuery]
+  );
+
+  const filterChips = useMemo(() => {
+    if (!config) return [];
+    return buildEquipmentFilterChips(filters, bounds, config, searchQuery, {
+      onReset: () => {
+        setFilters(createEquipmentCategoryFilterState(products));
+        setSearchQuery("");
+      },
+      onRemoveSearch: () => setSearchQuery(""),
+      onResetPrice: () =>
+        setFilters((current) => ({
+          ...current,
+          priceMin: bounds.min,
+          priceMax: bounds.max
+        })),
+      onRemoveManufacturer: (brand) =>
+        setFilters((current) => ({
+          ...current,
+          manufacturers: current.manufacturers.filter((item) => item !== brand)
+        })),
+      onRemoveSectionFilter: (section, value) =>
+        setFilters((current) => {
+          const currentValues = current.sectionFilters[section] ?? [];
+          const nextValues = currentValues.filter((item) => item !== value);
+          const sectionFilters = { ...current.sectionFilters };
+          if (nextValues.length) sectionFilters[section] = nextValues;
+          else delete sectionFilters[section];
+          return { ...current, sectionFilters };
+        }),
+      onClearInStock: () => setFilters((current) => ({ ...current, inStockOnly: false }))
+    });
+  }, [config, filters, bounds, searchQuery, products]);
+
   const pageNumbers = useMemo(() => {
     if (totalPages <= 7) {
       return Array.from({ length: totalPages }, (_, index) => index + 1);
@@ -118,10 +173,11 @@ export function EquipmentCategoryListing({
   ];
 
   return (
-    <div className="store-equipment-category-page">
+    <div className={clsx("store-equipment-category-page", className)}>
       {!hideHero ? (
         <EquipmentCategoryHero
           bannerSrc={bannerSrc}
+          mobileBannerSrc={mobileBannerSrc}
           title={heroTitle ?? presentation.title}
           subtitle={heroSubtitle}
           lead={heroTitle ? `Раздел «${presentation.title}»` : presentation.teaser}
@@ -138,6 +194,7 @@ export function EquipmentCategoryListing({
         ) : null}
         <div className="store-equipment-category-layout">
           <EquipmentCategoryFilters
+            className="store-equipment-listing-filters--sidebar"
             products={products}
             filters={filters}
             bounds={bounds}
@@ -147,7 +204,17 @@ export function EquipmentCategoryListing({
           />
 
           <div className="store-equipment-category-main">
+            <EquipmentCategoryMobileBar
+              productCount={filteredProducts.length}
+              layout={layout}
+              onLayoutChange={setLayout}
+              activeFilterCount={activeFilterCount}
+              chips={filterChips}
+              onOpenFilters={() => setFiltersOpen(true)}
+            />
+
             <EquipmentCategoryListingToolbar
+              className="store-equipment-category-toolbar--desktop"
               totalCount={products.length}
               filteredCount={filteredProducts.length}
               searchQuery={searchQuery}
@@ -232,6 +299,19 @@ export function EquipmentCategoryListing({
             ) : null}
           </div>
         </div>
+
+        <EquipmentCategoryFilterDrawer
+          open={filtersOpen}
+          onClose={() => setFiltersOpen(false)}
+          products={products}
+          filters={filters}
+          bounds={bounds}
+          config={config}
+          onChange={setFilters}
+          onReset={resetFilters}
+          searchQuery={searchQuery}
+          onSearchQueryChange={setSearchQuery}
+        />
       </div>
     </div>
   );

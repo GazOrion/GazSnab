@@ -1,4 +1,7 @@
 import { GAS_METERING_UNITS_CARD_IMAGE } from "@/lib/gas-metering-units-media";
+import { SENSORS_CATEGORY } from "@/lib/equipment-category-config";
+
+export { SENSORS_CATEGORY } from "@/lib/equipment-category-config";
 
 export const PRODUCT_KIND = {
   GOODS: "Товар",
@@ -54,10 +57,9 @@ export type ClusterPresentation = {
 };
 
 export const EQUIPMENT_CLUSTER_PRESENTATION: Record<string, ClusterPresentation> = {
-  "Газорегуляторные пункты": {
-    title: "Датчики",
-    teaser:
-      "Газорегуляторные пункты и шкафы для стабильного давления газа на объекте любой мощности"
+  [SENSORS_CATEGORY]: {
+    title: SENSORS_CATEGORY,
+    teaser: "Датчики давления, импульсные и другие приборы для систем учёта и контроля газа"
   },
   "Счётчики газа": {
     title: "Счётчики газа",
@@ -82,11 +84,6 @@ export const EQUIPMENT_CLUSTER_PRESENTATION: Record<string, ClusterPresentation>
     title: "ГРПШ",
     teaser:
       "Прайс-лист и актуальные комплектации можно запросить у отдела продаж — подберём ГРПШ под ваш проект"
-  },
-  "Узлы учета": {
-    title: "Сигнализаторы загазованности",
-    teaser:
-      "Сигнализаторы загазованности для контроля концентрации газа в жилых и промышленных помещениях"
   },
   Фильтры: {
     title: "Фильтры и фитинги",
@@ -143,9 +140,8 @@ export const EQUIPMENT_CATEGORY_IMAGES: Partial<Record<string, string>> = {
   Телеметрия: "/media/products/smt/bpek-02-ck.webp",
   ПО: "/media/products/software/gazset-standart.webp",
   "Дополнительное оборудование": "/media/products/accessories/bpek-ek-cable.webp",
-  "Газорегуляторные пункты": "/media/categories/datchiki.webp",
+  [SENSORS_CATEGORY]: "/media/categories/datchiki.webp",
   ГРПШ: GAS_METERING_UNITS_CARD_IMAGE,
-  "Узлы учета": "/media/categories/signalizator-zagazovannosti.webp",
   Фильтры: "/media/categories/filtr.webp",
   Насосы: "/media/categories/pumps.webp",
   "Краны шаровые": "/media/categories/zapornyy-kran.webp",
@@ -176,13 +172,12 @@ export function resolveCatalogClusterImage(
 }
 
 export const EQUIPMENT_CLUSTER_ORDER = [
-  "Газорегуляторные пункты",
+  SENSORS_CATEGORY,
   "Счётчики газа",
   "Телеметрия",
   "ПО",
   "Дополнительное оборудование",
   "ГРПШ",
-  "Узлы учета",
   "Фильтры",
   "Насосы",
   "Краны шаровые",
@@ -275,8 +270,8 @@ export const EQUIPMENT_HEADER_CATALOG_ITEMS = dedupeEquipmentCatalogNavItems([
     image: "/media/categories/korrektory-gaza.webp"
   },
   {
-    name: "Газорегуляторные пункты",
-    label: "Датчики",
+    name: SENSORS_CATEGORY,
+    label: SENSORS_CATEGORY,
     image: "/media/categories/datchiki.webp"
   },
   {
@@ -296,7 +291,7 @@ export const HOME_CATEGORY_STRIP = [
   { name: "Счётчики газа", kind: PRODUCT_KIND.GOODS, label: "Счётчики газа" },
   { name: "Краны шаровые", kind: PRODUCT_KIND.GOODS, label: "Краны шаровые" },
   { name: "Корректоры газа", kind: PRODUCT_KIND.GOODS, label: "Корректоры газа" },
-  { name: "Газорегуляторные пункты", kind: PRODUCT_KIND.GOODS, label: "Газовые шкафы" },
+  { name: SENSORS_CATEGORY, kind: PRODUCT_KIND.GOODS, label: SENSORS_CATEGORY },
   { name: "Фильтры", kind: PRODUCT_KIND.GOODS, label: "Фильтры" },
   { name: SERVICE_CATEGORY_METAL, kind: PRODUCT_KIND.SERVICE, label: "Металло обработка" }
 ] as const;

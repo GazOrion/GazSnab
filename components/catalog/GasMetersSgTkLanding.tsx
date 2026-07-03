@@ -14,15 +14,17 @@ import {
 type Props = {
   products: CatalogProduct[];
   bannerSrc: string;
+  mobileBannerSrc?: string | null;
 };
 
-export function GasMetersSgTkLanding({ products, bannerSrc }: Props) {
+export function GasMetersSgTkLanding({ products, bannerSrc, mobileBannerSrc }: Props) {
   const variantClusters = useMemo(() => buildGasMeterSgTkVariantClusters(products), [products]);
 
   return (
     <div className="store-equipment-category-page store-gas-meters-landing store-gas-meters-sg-tk-landing">
       <EquipmentCategoryHero
         bannerSrc={bannerSrc}
+        mobileBannerSrc={mobileBannerSrc}
         title={GAS_METER_SUBCATEGORY_SG_TK}
         lead="Комплексы с электронной коррекцией показаний на базе турбинных, ротационных и диафрагменных счётчиков газа"
         bannerModifier="gas-meters"
@@ -34,11 +36,11 @@ export function GasMetersSgTkLanding({ products, bannerSrc }: Props) {
         ]}
       />
 
-      <div className="container store-gas-meters-landing__subcategories-wrap">
+      <div className="store-gas-meters-landing__subcategories-wrap">
         <EquipmentCategoryGrid
           clusters={variantClusters}
           kind={PRODUCT_KIND.GOODS}
-          layout="grid"
+          layout="list"
         />
       </div>
     </div>

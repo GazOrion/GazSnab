@@ -14,12 +14,20 @@ import {
 } from "@/lib/catalog";
 import { loadHomeCatalogData } from "@/lib/catalog-data";
 
+import { buildPageMetadataFromRequest } from "@/lib/site-seo";
+
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = {
-  title: "Услуги | ОРИОН ГАЗСНАБ",
-  description: "Металлообработка, проектирование и сервисное обслуживание для промышленных объектов"
-};
+type SearchParams = Record<string, string | string[] | undefined>;
+
+export async function generateMetadata({
+  searchParams
+}: {
+  searchParams: Promise<SearchParams>;
+}): Promise<Metadata> {
+  const params = await searchParams;
+  return buildPageMetadataFromRequest(CATALOG_ROUTES.services, params);
+}
 
 type Props = {
   searchParams: Promise<{

@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { Package, Plus, Shield, Trash2 } from "lucide-react";
 import { positionsLabel } from "@/lib/cart-display";
+import { CATALOG_ROUTES } from "@/lib/catalog";
 import { useCart } from "@/components/CartProvider";
 import { AnimatedPrice } from "./AnimatedPrice";
 import { CartItemRow } from "./CartItemRow";
@@ -29,7 +30,7 @@ export function CartItemsList({ disabled, onClearCart }: Props) {
           <span>{positionsLabel(lineCount)}</span>
         </p>
         <div className="cart-card-toolbar-actions">
-          <Link className="button secondary cart-add-link" href="/">
+          <Link className="button secondary cart-add-link" href={CATALOG_ROUTES.equipment}>
             <Plus size={17} aria-hidden />
             Добавить позиции
           </Link>

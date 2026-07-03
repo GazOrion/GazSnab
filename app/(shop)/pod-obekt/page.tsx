@@ -3,10 +3,11 @@ import type { Metadata } from "next";
 import { SiteFooter } from "@/components/SiteFooter";
 import { SiteHeader } from "@/components/SiteHeader";
 
-export const metadata: Metadata = {
-  title: "Под объект | ГазСнаб",
-  description: "Комплектация газового оборудования под условия объекта"
-};
+import { buildPageMetadata } from "@/lib/site-seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  return buildPageMetadata("/pod-obekt");
+}
 
 export default function PodObektPage() {
   return (

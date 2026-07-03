@@ -74,7 +74,9 @@ type Props = {
   showKindSwitch?: boolean;
   variant?: "default" | "equipment" | "services";
   catalogBannerSrc?: string;
+  catalogMobileBannerSrc?: string;
   equipmentCategoryBanners?: Record<string, string>;
+  equipmentCategoryMobileBanners?: Record<string, string>;
 };
 
 function CatalogSectionInner({
@@ -91,7 +93,9 @@ function CatalogSectionInner({
   showKindSwitch = false,
   variant = "default",
   catalogBannerSrc,
-  equipmentCategoryBanners = {}
+  catalogMobileBannerSrc,
+  equipmentCategoryBanners = {},
+  equipmentCategoryMobileBanners = {}
 }: Props) {
   const block = catalogBlockFromKind(fixedKind);
   const { getQuery, setBlockQuery, clearBlockQuery } = useCatalogSearch();
@@ -113,13 +117,18 @@ function CatalogSectionInner({
   const isServicesHub = variant === "services" && onHubPage;
   const isCatalogHub = isEquipmentHub || isServicesHub;
   const categoryBannerSrc = category ? equipmentCategoryBanners[category] : undefined;
+  const categoryMobileBannerSrc = category ? equipmentCategoryMobileBanners[category] : undefined;
   const isGasMetersCategoryView =
     variant === "equipment" && inCategoryView && category === GAS_METERS_CATEGORY;
   const isPumpsCategoryView =
     variant === "equipment" && inCategoryView && category === PUMPS_CATEGORY;
   const gasMetersBannerSrc =
     categoryBannerSrc ?? "/media/gas-meters-banner.webp";
+  const gasMetersMobileBannerSrc =
+    categoryMobileBannerSrc ?? equipmentCategoryMobileBanners[GAS_METERS_CATEGORY];
   const pumpsBannerSrc = categoryBannerSrc ?? "/media/pumps-banner.webp";
+  const pumpsMobileBannerSrc =
+    categoryMobileBannerSrc ?? equipmentCategoryMobileBanners[PUMPS_CATEGORY];
   const equipmentCategoryConfig =
     category && variant === "equipment" ? getEquipmentCategoryConfig(category) : null;
   const isGasMetersLanding = isGasMetersCategoryView && !subcategory;
@@ -136,6 +145,15 @@ function CatalogSectionInner({
     !isGasMetersLanding &&
     !isPumpsLanding &&
     !isGasMetersSgTkLanding;
+
+  const resolvedEquipmentCategoryMobileBannerSrc =
+    category && equipmentCategoryConfig
+      ? category === GAS_METERS_CATEGORY
+        ? gasMetersMobileBannerSrc
+        : category === PUMPS_CATEGORY
+          ? pumpsMobileBannerSrc
+          : categoryMobileBannerSrc ?? catalogMobileBannerSrc
+      : undefined;
 
   const resolvedEquipmentCategoryBannerSrc =
     category && equipmentCategoryConfig
@@ -215,15 +233,27 @@ function CatalogSectionInner({
       }
     >
       {isGasMetersLanding ? (
-        <GasMetersCategoryLanding products={products} bannerSrc={gasMetersBannerSrc} />
+        <GasMetersCategoryLanding
+          products={products}
+          bannerSrc={gasMetersBannerSrc}
+          mobileBannerSrc={gasMetersMobileBannerSrc}
+        />
       ) : null}
 
       {isGasMetersSgTkLanding ? (
-        <GasMetersSgTkLanding products={products} bannerSrc={gasMetersBannerSrc} />
+        <GasMetersSgTkLanding
+          products={products}
+          bannerSrc={gasMetersBannerSrc}
+          mobileBannerSrc={gasMetersMobileBannerSrc}
+        />
       ) : null}
 
       {isPumpsLanding ? (
-        <PumpsCategoryLanding products={products} bannerSrc={pumpsBannerSrc} />
+        <PumpsCategoryLanding
+          products={products}
+          bannerSrc={pumpsBannerSrc}
+          mobileBannerSrc={pumpsMobileBannerSrc}
+        />
       ) : null}
 
       {isEquipmentCategoryListing && category ? (
@@ -237,6 +267,7 @@ function CatalogSectionInner({
                 : products
           }
           bannerSrc={resolvedEquipmentCategoryBannerSrc ?? catalogBannerSrc ?? "/media/catalog-banner.webp"}
+          mobileBannerSrc={resolvedEquipmentCategoryMobileBannerSrc ?? catalogMobileBannerSrc}
           breadcrumbs={
             category === GAS_METERS_CATEGORY && subcategory
               ? gasMetersSubcategoryBreadcrumbs(subcategory)
@@ -258,12 +289,16 @@ function CatalogSectionInner({
       ) : null}
 
       {isEquipmentHub && catalogBannerSrc ? (
-        <EquipmentCatalogHero bannerSrc={catalogBannerSrc} />
+        <EquipmentCatalogHero
+          bannerSrc={catalogBannerSrc}
+          mobileBannerSrc={catalogMobileBannerSrc}
+        />
       ) : null}
 
       {isServicesHub && catalogBannerSrc ? (
         <CatalogHubHero
           bannerSrc={catalogBannerSrc}
+          mobileBannerSrc={catalogMobileBannerSrc}
           title="Услуги"
           lead={
             pageLead ??

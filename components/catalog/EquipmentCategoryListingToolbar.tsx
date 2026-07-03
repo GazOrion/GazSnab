@@ -15,6 +15,7 @@ type Props = {
   onSearchQueryChange: (value: string) => void;
   layout: ListingLayoutMode;
   onLayoutChange: (layout: ListingLayoutMode) => void;
+  className?: string;
 };
 
 const SORT_OPTIONS: { value: EquipmentSort; label: string }[] = [
@@ -29,7 +30,8 @@ export function EquipmentCategoryListingToolbar({
   searchQuery,
   onSearchQueryChange,
   layout,
-  onLayoutChange
+  onLayoutChange,
+  className
 }: Props) {
   const searchInputId = useId();
   const { equipmentSort, setEquipmentSort } = useCatalogNavigation({
@@ -41,7 +43,10 @@ export function EquipmentCategoryListingToolbar({
   }
 
   return (
-    <div className="store-equipment-category-toolbar" aria-label="Поиск и сортировка">
+    <div
+      className={clsx("store-equipment-category-toolbar", className)}
+      aria-label="Поиск и сортировка"
+    >
       <p className="store-equipment-category-toolbar__count">
         Найдено <strong>{filteredCount}</strong>{" "}
         {filteredCount === 1 ? "товар" : filteredCount < 5 ? "товара" : "товаров"}

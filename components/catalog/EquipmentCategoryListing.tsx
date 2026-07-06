@@ -20,6 +20,7 @@ import {
   filterEquipmentCategoryProducts,
   getEquipmentCategoryConfig,
   getProductPriceBounds,
+  usesMobileEquipmentCategoryHero,
   type EquipmentCategoryFilterState
 } from "@/lib/equipment-category-config";
 import { sortEquipmentProducts } from "@/lib/equipment-catalog";
@@ -142,7 +143,8 @@ export function EquipmentCategoryListing({
           else delete sectionFilters[section];
           return { ...current, sectionFilters };
         }),
-      onClearInStock: () => setFilters((current) => ({ ...current, inStockOnly: false }))
+      onClearInStock: () => setFilters((current) => ({ ...current, inStockOnly: false })),
+      onSetInStockOnly: () => setFilters((current) => ({ ...current, inStockOnly: true }))
     });
   }, [config, filters, bounds, searchQuery, products]);
 
@@ -173,7 +175,14 @@ export function EquipmentCategoryListing({
   ];
 
   return (
-    <div className={clsx("store-equipment-category-page", className)}>
+    <div
+      className={clsx(
+        "store-equipment-category-page",
+        usesMobileEquipmentCategoryHero(config.slug) &&
+          "store-equipment-category-page--mobile-hero",
+        className
+      )}
+    >
       {!hideHero ? (
         <EquipmentCategoryHero
           bannerSrc={bannerSrc}

@@ -218,6 +218,13 @@ export const EQUIPMENT_PROMO_CATEGORIES = [
   }
 ] as const;
 
+/** Шестая карточка на главном hero — только на мобильных. */
+export const HOME_HERO_MOBILE_PROMO_CATEGORY = {
+  name: "Корректоры газа",
+  label: "Корректоры газа",
+  image: "/media/categories/korrektory-gaza.webp"
+} as const;
+
 export type EquipmentCatalogNavItem = {
   name: string;
   label: string;

@@ -4,9 +4,13 @@ import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 import { PopularProductsBlock } from "@/components/home/PopularProductsBlock";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { CATALOG_ROUTES } from "@/lib/catalog";
-import { getMobileMetalworkingBannerSrc } from "@/lib/mobile-banners";
+import {
+  MOBILE_BANNER_FILES,
+  getClientMobileBannerPath
+} from "@/lib/mobile-banner-paths";
 
 const METALWORKING_BANNER = "/media/metalloobr.png";
+const METALWORKING_MOBILE_BANNER = getClientMobileBannerPath(MOBILE_BANNER_FILES.metalworking);
 
 type Props = {
   popularServices: CatalogProduct[];
@@ -19,7 +23,7 @@ export function MetalworkingPromoSection({ popularServices }: Props) {
         <div className="store-metal-hero__banner">
           <ResponsiveBannerImage
             desktopSrc={METALWORKING_BANNER}
-            mobileSrc={getMobileMetalworkingBannerSrc()}
+            mobileSrc={METALWORKING_MOBILE_BANNER}
             className="store-metal-hero__bg"
           />
           <div className="store-metal-hero__container">

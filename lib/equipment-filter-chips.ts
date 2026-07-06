@@ -5,6 +5,7 @@ export type EquipmentFilterChip = {
   id: string;
   label: string;
   tone: "active" | "muted";
+  onClick?: () => void;
   onRemove?: () => void;
 };
 
@@ -52,6 +53,7 @@ export function buildEquipmentFilterChips(
     onRemoveManufacturer: (brand: string) => void;
     onRemoveSectionFilter: (section: string, value: string) => void;
     onClearInStock: () => void;
+    onSetInStockOnly: () => void;
   }
 ): EquipmentFilterChip[] {
   const chips: EquipmentFilterChip[] = [];
@@ -61,6 +63,7 @@ export function buildEquipmentFilterChips(
       id: "search",
       label: `Поиск: ${searchQuery.trim()}`,
       tone: "active",
+      onClick: handlers.onRemoveSearch,
       onRemove: handlers.onRemoveSearch
     });
   }
@@ -73,6 +76,7 @@ export function buildEquipmentFilterChips(
       id: "price",
       label: `Цена: ${formatPrice(filters.priceMin)}–${formatPrice(filters.priceMax)} ₽`,
       tone: "active",
+      onClick: handlers.onResetPrice,
       onRemove: handlers.onResetPrice
     });
   }
@@ -82,6 +86,7 @@ export function buildEquipmentFilterChips(
       id: `brand-${brand}`,
       label: brand,
       tone: "active",
+      onClick: () => handlers.onRemoveManufacturer(brand),
       onRemove: () => handlers.onRemoveManufacturer(brand)
     });
   }
@@ -92,6 +97,7 @@ export function buildEquipmentFilterChips(
         id: `${section}-${value}`,
         label: `${section}: ${value}`,
         tone: "active",
+        onClick: () => handlers.onRemoveSectionFilter(section, value),
         onRemove: () => handlers.onRemoveSectionFilter(section, value)
       });
     }
@@ -101,6 +107,10 @@ export function buildEquipmentFilterChips(
     id: "availability",
     label: filters.inStockOnly ? "В наличии" : "Наличие: все",
     tone: filters.inStockOnly ? "active" : "muted",
+    onClick: () => {
+      if (filters.inStockOnly) handlers.onClearInStock();
+      else handlers.onSetInStockOnly();
+    },
     onRemove: filters.inStockOnly ? handlers.onClearInStock : undefined
   });
 
@@ -111,6 +121,7 @@ export function buildEquipmentFilterChips(
       id: "reset",
       label: "Сбросить фильтры",
       tone: "muted",
+      onClick: handlers.onReset,
       onRemove: handlers.onReset
     });
   }

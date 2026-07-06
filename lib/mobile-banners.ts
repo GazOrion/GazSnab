@@ -1,40 +1,24 @@
 import fs from "fs";
 import path from "path";
-import { EQUIPMENT_CLUSTER_ORDER, SENSORS_CATEGORY } from "@/lib/catalog";
+import { EQUIPMENT_CLUSTER_ORDER } from "@/lib/catalog";
+import {
+  MOBILE_BANNER_FILES,
+  MOBILE_EQUIPMENT_CATEGORY_BANNER_FILES,
+  getClientMobileBannerPath
+} from "@/lib/mobile-banner-paths";
+
+export { MOBILE_BANNER_FILES, MOBILE_EQUIPMENT_CATEGORY_BANNER_FILES } from "@/lib/mobile-banner-paths";
 
 const processedDir = path.join(process.cwd(), "public", "processed");
-
-/** Файлы в `public/processed/` для баннеров на мобилках (≤768px). */
-export const MOBILE_BANNER_FILES = {
-  home: "главный экран.webp",
-  equipmentPromo: "Готовое оборудование.webp",
-  metalworking: "металлообработка.webp",
-  catalog: "Каталог.webp",
-  services: "услуги.webp"
-} as const;
-
-/** Раздел каталога оборудования → мобильный баннер. */
-export const MOBILE_EQUIPMENT_CATEGORY_BANNER_FILES: Record<string, string> = {
-  "Счётчики газа": "счетчики газа.webp",
-  Телеметрия: "телеметрия.webp",
-  ПО: "ПО.webp",
-  "Дополнительное оборудование": "доп оборудование.webp",
-  ГРПШ: "грпш.webp",
-  [SENSORS_CATEGORY]: "датчики.webp",
-  Фильтры: "фильтры и фитинги.webp",
-  Насосы: "насосы.webp",
-  "Краны шаровые": "краны.webp",
-  "Корректоры газа": "корректоры.webp"
-};
 
 function mobileProcessedSrc(filename: string): string | null {
   const filePath = path.join(processedDir, filename);
   if (!fs.existsSync(filePath)) return null;
   try {
     const { mtimeMs } = fs.statSync(filePath);
-    return `/processed/${encodeURI(filename)}?v=${mtimeMs}`;
+    return `${getClientMobileBannerPath(filename)}?v=${mtimeMs}`;
   } catch {
-    return `/processed/${encodeURI(filename)}`;
+    return getClientMobileBannerPath(filename);
   }
 }
 

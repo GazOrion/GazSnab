@@ -2,7 +2,6 @@ import Link from "next/link";
 import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 import { CATALOG_ROUTES } from "@/lib/catalog";
 import { getMainBannerSrc } from "@/lib/main-banner";
-import { getMobileMainBannerSrc } from "@/lib/mobile-banners";
 import type { CatalogProduct } from "@/components/ProductCard";
 import type { EquipmentPromoCategory } from "@/lib/catalog-data";
 import { EquipmentCategoryStrip } from "./EquipmentCategoryStrip";
@@ -21,7 +20,6 @@ export function HeroSection({ categories, popularProducts }: Props) {
         <div className="store-hero-industrial__banner">
           <ResponsiveBannerImage
             desktopSrc={getMainBannerSrc()}
-            mobileSrc={getMobileMainBannerSrc()}
             className="store-hero-industrial__bg"
             fetchPriority="high"
           />
@@ -34,16 +32,18 @@ export function HeroSection({ categories, popularProducts }: Props) {
                   <span>и производства</span>
                 </h1>
                 <p className="store-hero-industrial__subtitle">
-                  Поставка, изготовление, металлообработка
+                  <span>Поставка, изготовление,</span>
+                  <span>металлообработка</span>
                 </p>
                 <Link className="store-hero-industrial__cta" href={CATALOG_ROUTES.equipment}>
                   Перейти в каталог
                 </Link>
-                <PromoBannerBenefits classPrefix="store-hero-industrial" />
               </div>
             </div>
           </div>
         </div>
+
+        <PromoBannerBenefits classPrefix="store-hero-industrial" />
 
         <EquipmentCategoryStrip categories={categories} classPrefix="store-hero-industrial" />
       </div>

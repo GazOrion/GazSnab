@@ -1,7 +1,8 @@
 "use client";
 
-import { FormEvent, useEffect, useId } from "react";
-import { Search, X } from "lucide-react";
+import { FormEvent, useEffect, useId, useState } from "react";
+import { createPortal } from "react-dom";
+import { ArrowLeft, Search } from "lucide-react";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { EquipmentCategoryFilters } from "@/components/catalog/EquipmentCategoryFilters";
 import type { EquipmentCategoryConfig, EquipmentCategoryFilterState } from "@/lib/equipment-category-config";
@@ -32,6 +33,11 @@ export function EquipmentCategoryFilterDrawer({
   onSearchQueryChange
 }: Props) {
   const searchInputId = useId();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     if (!open) return undefined;
@@ -50,13 +56,13 @@ export function EquipmentCategoryFilterDrawer({
     };
   }, [open, onClose]);
 
-  if (!open) return null;
+  if (!open || !mounted) return null;
 
   function onSearchSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
   }
 
-  return (
+  return createPortal(
     <div className="store-filter-drawer-root" role="presentation">
       <button
         type="button"
@@ -66,14 +72,19 @@ export function EquipmentCategoryFilterDrawer({
       />
       <aside className="store-filter-drawer" aria-label="Фильтры каталога">
         <header className="store-filter-drawer__head">
-          <h2 className="store-filter-drawer__title">Фильтры</h2>
-          <button
-            type="button"
-            className="store-filter-drawer__close"
-            onClick={onClose}
-            aria-label="Закрыть"
-          >
-            <X size={22} aria-hidden />
+          <div className="store-filter-drawer__head-start">
+            <button
+              type="button"
+              className="store-filter-drawer__back"
+              onClick={onClose}
+              aria-label="Назад"
+            >
+              <ArrowLeft size={22} strokeWidth={2} aria-hidden />
+            </button>
+            <h2 className="store-filter-drawer__title">Фильтры</h2>
+          </div>
+          <button type="button" className="store-filter-drawer__reset-all" onClick={onReset}>
+            Сбросить всё
           </button>
         </header>
 
@@ -112,6 +123,7 @@ export function EquipmentCategoryFilterDrawer({
           </button>
         </footer>
       </aside>
-    </div>
+    </div>,
+    document.body
   );
 }

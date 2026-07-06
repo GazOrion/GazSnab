@@ -1,18 +1,34 @@
 "use client";
 
+import clsx from "clsx";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import type { CatalogProduct } from "@/components/ProductCard";
-import { ProductCard } from "@/components/ProductCard";
-import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
+import { CatalogLayoutToggle } from "@/components/catalog/CatalogLayoutToggle";
+import { EquipmentListingProductCard } from "@/components/catalog/EquipmentListingProductCard";
+import type { ListingLayoutMode } from "@/components/catalog/EquipmentCategoryListingToolbar";
 import { useFavorites } from "@/components/FavoritesProvider";
 import { CATALOG_ROUTES } from "@/lib/catalog";
+
+function productCountLabel(count: number) {
+  const mod10 = count % 10;
+  const mod100 = count % 100;
+  if (mod10 === 1 && mod100 !== 11) return "позиция";
+  if (mod10 >= 2 && mod10 <= 4 && (mod100 < 12 || mod100 > 14)) return "позиции";
+  return "позиций";
+}
 
 export function FavoritesPageClient() {
   const { slugs, pruneSlugs } = useFavorites();
   const [products, setProducts] = useState<CatalogProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [layout, setLayout] = useState<ListingLayoutMode>("grid");
+
+  useEffect(() => {
+    if (window.matchMedia("(max-width: 768px)").matches) {
+      setLayout("list");
+    }
+  }, []);
 
   useEffect(() => {
     if (!slugs.length) {
@@ -51,40 +67,48 @@ export function FavoritesPageClient() {
     };
   }, [slugs, pruneSlugs]);
 
-  const visibleCount = loading ? slugs.length : products.length;
-
   return (
-    <main className="site-shell site-shell-shop">
-      <SiteHeader />
-      <section className="store-page-section">
-        <div className="container">
-          <header className="store-section-head">
-            <div>
-              <h1>Избранное</h1>
-              <p className="muted">
-                {visibleCount
-                  ? `${visibleCount} позиций в списке — добавьте в корзину и оформите заявку`
-                  : "Добавляйте товары и услуги в избранное с карточки каталога"}
-              </p>
-            </div>
-          </header>
+    <section className="section cart-page-v2 store-favorites-page">
+      <div className="container">
+        <nav className="breadcrumbs" aria-label="Хлебные крошки">
+          <Link href="/">Главная</Link>
+          <span aria-hidden>/</span>
+          <span>Избранное</span>
+        </nav>
+        <h1 className="cart-page-title">Избранное</h1>
 
-          {loading ? (
-            <p className="muted">Загрузка…</p>
-          ) : products.length === 0 ? (
-            <p className="catalog-empty muted">
-              Список пуст. <Link href={CATALOG_ROUTES.equipment}>Перейти в каталог</Link>
-            </p>
-          ) : (
-            <div className="product-grid store-product-grid">
+        {loading ? (
+          <p className="muted">Загрузка…</p>
+        ) : products.length === 0 ? (
+          <p className="catalog-empty muted">
+            Список пуст. <Link href={CATALOG_ROUTES.equipment}>Перейти в каталог</Link>
+          </p>
+        ) : (
+          <>
+            <div className="store-favorites-toolbar" aria-label="Вид списка избранного">
+              <p className="store-favorites-toolbar__count">
+                {products.length} {productCountLabel(products.length)}
+              </p>
+              <CatalogLayoutToggle layout={layout} onLayoutChange={setLayout} />
+            </div>
+
+            <div
+              className={clsx(
+                "store-equipment-listing-grid store-favorites-page__grid",
+                layout === "list" && "store-equipment-listing-grid--list"
+              )}
+            >
               {products.map((product) => (
-                <ProductCard product={product} key={product.id} />
+                <EquipmentListingProductCard
+                  key={product.id}
+                  product={product}
+                  layout={layout}
+                />
               ))}
             </div>
-          )}
-        </div>
-      </section>
-      <SiteFooter />
-    </main>
+          </>
+        )}
+      </div>
+    </section>
   );
 }

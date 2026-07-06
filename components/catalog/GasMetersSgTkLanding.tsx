@@ -10,6 +10,8 @@ import {
   GAS_METER_SUBCATEGORY_SG_TK,
   gasMetersCategoryHref
 } from "@/lib/gas-meters-catalog";
+import { GAS_METERS_CATEGORY } from "@/lib/equipment-category-config";
+import { getClientMobileEquipmentCategoryBannerSrc } from "@/lib/mobile-banner-paths";
 
 type Props = {
   products: CatalogProduct[];
@@ -19,12 +21,14 @@ type Props = {
 
 export function GasMetersSgTkLanding({ products, bannerSrc, mobileBannerSrc }: Props) {
   const variantClusters = useMemo(() => buildGasMeterSgTkVariantClusters(products), [products]);
+  const resolvedMobileBannerSrc =
+    mobileBannerSrc ?? getClientMobileEquipmentCategoryBannerSrc(GAS_METERS_CATEGORY);
 
   return (
     <div className="store-equipment-category-page store-gas-meters-landing store-gas-meters-sg-tk-landing">
       <EquipmentCategoryHero
         bannerSrc={bannerSrc}
-        mobileBannerSrc={mobileBannerSrc}
+        mobileBannerSrc={resolvedMobileBannerSrc}
         title={GAS_METER_SUBCATEGORY_SG_TK}
         lead="Комплексы с электронной коррекцией показаний на базе турбинных, ротационных и диафрагменных счётчиков газа"
         bannerModifier="gas-meters"

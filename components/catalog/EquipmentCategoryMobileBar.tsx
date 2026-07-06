@@ -1,7 +1,8 @@
 "use client";
 
 import clsx from "clsx";
-import { ChevronDown, LayoutGrid, LayoutList, SlidersHorizontal, X } from "lucide-react";
+import { ChevronDown, SlidersHorizontal, X } from "lucide-react";
+import { CatalogLayoutToggle } from "@/components/catalog/CatalogLayoutToggle";
 import { EQUIPMENT_SORT, PRODUCT_KIND, type EquipmentSort } from "@/lib/catalog";
 import type { EquipmentFilterChip } from "@/lib/equipment-filter-chips";
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
@@ -89,36 +90,11 @@ export function EquipmentCategoryMobileBar({
       </div>
 
       <div className="store-equipment-mobile-bar__view-row">
-        <div className="store-equipment-catalog-view" role="group" aria-label="Вид списка">
-          <button
-            type="button"
-            className={clsx(
-              "store-equipment-catalog-view__btn",
-              layout === "list" && "store-equipment-catalog-view__btn-active"
-            )}
-            onClick={() => onLayoutChange("list")}
-            aria-pressed={layout === "list"}
-            aria-label="Список"
-          >
-            <LayoutList size={18} aria-hidden />
-          </button>
-          <button
-            type="button"
-            className={clsx(
-              "store-equipment-catalog-view__btn",
-              layout === "grid" && "store-equipment-catalog-view__btn-active"
-            )}
-            onClick={() => onLayoutChange("grid")}
-            aria-pressed={layout === "grid"}
-            aria-label="Сетка"
-          >
-            <LayoutGrid size={18} aria-hidden />
-          </button>
-        </div>
+        <CatalogLayoutToggle layout={layout} onLayoutChange={onLayoutChange} />
 
         <div className="store-equipment-mobile-bar__chips" role="list">
           {chips.map((chip) => (
-            <span
+            <div
               key={chip.id}
               className={clsx(
                 "store-equipment-mobile-bar__chip",
@@ -126,7 +102,14 @@ export function EquipmentCategoryMobileBar({
               )}
               role="listitem"
             >
-              <span className="store-equipment-mobile-bar__chip-label">{chip.label}</span>
+              <button
+                type="button"
+                className="store-equipment-mobile-bar__chip-main"
+                onClick={chip.onClick}
+                aria-pressed={chip.tone === "active"}
+              >
+                {chip.label}
+              </button>
               {chip.onRemove ? (
                 <button
                   type="button"
@@ -137,7 +120,7 @@ export function EquipmentCategoryMobileBar({
                   <X size={14} aria-hidden />
                 </button>
               ) : null}
-            </span>
+            </div>
           ))}
         </div>
       </div>

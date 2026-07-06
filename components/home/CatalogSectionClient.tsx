@@ -40,6 +40,7 @@ import {
   type ProductKind
 } from "@/lib/catalog";
 import { sortEquipmentClusters, sortEquipmentProducts } from "@/lib/equipment-catalog";
+import { getClientMobileEquipmentCategoryBannerSrc } from "@/lib/mobile-banner-paths";
 import { useCatalogSearch } from "@/contexts/CatalogSearchContext";
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
 import { CatalogClusterGrid } from "./CatalogClusterGrid";
@@ -125,10 +126,14 @@ function CatalogSectionInner({
   const gasMetersBannerSrc =
     categoryBannerSrc ?? "/media/gas-meters-banner.webp";
   const gasMetersMobileBannerSrc =
-    categoryMobileBannerSrc ?? equipmentCategoryMobileBanners[GAS_METERS_CATEGORY];
+    categoryMobileBannerSrc ??
+    equipmentCategoryMobileBanners[GAS_METERS_CATEGORY] ??
+    getClientMobileEquipmentCategoryBannerSrc(GAS_METERS_CATEGORY);
   const pumpsBannerSrc = categoryBannerSrc ?? "/media/pumps-banner.webp";
   const pumpsMobileBannerSrc =
-    categoryMobileBannerSrc ?? equipmentCategoryMobileBanners[PUMPS_CATEGORY];
+    categoryMobileBannerSrc ??
+    equipmentCategoryMobileBanners[PUMPS_CATEGORY] ??
+    getClientMobileEquipmentCategoryBannerSrc(PUMPS_CATEGORY);
   const equipmentCategoryConfig =
     category && variant === "equipment" ? getEquipmentCategoryConfig(category) : null;
   const isGasMetersLanding = isGasMetersCategoryView && !subcategory;
@@ -152,7 +157,9 @@ function CatalogSectionInner({
         ? gasMetersMobileBannerSrc
         : category === PUMPS_CATEGORY
           ? pumpsMobileBannerSrc
-          : categoryMobileBannerSrc ?? catalogMobileBannerSrc
+          : categoryMobileBannerSrc ??
+            getClientMobileEquipmentCategoryBannerSrc(category) ??
+            catalogMobileBannerSrc
       : undefined;
 
   const resolvedEquipmentCategoryBannerSrc =
@@ -258,6 +265,13 @@ function CatalogSectionInner({
 
       {isEquipmentCategoryListing && category ? (
         <EquipmentCategoryListing
+          className={
+            category === GAS_METERS_CATEGORY &&
+            subcategory &&
+            subcategory !== GAS_METER_SUBCATEGORY_SG_TK
+              ? "store-gas-meters-landing store-gas-meters-subcategory-landing"
+              : undefined
+          }
           category={category}
           products={
             category === GAS_METERS_CATEGORY && subcategory

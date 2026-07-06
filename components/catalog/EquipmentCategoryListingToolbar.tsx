@@ -1,8 +1,9 @@
 "use client";
 
 import clsx from "clsx";
-import { LayoutGrid, LayoutList, Search } from "lucide-react";
+import { Search } from "lucide-react";
 import { FormEvent, useId } from "react";
+import { CatalogLayoutToggle } from "@/components/catalog/CatalogLayoutToggle";
 import { EQUIPMENT_SORT, PRODUCT_KIND, type EquipmentSort } from "@/lib/catalog";
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
 
@@ -90,32 +91,7 @@ export function EquipmentCategoryListingToolbar({
           </select>
         </label>
 
-        <div className="store-equipment-catalog-view" role="group" aria-label="Вид списка">
-          <button
-            type="button"
-            className={clsx(
-              "store-equipment-catalog-view__btn",
-              layout === "grid" && "store-equipment-catalog-view__btn-active"
-            )}
-            onClick={() => onLayoutChange("grid")}
-            aria-pressed={layout === "grid"}
-            aria-label="Сетка"
-          >
-            <LayoutGrid size={18} aria-hidden />
-          </button>
-          <button
-            type="button"
-            className={clsx(
-              "store-equipment-catalog-view__btn",
-              layout === "list" && "store-equipment-catalog-view__btn-active"
-            )}
-            onClick={() => onLayoutChange("list")}
-            aria-pressed={layout === "list"}
-            aria-label="Список"
-          >
-            <LayoutList size={18} aria-hidden />
-          </button>
-        </div>
+        <CatalogLayoutToggle layout={layout} onLayoutChange={onLayoutChange} />
       </div>
     </div>
   );

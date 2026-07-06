@@ -8,6 +8,7 @@ import { EquipmentCategoryListing } from "@/components/catalog/EquipmentCategory
 import { CATALOG_ROUTES, clusterPresentation, PRODUCT_KIND } from "@/lib/catalog";
 import { PUMPS_CATEGORY } from "@/lib/equipment-category-config";
 import { buildPumpSubcategoryClusters } from "@/lib/pumps-catalog";
+import { getClientMobileEquipmentCategoryBannerSrc } from "@/lib/mobile-banner-paths";
 
 type Props = {
   products: CatalogProduct[];
@@ -18,12 +19,14 @@ type Props = {
 export function PumpsCategoryLanding({ products, bannerSrc, mobileBannerSrc }: Props) {
   const presentation = clusterPresentation(PUMPS_CATEGORY, PRODUCT_KIND.GOODS);
   const subcategoryClusters = useMemo(() => buildPumpSubcategoryClusters(products), [products]);
+  const resolvedMobileBannerSrc =
+    mobileBannerSrc ?? getClientMobileEquipmentCategoryBannerSrc(PUMPS_CATEGORY);
 
   return (
     <div className="store-equipment-category-page store-pumps-landing">
       <EquipmentCategoryHero
         bannerSrc={bannerSrc}
-        mobileBannerSrc={mobileBannerSrc}
+        mobileBannerSrc={resolvedMobileBannerSrc}
         title={presentation.title}
         lead={presentation.teaser}
         bannerModifier="pumps"

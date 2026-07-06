@@ -11,17 +11,27 @@ import { CATALOG_ROUTES } from "@/lib/catalog";
 type Props = {
   pending: boolean;
   onSubmit: (event: FormEvent<HTMLFormElement>) => void;
+  embedded?: boolean;
+  error?: string;
 };
 
-export function RequestForm({ pending, onSubmit }: Props) {
-  return (
-    <article className="cart-card cart-card-form">
-      <header className="cart-form-header">
-        <h2>Оформление заявки</h2>
-        <p className="muted">
+export function RequestForm({ pending, onSubmit, embedded = false, error }: Props) {
+  const content = (
+    <>
+      {!embedded ? (
+        <header className="cart-form-header">
+          <h2>Оформление заявки</h2>
+          <p className="muted">
+            Менеджер уточнит комплектацию и пришлёт счёт или коммерческое предложение.
+          </p>
+        </header>
+      ) : (
+        <p className="cart-form-intro muted">
           Менеджер уточнит комплектацию и пришлёт счёт или коммерческое предложение.
         </p>
-      </header>
+      )}
+
+      {error ? <p className="error cart-page-alert">{error}</p> : null}
 
       <form className="form cart-request-form" onSubmit={onSubmit}>
         <label className="field">
@@ -71,6 +81,12 @@ export function RequestForm({ pending, onSubmit }: Props) {
           Ваши данные защищены и не передаются третьим лицам
         </p>
       </form>
-    </article>
+    </>
   );
+
+  if (embedded) {
+    return content;
+  }
+
+  return <article className="cart-card cart-card-form">{content}</article>;
 }

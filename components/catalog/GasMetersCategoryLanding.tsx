@@ -8,6 +8,7 @@ import { EquipmentCategoryListing } from "@/components/catalog/EquipmentCategory
 import { CATALOG_ROUTES, clusterPresentation, PRODUCT_KIND } from "@/lib/catalog";
 import { buildGasMeterSubcategoryClusters } from "@/lib/gas-meters-catalog";
 import { GAS_METERS_CATEGORY } from "@/lib/equipment-category-config";
+import { getClientMobileEquipmentCategoryBannerSrc } from "@/lib/mobile-banner-paths";
 
 type Props = {
   products: CatalogProduct[];
@@ -21,12 +22,14 @@ export function GasMetersCategoryLanding({ products, bannerSrc, mobileBannerSrc 
     () => buildGasMeterSubcategoryClusters(products),
     [products]
   );
+  const resolvedMobileBannerSrc =
+    mobileBannerSrc ?? getClientMobileEquipmentCategoryBannerSrc(GAS_METERS_CATEGORY);
 
   return (
     <div className="store-equipment-category-page store-gas-meters-landing">
       <EquipmentCategoryHero
         bannerSrc={bannerSrc}
-        mobileBannerSrc={mobileBannerSrc}
+        mobileBannerSrc={resolvedMobileBannerSrc}
         title={presentation.title}
         lead={presentation.teaser}
         bannerModifier="gas-meters"
@@ -50,7 +53,7 @@ export function GasMetersCategoryLanding({ products, bannerSrc, mobileBannerSrc 
         category={GAS_METERS_CATEGORY}
         products={products}
         bannerSrc={bannerSrc}
-        mobileBannerSrc={mobileBannerSrc}
+        mobileBannerSrc={resolvedMobileBannerSrc}
         hideHero
         listingTitle="Все счётчики газа"
       />

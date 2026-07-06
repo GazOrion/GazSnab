@@ -59,6 +59,22 @@ export type EquipmentCategorySlug =
   | "ball-valves"
   | "gas-correctors";
 
+/** Разделы с мобильным баннером из `public/processed/`. */
+export const MOBILE_HERO_EQUIPMENT_SLUGS = [
+  "telemetry",
+  "software",
+  "additional-equipment",
+  "ball-valves",
+  "gas-correctors",
+  "sensors",
+  "gas-metering-units",
+  "filters"
+] as const satisfies readonly EquipmentCategorySlug[];
+
+export function usesMobileEquipmentCategoryHero(slug: EquipmentCategorySlug): boolean {
+  return (MOBILE_HERO_EQUIPMENT_SLUGS as readonly string[]).includes(slug);
+}
+
 export type EquipmentCategoryFilterState = {
   priceMin: number;
   priceMax: number;

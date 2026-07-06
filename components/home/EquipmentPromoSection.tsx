@@ -4,9 +4,15 @@ import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
 import { PopularProductsBlock } from "@/components/home/PopularProductsBlock";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { CATALOG_ROUTES } from "@/lib/catalog";
-import { getMobileEquipmentPromoBannerSrc } from "@/lib/mobile-banners";
+import {
+  MOBILE_BANNER_FILES,
+  getClientMobileBannerPath
+} from "@/lib/mobile-banner-paths";
 
 const EQUIPMENT_PROMO_BANNER = "/media/gotovoe-oborudovanie.png";
+const EQUIPMENT_PROMO_MOBILE_BANNER = getClientMobileBannerPath(
+  MOBILE_BANNER_FILES.equipmentPromo
+);
 
 type Props = {
   popularProducts: CatalogProduct[];
@@ -19,18 +25,18 @@ export function EquipmentPromoSection({ popularProducts }: Props) {
         <div className="store-equipment-hero__banner">
           <ResponsiveBannerImage
             desktopSrc={EQUIPMENT_PROMO_BANNER}
-            mobileSrc={getMobileEquipmentPromoBannerSrc()}
+            mobileSrc={EQUIPMENT_PROMO_MOBILE_BANNER}
             className="store-equipment-hero__bg"
           />
           <div className="store-equipment-hero__container">
             <div className="store-equipment-hero__copy">
               <h2 id="store-equipment-hero-heading" className="store-equipment-hero__title">
-                <span>Готовое</span>
+                <span>Готовое газовое</span>
                 <span>оборудование</span>
               </h2>
               <p className="store-equipment-hero__lead">
-                Счётчики, краны, арматура, регуляторы, сигнализаторы и другие решения для газовых
-                систем.
+                <span>Счётчики, краны, арматура, регуляторы,</span>
+                <span>сигнализаторы и другие решения для газовых систем.</span>
               </p>
 
               <Link className="store-equipment-hero__cta" href={CATALOG_ROUTES.equipment}>

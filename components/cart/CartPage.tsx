@@ -6,6 +6,7 @@ import { useCart } from "@/components/CartProvider";
 import { parseContactMethod } from "@/lib/contact-method";
 import { isRuPhoneComplete, RU_PHONE_PLACEHOLDER } from "@/lib/phone-mask";
 import { CartItemsList } from "./CartItemsList";
+import { CartRequestDrawer } from "./CartRequestDrawer";
 import { EmptyCartState } from "./EmptyCartState";
 import { OrderSuccessModal } from "./OrderSuccessModal";
 import { RequestForm } from "./RequestForm";
@@ -15,6 +16,7 @@ export function CartPage() {
   const [error, setError] = useState("");
   const [pending, setPending] = useState(false);
   const [successOpen, setSuccessOpen] = useState(false);
+  const [checkoutOpen, setCheckoutOpen] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
   async function submitOrder(event: FormEvent<HTMLFormElement>) {
@@ -72,9 +74,15 @@ export function CartPage() {
     }
 
     setSuccessOpen(true);
+    setCheckoutOpen(false);
     clear();
     form.reset();
     setFormKey((key) => key + 1);
+  }
+
+  function openCheckout() {
+    setError("");
+    setCheckoutOpen(true);
   }
 
   function closeSuccess() {
@@ -91,18 +99,24 @@ export function CartPage() {
         </nav>
         <h1 className="cart-page-title">Корзина</h1>
 
-        {error ? <p className="error cart-page-alert">{error}</p> : null}
-
         {items.length === 0 ? (
           <EmptyCartState />
         ) : (
           <section className="cart-page-layout">
-            <CartItemsList disabled={pending} onClearCart={clear} />
-            <RequestForm key={formKey} pending={pending} onSubmit={submitOrder} />
+            <CartItemsList disabled={pending} onClearCart={clear} onOpenCheckout={openCheckout} />
+            <RequestForm key={formKey} pending={pending} error={error} onSubmit={submitOrder} />
           </section>
         )}
       </section>
 
+      <CartRequestDrawer
+        open={checkoutOpen}
+        onClose={() => setCheckoutOpen(false)}
+        pending={pending}
+        error={error}
+        formKey={formKey}
+        onSubmit={submitOrder}
+      />
       <OrderSuccessModal open={successOpen} onClose={closeSuccess} />
     </section>
   );

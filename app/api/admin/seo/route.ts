@@ -1,3 +1,4 @@
+import { Prisma } from "@prisma/client";
 import { revalidatePath, revalidateTag } from "next/cache";
 import { NextResponse } from "next/server";
 import { z } from "zod";
@@ -7,7 +8,7 @@ import { getAllowedSeoPaths, listSeoPagesForAdmin } from "@/lib/site-seo";
 
 const seoItemSchema = z.object({
   path: z.string().trim().min(1),
-  title: z.string().trim().min(1),
+  title: z.string().trim().min(1, "Title не может быть пустым."),
   description: z.string().trim()
 });
 
@@ -17,6 +18,31 @@ const seoBulkSchema = z.object({
 
 function canUsePageMeta() {
   return typeof prisma.pageMeta?.upsert === "function";
+}
+
+function formatValidationError(error: z.ZodError) {
+  const titleIssue = error.issues.find((issue) => issue.path.includes("title"));
+  if (titleIssue) return "Title не может быть пустым.";
+  return "Проверьте данные метатегов.";
+}
+
+function formatSaveError(error: unknown) {
+  if (error instanceof Prisma.PrismaClientKnownRequestError) {
+    if (error.code === "P2021") {
+      return "Таблица PageMeta не найдена. Выполните npx prisma migrate deploy и перезапустите сервер.";
+    }
+  }
+
+  const message = error instanceof Error ? error.message : String(error);
+  if (/PageMeta|does not exist|relation .* does not exist/i.test(message)) {
+    return "Таблица PageMeta не найдена. Выполните npx prisma migrate deploy и перезапустите сервер.";
+  }
+
+  if (process.env.NODE_ENV === "development") {
+    return `Не удалось сохранить метатеги: ${message}`;
+  }
+
+  return "Не удалось сохранить метатеги. Попробуйте ещё раз или перезапустите сервер.";
 }
 
 export async function GET() {
@@ -33,9 +59,16 @@ export async function PUT(request: Request) {
     return NextResponse.json({ error: "Нет доступа." }, { status: 401 });
   }
 
-  const parsed = seoBulkSchema.safeParse(await request.json());
+  let body: unknown;
+  try {
+    body = await request.json();
+  } catch {
+    return NextResponse.json({ error: "Некорректный формат данных." }, { status: 400 });
+  }
+
+  const parsed = seoBulkSchema.safeParse(body);
   if (!parsed.success) {
-    return NextResponse.json({ error: "Проверьте данные метатегов." }, { status: 400 });
+    return NextResponse.json({ error: formatValidationError(parsed.error) }, { status: 400 });
   }
 
   const allowedPaths = await getAllowedSeoPaths();
@@ -74,7 +107,7 @@ export async function PUT(request: Request) {
       )
     );
 
-    revalidateTag("seo-pages");
+    revalidateTag("seo-pages", "max");
 
     const revalidatedPaths = new Set<string>();
     for (const item of parsed.data.items) {
@@ -85,16 +118,16 @@ export async function PUT(request: Request) {
       }
     }
 
-    const pages = await listSeoPagesForAdmin();
-    return NextResponse.json({ pages });
+    const item = parsed.data.items[0];
+    return NextResponse.json({
+      page: {
+        path: item.path,
+        title: item.title,
+        description: item.description
+      }
+    });
   } catch (error) {
     console.error("[admin/seo] save failed:", error);
-    return NextResponse.json(
-      {
-        error:
-          "Не удалось сохранить метатеги. Проверьте, что выполнена миграция: npx prisma migrate deploy."
-      },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: formatSaveError(error) }, { status: 500 });
   }
 }

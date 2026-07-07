@@ -5898,6 +5898,17 @@ body.admin-seo-col-resizing {
   white-space: nowrap;
 }
 
+.admin-seo-table__sentinel td {
+  padding: 14px;
+  text-align: center;
+  background: #f8fafc;
+}
+
+.admin-seo-table__sentinel-text {
+  display: inline-block;
+  font-size: 13px;
+}
+
 .admin-seo-table tbody td.admin-seo-table__cell {
   overflow: visible;
 }

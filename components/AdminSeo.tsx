@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState, startTransition } from "react";
 import { ArrowLeft } from "lucide-react";
 import type { SeoPageRow } from "@/lib/site-seo";
 
@@ -21,6 +21,8 @@ const COL_DEFAULT_PATH = 240;
 const COL_DEFAULT_TITLE = 280;
 const COL_STORAGE_KEY = "admin-seo-col-widths";
 const COL_STORAGE_KEY_LEGACY = "admin-seo-path-col-width";
+const SEO_INITIAL_VISIBLE = 40;
+const SEO_LOAD_MORE_STEP = 20;
 
 type ColResizePair = "path-title" | "title-description";
 
@@ -150,6 +152,7 @@ export function AdminSeo({ initialPages, onBack }: Props) {
   const [pages, setPages] = useState(initialPages);
   const [baseline, setBaseline] = useState(initialPages);
   const [query, setQuery] = useState("");
+  const [visibleCount, setVisibleCount] = useState(SEO_INITIAL_VISIBLE);
   const [pathWidth, setPathWidth] = useState(COL_DEFAULT_PATH);
   const [titleWidth, setTitleWidth] = useState(COL_DEFAULT_TITLE);
   const [tableWidth, setTableWidth] = useState(0);
@@ -157,6 +160,7 @@ export function AdminSeo({ initialPages, onBack }: Props) {
   const [modal, setModal] = useState<SeoModalState | null>(null);
   const [pending, setPending] = useState(false);
   const tableWrapRef = useRef<HTMLDivElement>(null);
+  const loadMoreRef = useRef<HTMLTableRowElement>(null);
   const modalBlockRef = useRef(false);
 
   const filteredPages = useMemo(() => {
@@ -171,6 +175,38 @@ export function AdminSeo({ initialPages, onBack }: Props) {
         page.description.toLowerCase().includes(needle)
     );
   }, [pages, query]);
+
+  const visiblePages = useMemo(
+    () => filteredPages.slice(0, visibleCount),
+    [filteredPages, visibleCount]
+  );
+
+  const hasMorePages = visibleCount < filteredPages.length;
+
+  useEffect(() => {
+    setVisibleCount(SEO_INITIAL_VISIBLE);
+  }, [query]);
+
+  useEffect(() => {
+    const node = loadMoreRef.current;
+    if (!node || !hasMorePages) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (!entries.some((entry) => entry.isIntersecting)) return;
+
+        startTransition(() => {
+          setVisibleCount((count) =>
+            Math.min(count + SEO_LOAD_MORE_STEP, filteredPages.length)
+          );
+        });
+      },
+      { rootMargin: "320px 0px" }
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, [filteredPages.length, hasMorePages, visibleCount]);
 
   function isEditingBlocked() {
     return modalBlockRef.current || modal?.kind === "confirm" || pending;
@@ -330,17 +366,36 @@ export function AdminSeo({ initialPages, onBack }: Props) {
     blurActiveTextarea();
   }
 
-  async function saveChanges() {
+  async function savePage(path: string) {
+    const page = pages.find((item) => item.path === path);
+    if (!page) {
+      setModal({ kind: "error", message: "Страница не найдена." });
+      return false;
+    }
+
+    if (!page.title.trim()) {
+      setModal({ kind: "error", message: "Title не может быть пустым." });
+      return false;
+    }
+
     setPending(true);
 
     const response = await fetch("/api/admin/seo", {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ items: pages })
+      body: JSON.stringify({
+        items: [
+          {
+            path: page.path,
+            title: page.title.trim(),
+            description: page.description.trim()
+          }
+        ]
+      })
     });
 
     const data = (await response.json().catch(() => null)) as
-      | { pages?: SeoPageRow[]; error?: string }
+      | { page?: Pick<SeoPageRow, "path" | "title" | "description">; error?: string }
       | null;
 
     setPending(false);
@@ -353,18 +408,23 @@ export function AdminSeo({ initialPages, onBack }: Props) {
       return false;
     }
 
-    if (data?.pages) {
-      setPages(data.pages);
-      setBaseline(data.pages);
-    } else {
-      setBaseline(pages);
+    if (data?.page) {
+      const mergeSavedPage = (current: SeoPageRow[]) =>
+        current.map((item) =>
+          item.path === data.page!.path ? { ...item, ...data.page! } : item
+        );
+
+      setPages(mergeSavedPage);
+      setBaseline(mergeSavedPage);
     }
 
     return true;
   }
 
   async function confirmSave() {
-    const saved = await saveChanges();
+    if (modal?.kind !== "confirm") return;
+
+    const saved = await savePage(modal.path);
     if (saved) {
       setModal({ kind: "success" });
     }
@@ -411,8 +471,13 @@ export function AdminSeo({ initialPages, onBack }: Props) {
           {query ? (
             <span className="admin-seo-search__count muted">
               Найдено: {filteredPages.length} из {pages.length}
+              {hasMorePages ? ` · показано ${visiblePages.length}` : ""}
             </span>
-          ) : null}
+          ) : (
+            <span className="admin-seo-search__count muted">
+              Показано: {visiblePages.length} из {pages.length}
+            </span>
+          )}
         </label>
 
         <div className="admin-seo-table-wrap" ref={tableWrapRef}>
@@ -446,7 +511,7 @@ export function AdminSeo({ initialPages, onBack }: Props) {
               </tr>
             </thead>
             <tbody>
-              {filteredPages.map((page) => (
+              {visiblePages.map((page) => (
                 <tr key={page.path}>
                   <th scope="row" className="admin-seo-table__path">
                     <a
@@ -486,6 +551,24 @@ export function AdminSeo({ initialPages, onBack }: Props) {
                   />
                 </tr>
               ))}
+              {hasMorePages ? (
+                <tr ref={loadMoreRef} className="admin-seo-table__sentinel">
+                  <td colSpan={3}>
+                    <span className="admin-seo-table__sentinel-text muted">
+                      Загружено {visiblePages.length} из {filteredPages.length}. Прокрутите ниже,
+                      чтобы показать ещё…
+                    </span>
+                  </td>
+                </tr>
+              ) : filteredPages.length > SEO_INITIAL_VISIBLE ? (
+                <tr className="admin-seo-table__sentinel">
+                  <td colSpan={3}>
+                    <span className="admin-seo-table__sentinel-text muted">
+                      Показаны все {filteredPages.length} страниц
+                    </span>
+                  </td>
+                </tr>
+              ) : null}
             </tbody>
           </table>
         </div>

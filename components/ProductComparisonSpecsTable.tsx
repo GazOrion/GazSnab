@@ -1,5 +1,4 @@
 import type { ProductComparisonTable } from "@/lib/product-content";
-import { ProductMobileExpandable } from "@/components/ProductMobileExpandable";
 
 function ComparisonCell({ value }: { value: string }) {
   const lines = value
@@ -24,35 +23,33 @@ export function ProductComparisonSpecsTable({ table }: { table: ProductCompariso
   const [columnA, columnB] = table.columns;
 
   return (
-    <ProductMobileExpandable mode="rows">
-      <div className="product-spec-table-wrap product-comparison-spec-table-wrap">
-        <table className="product-spec-table product-comparison-spec-table">
-          <thead>
-            <tr>
-              <th scope="col">Характеристика</th>
-              <th scope="col" className="product-spec-table__col-value">
-                {columnA}
-              </th>
-              <th scope="col" className="product-spec-table__col-value">
-                {columnB}
-              </th>
+    <div className="product-spec-table-wrap product-comparison-spec-table-wrap">
+      <table className="product-spec-table product-comparison-spec-table">
+        <thead>
+          <tr>
+            <th scope="col">Характеристика</th>
+            <th scope="col" className="product-spec-table__col-value">
+              {columnA}
+            </th>
+            <th scope="col" className="product-spec-table__col-value">
+              {columnB}
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {table.rows.map((row) => (
+            <tr key={row.characteristic}>
+              <th scope="row">{row.characteristic}</th>
+              <td>
+                <ComparisonCell value={row.values[0]} />
+              </td>
+              <td>
+                <ComparisonCell value={row.values[1]} />
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {table.rows.map((row) => (
-              <tr key={row.characteristic}>
-                <th scope="row">{row.characteristic}</th>
-                <td>
-                  <ComparisonCell value={row.values[0]} />
-                </td>
-                <td>
-                  <ComparisonCell value={row.values[1]} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </ProductMobileExpandable>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

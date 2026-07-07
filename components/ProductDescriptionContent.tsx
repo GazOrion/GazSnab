@@ -1,8 +1,14 @@
 import { ProductExpandableFigure } from "@/components/ProductExpandableFigure";
-import { ProductMobileExpandable } from "@/components/ProductMobileExpandable";
+import { ProductDataTable } from "@/components/ProductDataTable";
 import type { ProductDescriptionBlock } from "@/lib/product-content";
 
-export function ProductDescriptionContent({ blocks }: { blocks: ProductDescriptionBlock[] }) {
+export function ProductDescriptionContent({
+  blocks,
+  tableCollapsible = true
+}: {
+  blocks: ProductDescriptionBlock[];
+  tableCollapsible?: boolean;
+}) {
   return (
     <div className="product-description-rich">
       {blocks.map((block, index) => {
@@ -73,57 +79,15 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
             )
           );
 
-          const wrapClass = [
-            "product-data-table-wrap",
-            block.highlight ? "product-data-table-wrap--highlight" : "",
-            block.matrix ? "product-data-table-wrap--matrix" : "",
-            hasMergedCells ? "product-data-table-wrap--merged" : ""
-          ]
-            .filter(Boolean)
-            .join(" ");
-
-          function renderTableCell(cell: string) {
-            return cell.includes("\n")
-              ? cell.split("\n").map((line, lineIndex) => (
-                  <span className="product-data-table__cell-line" key={lineIndex}>
-                    {line.trim() || "\u00a0"}
-                  </span>
-                ))
-              : cell;
-          }
-
           return (
-            <ProductMobileExpandable key={index} mode="rows">
-              <div className={wrapClass}>
-                <table className="product-data-table">
-                  <thead>
-                    <tr>
-                      {block.table.columns.map((column) => (
-                        <th key={column} scope="col">
-                          {column}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {block.table.rows.map((row, rowIndex) => (
-                      <tr key={rowIndex}>
-                        {row.map((cell, cellIndex) => {
-                          const text = typeof cell === "string" ? cell : cell.text;
-                          const colspan = typeof cell === "object" ? cell.colspan : undefined;
-
-                          return (
-                            <td key={cellIndex} colSpan={colspan}>
-                              {renderTableCell(text)}
-                            </td>
-                          );
-                        })}
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </ProductMobileExpandable>
+            <ProductDataTable
+              key={index}
+              table={block.table}
+              highlight={block.highlight}
+              matrix={block.matrix}
+              hasMergedCells={hasMergedCells}
+              collapsible={tableCollapsible}
+            />
           );
         }
 

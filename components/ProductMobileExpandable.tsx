@@ -57,7 +57,12 @@ export function ProductMobileExpandable({
 
     if (mode === "rows") {
       const measureRows = () => {
-        const rowCount = node.querySelectorAll("tbody tr").length;
+        const rowCount = Math.max(
+          node.querySelectorAll("tbody tr").length,
+          node.querySelectorAll(".product-data-table-mobile__group").length,
+          node.querySelectorAll(".product-data-table-mobile--simple .product-data-table-mobile__item")
+            .length
+        );
         setIsCollapsible(rowCount > visibleRows);
       };
 
@@ -85,6 +90,7 @@ export function ProductMobileExpandable({
     <div
       className={clsx(
         "product-mobile-expandable",
+        mode === "truncate" && "product-mobile-expandable--truncate",
         mode === "hidden" && "product-mobile-expandable--hidden",
         mode === "rows" && `product-mobile-expandable--rows-${visibleRows}`,
         showToggle && !expanded && "product-mobile-expandable--collapsed",

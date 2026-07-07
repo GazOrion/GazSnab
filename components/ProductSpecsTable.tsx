@@ -1,5 +1,4 @@
 import type { ProductSpecRow } from "@/lib/product-content";
-import { ProductMobileExpandable } from "@/components/ProductMobileExpandable";
 
 function SpecCellValue({ value }: { value: string }) {
   const lines = value
@@ -22,29 +21,27 @@ function SpecCellValue({ value }: { value: string }) {
 
 export function ProductSpecsTable({ rows }: { rows: ProductSpecRow[] }) {
   return (
-    <ProductMobileExpandable mode="rows">
-      <div className="product-spec-table-wrap">
-        <table className="product-spec-table">
-          <thead>
-            <tr>
-              <th scope="col">Характеристика</th>
-              <th scope="col" className="product-spec-table__col-value">
-                Значение
-              </th>
+    <div className="product-spec-table-wrap">
+      <table className="product-spec-table">
+        <thead>
+          <tr>
+            <th scope="col">Характеристика</th>
+            <th scope="col" className="product-spec-table__col-value">
+              Значение
+            </th>
+          </tr>
+        </thead>
+        <tbody>
+          {rows.map((row) => (
+            <tr key={row.characteristic}>
+              <th scope="row">{row.characteristic}</th>
+              <td>
+                <SpecCellValue value={row.value} />
+              </td>
             </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.characteristic}>
-                <th scope="row">{row.characteristic}</th>
-                <td>
-                  <SpecCellValue value={row.value} />
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-    </ProductMobileExpandable>
+          ))}
+        </tbody>
+      </table>
+    </div>
   );
 }

@@ -7,8 +7,12 @@ import { ProductDescriptionContent } from "@/components/ProductDescriptionConten
 import { ProductDimensionsBlock } from "@/components/ProductDimensionsBlock";
 import { ProductDimensionsSection } from "@/components/ProductDimensionsSection";
 import { ProductComparisonSpecsTable } from "@/components/ProductComparisonSpecsTable";
+import { ProductSpecsCollapsible } from "@/components/ProductSpecsCollapsible";
 import { ProductSpecsTable } from "@/components/ProductSpecsTable";
 import type { ProductRichContent } from "@/lib/product-content";
+import {
+  splitProductDescriptionBlocks
+} from "@/lib/product-description-split";
 
 export type ProductDetailSectionId = "description" | "options" | "specs" | "bought-together";
 
@@ -66,14 +70,29 @@ export function ProductDetailTabs({
   beforeBoughtTogether?: ReactNode;
 }) {
   const hasOptionsPanel = Boolean(richContent?.optionsDescription?.length);
+  const descriptionSplit = useMemo(
+    () => (richContent ? splitProductDescriptionBlocks(richContent.description) : null),
+    [richContent]
+  );
+  const introDescriptionBlocks = descriptionSplit?.introBlocks ?? richContent?.description ?? [];
+  const descriptionSpecsBlocks = descriptionSplit?.specsBlocks ?? [];
+  const specsDescriptionBlocks = useMemo(
+    () => [...descriptionSpecsBlocks, ...(richContent?.specsFooter ?? [])],
+    [descriptionSpecsBlocks, richContent?.specsFooter]
+  );
   const hasRichSpecsContent = Boolean(
     (richContent?.specs?.length ?? 0) > 0 ||
-      (richContent?.specsFooter?.length ?? 0) > 0 ||
-      (richContent?.comparisonTable?.rows?.length ?? 0) > 0
+      specsDescriptionBlocks.length > 0 ||
+      (richContent?.comparisonTable?.rows?.length ?? 0) > 0 ||
+      richContent?.dimensions ||
+      richContent?.dimensionsSection
   );
   const hasFallbackSpecs = specs.length > 0;
   const showSpecsPanel =
     sections.includes("specs") && (hasRichSpecsContent || (hasFallbackSpecs && !richContent));
+  const showDescription =
+    sections.includes("description") &&
+    (introDescriptionBlocks.length > 0 || (!richContent && Boolean(details.trim())));
 
   const navSections = useMemo(() => {
     const items: { id: ProductDetailSectionId; label: string }[] = [];
@@ -82,6 +101,7 @@ export function ProductDetailTabs({
 
     for (const section of BASE_SECTIONS) {
       if (!sections.includes(section.id)) continue;
+      if (section.id === "description" && !showDescription) continue;
       if (section.id === "specs" && !showSpecsPanel) continue;
 
       if (section.id === "bought-together" && hasOptionsPanel) {
@@ -92,7 +112,7 @@ export function ProductDetailTabs({
     }
 
     return items;
-  }, [sections, hasOptionsPanel, richContent?.optionsTitle, showSpecsPanel]);
+  }, [sections, hasOptionsPanel, richContent?.optionsTitle, showDescription, showSpecsPanel]);
 
   const [active, setActive] = useState<ProductDetailSectionId>(
     navSections[0]?.id ?? "description"
@@ -206,7 +226,6 @@ export function ProductDetailTabs({
     });
   }, [optionsMode]);
 
-  const showDescription = sections.includes("description");
   const showSpecs = showSpecsPanel && sections.includes("specs");
   const showBoughtTogether = sections.includes("bought-together");
   const descriptionTitle = richContent?.descriptionTitle ?? "Подробное описание";
@@ -287,7 +306,7 @@ export function ProductDetailTabs({
                 <div className="product-detail-section__body">
                   <ProductDescriptionCollapsible>
                     {richContent ? (
-                      <ProductDescriptionContent blocks={richContent.description} />
+                      <ProductDescriptionContent blocks={introDescriptionBlocks} />
                     ) : details.trim() ? (
                       <p>{details}</p>
                     ) : (
@@ -301,45 +320,50 @@ export function ProductDetailTabs({
             {showSpecs ? (
               <section
                 className={
-                  richContent?.specsFooter?.length
+                  specsDescriptionBlocks.length
                     ? "product-detail-section product-detail-section--inline-specs-title"
                     : "product-detail-section"
                 }
                 id="specs"
               >
                 <h2 className="product-detail-section__title">{specsTitle}</h2>
-                {hasRichSpecs ? (
-                  <>
-                    {richContent!.specs?.length ? (
-                      <ProductSpecsTable rows={richContent!.specs!} />
-                    ) : null}
-                    {richContent?.specsFooter?.length ? (
-                      <div className="product-detail-section__specs-footer">
-                        <ProductDescriptionContent blocks={richContent.specsFooter} />
-                      </div>
-                    ) : null}
-                    {richContent?.comparisonTable ? (
-                      <ProductComparisonSpecsTable table={richContent.comparisonTable} />
-                    ) : null}
-                    {richContent?.dimensionsSection ? (
-                      <ProductDimensionsSection section={richContent.dimensionsSection} />
-                    ) : null}
-                    {!richContent?.dimensionsSection && richContent?.dimensions ? (
-                      <ProductDimensionsBlock content={richContent.dimensions} />
-                    ) : null}
-                  </>
-                ) : hasFallbackSpecs ? (
-                  <div className="product-spec-blocks">
-                    {specs.map(([key, value]) => (
-                      <article className="product-spec-block" key={key}>
-                        <h3 className="product-spec-block__title">{key}</h3>
-                        <SpecValue value={value} />
-                      </article>
-                    ))}
-                  </div>
-                ) : (
-                  <p className="product-detail-section__empty">Характеристики уточняются у менеджера.</p>
-                )}
+                <ProductSpecsCollapsible>
+                  {hasRichSpecs ? (
+                    <>
+                      {richContent!.specs?.length ? (
+                        <ProductSpecsTable rows={richContent!.specs!} />
+                      ) : null}
+                      {specsDescriptionBlocks.length ? (
+                        <div className="product-detail-section__specs-footer">
+                          <ProductDescriptionContent
+                            blocks={specsDescriptionBlocks}
+                            tableCollapsible={false}
+                          />
+                        </div>
+                      ) : null}
+                      {richContent?.comparisonTable ? (
+                        <ProductComparisonSpecsTable table={richContent.comparisonTable} />
+                      ) : null}
+                      {richContent?.dimensionsSection ? (
+                        <ProductDimensionsSection section={richContent.dimensionsSection} />
+                      ) : null}
+                      {!richContent?.dimensionsSection && richContent?.dimensions ? (
+                        <ProductDimensionsBlock content={richContent.dimensions} />
+                      ) : null}
+                    </>
+                  ) : hasFallbackSpecs ? (
+                    <div className="product-spec-blocks">
+                      {specs.map(([key, value]) => (
+                        <article className="product-spec-block" key={key}>
+                          <h3 className="product-spec-block__title">{key}</h3>
+                          <SpecValue value={value} />
+                        </article>
+                      ))}
+                    </div>
+                  ) : (
+                    <p className="product-detail-section__empty">Характеристики уточняются у менеджера.</p>
+                  )}
+                </ProductSpecsCollapsible>
               </section>
             ) : null}
 

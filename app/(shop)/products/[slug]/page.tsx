@@ -10,6 +10,7 @@ import { getBoughtTogetherProducts } from "@/lib/bought-together";
 import { getProductBackCatalogHref } from "@/lib/catalog";
 import { ProductShortSpecs } from "@/components/ProductShortSpecs";
 import { getProductRichContent } from "@/lib/product-content";
+import { splitProductDescriptionBlocks } from "@/lib/product-description-split";
 import { getProductDetailCardPriceLabel, getProductPriceLabel } from "@/lib/product-price-label";
 import { getProductListingTitle } from "@/lib/product-listing-title";
 import { PumpDesignation } from "@/components/catalog/PumpDesignation";
@@ -109,7 +110,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const hasRichSpecsContent = Boolean(
     (richContent?.specs?.length ?? 0) > 0 ||
       (richContent?.specsFooter?.length ?? 0) > 0 ||
-      (richContent?.comparisonTable?.rows?.length ?? 0) > 0
+      (richContent?.comparisonTable?.rows?.length ?? 0) > 0 ||
+      richContent?.dimensions ||
+      richContent?.dimensionsSection ||
+      (richContent?.description?.length &&
+        splitProductDescriptionBlocks(richContent.description).specsBlocks.length > 0)
   );
   const showSpecsPanel = hasRichSpecsContent || (!richContent && specs.length > 0);
   const descriptionItems = descriptionListItems(product.description);

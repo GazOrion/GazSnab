@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { company } from "@/lib/company";
 
 import { buildPageMetadata } from "@/lib/site-seo";
@@ -28,8 +28,7 @@ export default function WarrantyPage() {
   const phoneHref = `tel:${company.phone.replace(/\D/g, "")}`;
 
   return (
-    <main className="site-shell">
-      <SiteHeader />
+    <ShopPageShell className="site-shell">
 
       <article className="section static-page">
         <div className="container">
@@ -74,6 +73,6 @@ export default function WarrantyPage() {
       </article>
 
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

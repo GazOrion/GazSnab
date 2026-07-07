@@ -1,16 +1,16 @@
 import Link from "next/link";
 import { notFound, redirect } from "next/navigation";
 import type { Metadata } from "next";
-import { ArrowLeft, Clock, PackageCheck, Ruler } from "lucide-react";
-import { ProductOrderActions } from "@/components/ProductOrderActions";
+import { ArrowLeft } from "lucide-react";
+import { ProductDetailOrderBar } from "@/components/ProductDetailOrderBar";
 import { ProductDetailTabs, type ProductDetailSectionId } from "@/components/ProductDetailTabs";
 import { ProductGallery } from "@/components/ProductGallery";
-import { SiteHeader } from "@/components/SiteHeader";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { getBoughtTogetherProducts } from "@/lib/bought-together";
 import { getProductBackCatalogHref } from "@/lib/catalog";
 import { ProductShortSpecs } from "@/components/ProductShortSpecs";
 import { getProductRichContent } from "@/lib/product-content";
-import { getProductPriceLabel } from "@/lib/product-price-label";
+import { getProductDetailCardPriceLabel, getProductPriceLabel } from "@/lib/product-price-label";
 import { getProductListingTitle } from "@/lib/product-listing-title";
 import { PumpDesignation } from "@/components/catalog/PumpDesignation";
 import { BALL_VALVE_CATEGORY, getOrderedShortSpecs } from "@/lib/product-short-specs";
@@ -113,13 +113,15 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   );
   const showSpecsPanel = hasRichSpecsContent || (!richContent && specs.length > 0);
   const descriptionItems = descriptionListItems(product.description);
-  const priceLabel = getProductPriceLabel({
-    slug: product.slug,
-    price,
-    kind: product.kind,
-    category: product.category,
-    specs: specsRecord
-  });
+  const priceLabel = getProductDetailCardPriceLabel(
+    getProductPriceLabel({
+      slug: product.slug,
+      price,
+      kind: product.kind,
+      category: product.category,
+      specs: specsRecord
+    })
+  );
   const backCatalogHref = getProductBackCatalogHref({
     kind: product.kind,
     category: product.category,
@@ -131,13 +133,11 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
       : showSpecsPanel
         ? undefined
         : ["description", "bought-together"];
-  const showSpecsButton = showSpecsPanel;
   const pumpModel = getPumpModelFromSpecs(specsRecord);
   const pumpDesignationImage = pumpModel ? getPumpDesignationImage(pumpModel) : null;
   const listingTitle = getProductListingTitle(product.title, specsRecord);
   return (
-    <main className="site-shell">
-      <SiteHeader />
+    <ShopPageShell className="site-shell">
       <section className="container product-detail">
         <Link className="back-link" href={backCatalogHref}>
           <ArrowLeft size={18} />
@@ -149,40 +149,24 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
             <ProductGallery images={images as string[]} title={product.title} />
 
             <aside className="detail-summary detail-summary--product">
-            <h1>{listingTitle}</h1>
-            {shortSpecs.length ? (
-              <ProductShortSpecs specs={shortSpecs} />
-            ) : descriptionItems.length > 1 ? (
-              <ul className="lead product-detail-summary-list">
-                {descriptionItems.map((line) => (
-                  <li key={line}>{line}</li>
-                ))}
-              </ul>
-            ) : (
-              <p className="lead">{product.description}</p>
-            )}
+              <h1>{listingTitle}</h1>
+              {shortSpecs.length ? (
+                <ProductShortSpecs specs={shortSpecs} />
+              ) : descriptionItems.length > 1 ? (
+                <ul className="lead product-detail-summary-list">
+                  {descriptionItems.map((line) => (
+                    <li key={line}>{line}</li>
+                  ))}
+                </ul>
+              ) : (
+                <p className="lead">{product.description}</p>
+              )}
 
-            <div className="detail-metrics">
-              <div>
-                <PackageCheck size={22} />
-                <span>Цена</span>
-                <strong>{priceLabel}</strong>
-              </div>
-              <div>
-                <Ruler size={22} />
-                <span>Единица</span>
-                <strong>{product.unit}</strong>
-              </div>
-              <div>
-                <Clock size={22} />
-                <span>Срок</span>
-                <strong>{product.leadTime}</strong>
-              </div>
-            </div>
-
-            <div className="row-actions">
-              <ProductOrderActions
+              <ProductDetailOrderBar
                 kind={product.kind}
+                priceLabel={priceLabel}
+                unit={product.unit}
+                leadTime={product.leadTime}
                 product={{
                   id: product.id,
                   title: product.title,
@@ -192,12 +176,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
                   imageUrl: product.imageUrl
                 }}
               />
-              {showSpecsButton ? (
-                <a className="button secondary" href="#specs">
-                  Характеристики
-                </a>
-              ) : null}
-            </div>
             </aside>
           </div>
 
@@ -220,6 +198,6 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
           />
         </div>
       </section>
-    </main>
+    </ShopPageShell>
   );
 }

@@ -188,6 +188,58 @@ export function pumpsSubcategoryBreadcrumbs(subcategory: string) {
   ];
 }
 
+export function getPumpSubcategoryHeroSubtitleParts(
+  subcategory: string
+): { main: string; aside: string } | null {
+  const entry = PUMP_SUBCATEGORIES.find((item) => item.name === subcategory);
+  if (!entry) return null;
+
+  switch (entry.id) {
+    case "intelligent-wet-rotor":
+      return {
+        main: "Интеллектуальные циркуляционные",
+        aside: "насосы с «мокрым» ротором"
+      };
+    case "three-speed-wet-rotor":
+      return {
+        main: "Трехскоростные циркуляционные",
+        aside: "насосы с «мокрым» ротором"
+      };
+    case "inline-circulation":
+      return {
+        main: "Линейные",
+        aside: "циркуляционные насосы"
+      };
+    case "vertical-multistage":
+      return {
+        main: "Вертикальные многоступенчатые",
+        aside: "центробежные насосы"
+      };
+    case "horizontal-multistage":
+      return {
+        main: "Горизонтальные многоступенчатые",
+        aside: "центробежные насосы"
+      };
+    case "monoblock-console":
+      return {
+        main: "Консольно-моноблочные",
+        aside: "центробежные насосы"
+      };
+    case "console-centrifugal":
+      return {
+        main: "Центробежные насосы",
+        aside: "консольного типа"
+      };
+    case "submersible-sewage":
+      return {
+        main: "Погружные",
+        aside: "канализационные насосы"
+      };
+    default:
+      return null;
+  }
+}
+
 export function getPumpSubcategoryListingTitle(subcategory: string) {
   return subcategory;
 }

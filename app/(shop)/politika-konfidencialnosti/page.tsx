@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { company, companyPhoneHref } from "@/lib/company";
 import {
   PRIVACY_POLICY_INTRO,
@@ -17,8 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function PrivacyPolicyPage() {
   return (
-    <main className="site-shell">
-      <SiteHeader />
+    <ShopPageShell className="site-shell">
 
       <article className="section static-page">
         <div className="container">
@@ -64,6 +63,6 @@ export default function PrivacyPolicyPage() {
       </article>
 
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

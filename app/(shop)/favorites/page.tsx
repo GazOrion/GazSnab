@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { FavoritesPageClient } from "@/components/FavoritesPageClient";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { buildPageMetadata } from "@/lib/site-seo";
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -10,10 +10,9 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function FavoritesPage() {
   return (
-    <main className="site-shell site-shell-shop site-shell-cart">
-      <SiteHeader />
+    <ShopPageShell className="site-shell site-shell-shop site-shell-cart">
       <FavoritesPageClient />
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

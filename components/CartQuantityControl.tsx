@@ -11,7 +11,7 @@ type Props = {
   /** На всю ширину карточки */
   block?: boolean;
   /** Оранжевая иконка корзины (карточки каталога оборудования) */
-  variant?: "default" | "equipment" | "accent";
+  variant?: "default" | "equipment" | "accent" | "detailBar";
 };
 
 export function CartQuantityControl({ product, compact, block, variant = "default" }: Props) {
@@ -32,6 +32,18 @@ export function CartQuantityControl({ product, compact, block, variant = "defaul
       );
     }
 
+    if (variant === "detailBar") {
+      return (
+        <button
+          type="button"
+          className="product-detail-order-bar__order"
+          onClick={() => addItem(product)}
+        >
+          В корзину
+        </button>
+      );
+    }
+
     const addClassName = compact
       ? `button card-add-btn${block ? " card-add-btn-block" : ""}`
       : variant === "accent"
@@ -46,8 +58,10 @@ export function CartQuantityControl({ product, compact, block, variant = "defaul
   }
 
   const stepperVariant =
-    variant === "equipment" || variant === "accent"
-      ? variant
+    variant === "equipment" || variant === "accent" || variant === "detailBar"
+      ? variant === "detailBar"
+        ? "detailBar"
+        : variant
       : compact
         ? "compact"
         : "default";

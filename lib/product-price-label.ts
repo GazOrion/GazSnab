@@ -6,6 +6,12 @@ import { getProductLineCatalog, getProductLineMinPrice } from "@/lib/product-lin
 
 export { ON_REQUEST_PRICE_LABEL };
 
+export const PRODUCT_DETAIL_ON_REQUEST_PRICE_LABEL = "Цена по запросу";
+
+export function getProductDetailCardPriceLabel(priceLabel: string) {
+  return priceLabel === ON_REQUEST_PRICE_LABEL ? PRODUCT_DETAIL_ON_REQUEST_PRICE_LABEL : priceLabel;
+}
+
 export function isPumpProduct(slug?: string, category?: string) {
   return category === PUMPS_CATEGORY || (slug?.startsWith("nasos-") ?? false);
 }

@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useRef, useState, type ReactNode } from "react";
 import { ProductCard, type CatalogProduct } from "@/components/ProductCard";
+import { ProductDescriptionCollapsible } from "@/components/ProductDescriptionCollapsible";
 import { ProductDescriptionContent } from "@/components/ProductDescriptionContent";
 import { ProductDimensionsBlock } from "@/components/ProductDimensionsBlock";
 import { ProductDimensionsSection } from "@/components/ProductDimensionsSection";
@@ -284,13 +285,15 @@ export function ProductDetailTabs({
               <section className="product-detail-section" id="description">
                 <h2 className="product-detail-section__title">{descriptionTitle}</h2>
                 <div className="product-detail-section__body">
-                  {richContent ? (
-                    <ProductDescriptionContent blocks={richContent.description} />
-                  ) : details.trim() ? (
-                    <p>{details}</p>
-                  ) : (
-                    <p className="product-detail-section__empty">Описание уточняется у менеджера.</p>
-                  )}
+                  <ProductDescriptionCollapsible>
+                    {richContent ? (
+                      <ProductDescriptionContent blocks={richContent.description} />
+                    ) : details.trim() ? (
+                      <p>{details}</p>
+                    ) : (
+                      <p className="product-detail-section__empty">Описание уточняется у менеджера.</p>
+                    )}
+                  </ProductDescriptionCollapsible>
                 </div>
               </section>
             ) : null}

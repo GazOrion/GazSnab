@@ -1,4 +1,5 @@
 import { ProductExpandableFigure } from "@/components/ProductExpandableFigure";
+import { ProductMobileExpandable } from "@/components/ProductMobileExpandable";
 import type { ProductDescriptionBlock } from "@/lib/product-content";
 
 export function ProductDescriptionContent({ blocks }: { blocks: ProductDescriptionBlock[] }) {
@@ -92,35 +93,37 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
           }
 
           return (
-            <div className={wrapClass} key={index}>
-              <table className="product-data-table">
-                <thead>
-                  <tr>
-                    {block.table.columns.map((column) => (
-                      <th key={column} scope="col">
-                        {column}
-                      </th>
-                    ))}
-                  </tr>
-                </thead>
-                <tbody>
-                  {block.table.rows.map((row, rowIndex) => (
-                    <tr key={rowIndex}>
-                      {row.map((cell, cellIndex) => {
-                        const text = typeof cell === "string" ? cell : cell.text;
-                        const colspan = typeof cell === "object" ? cell.colspan : undefined;
-
-                        return (
-                          <td key={cellIndex} colSpan={colspan}>
-                            {renderTableCell(text)}
-                          </td>
-                        );
-                      })}
+            <ProductMobileExpandable key={index} mode="rows">
+              <div className={wrapClass}>
+                <table className="product-data-table">
+                  <thead>
+                    <tr>
+                      {block.table.columns.map((column) => (
+                        <th key={column} scope="col">
+                          {column}
+                        </th>
+                      ))}
                     </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
+                  </thead>
+                  <tbody>
+                    {block.table.rows.map((row, rowIndex) => (
+                      <tr key={rowIndex}>
+                        {row.map((cell, cellIndex) => {
+                          const text = typeof cell === "string" ? cell : cell.text;
+                          const colspan = typeof cell === "object" ? cell.colspan : undefined;
+
+                          return (
+                            <td key={cellIndex} colSpan={colspan}>
+                              {renderTableCell(text)}
+                            </td>
+                          );
+                        })}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </ProductMobileExpandable>
           );
         }
 

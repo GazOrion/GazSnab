@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { company } from "@/lib/company";
 
 import { buildPageMetadata } from "@/lib/site-seo";
@@ -23,8 +23,7 @@ const deliveryOptions = [
 
 export default function DeliveryPage() {
   return (
-    <main className="site-shell">
-      <SiteHeader />
+    <ShopPageShell className="site-shell">
 
       <article className="section static-page">
         <div className="container">
@@ -62,6 +61,6 @@ export default function DeliveryPage() {
       </article>
 
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

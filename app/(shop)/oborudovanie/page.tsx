@@ -3,8 +3,8 @@ import { redirect } from "next/navigation";
 import { Suspense } from "react";
 import { CatalogDbError } from "@/components/home/CatalogDbError";
 import { CatalogSection } from "@/components/home/CatalogSection";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { CATALOG_FILTER_PARAMS, CATALOG_ROUTES, CATALOG_SECTION, PRODUCT_KIND } from "@/lib/catalog";
 import { isRemovedEquipmentCategory, normalizeEquipmentCategory } from "@/lib/equipment-category-config";
 import { loadHomeCatalogData } from "@/lib/catalog-data";
@@ -62,8 +62,7 @@ export default async function EquipmentPage({ searchParams }: Props) {
   }
 
   return (
-    <main className="site-shell site-shell-shop store-catalog-page">
-      <SiteHeader />
+    <ShopPageShell className="site-shell site-shell-shop store-catalog-page">
       <div className="store-page-section">
         {!catalogData ? (
           <CatalogDbError />
@@ -85,6 +84,6 @@ export default async function EquipmentPage({ searchParams }: Props) {
         )}
       </div>
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

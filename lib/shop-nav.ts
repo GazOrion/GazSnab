@@ -4,12 +4,27 @@ import {
   EQUIPMENT_HEADER_CATALOG_ITEMS,
   PRODUCT_KIND
 } from "@/lib/catalog";
+import {
+  GAS_METERS_CATEGORY,
+  GAS_METER_SUBCATEGORY_MEMBRANE,
+  GAS_METER_SUBCATEGORY_ROTARY,
+  GAS_METER_SUBCATEGORY_SG_EK,
+  GAS_METER_SUBCATEGORY_SG_TK,
+  GAS_METER_SUBCATEGORY_SG_TK_D,
+  GAS_METER_SUBCATEGORY_SG_TK_R,
+  GAS_METER_SUBCATEGORY_SG_TK_T,
+  GAS_METER_SUBCATEGORY_SMT,
+  GAS_METER_SUBCATEGORY_TURBINE
+} from "@/lib/gas-meters-catalog";
+import { PUMPS_CATEGORY } from "@/lib/equipment-category-config";
+import { PUMP_SUBCATEGORIES } from "@/lib/pumps-catalog";
 
 export type HeaderNavChild = {
   label: string;
   href: string;
   imageUrl?: string | null;
   match: (pathname: string, search?: string) => boolean;
+  children?: HeaderNavChild[];
 };
 
 export type ShopNavItem = {
@@ -22,6 +37,61 @@ export type ShopNavItem = {
 };
 
 const equipmentCategoryParam = CATALOG_FILTER_PARAMS.equipment.category;
+const equipmentSubcategoryParam = CATALOG_FILTER_PARAMS.equipment.subcategory;
+
+function matchEquipmentSubcategory(category: string, subcategory: string) {
+  return (pathname: string, search = "") => {
+    const params = new URLSearchParams(search);
+    return (
+      pathname === "/oborudovanie" &&
+      params.get(equipmentCategoryParam) === category &&
+      params.get(equipmentSubcategoryParam) === subcategory
+    );
+  };
+}
+
+function buildEquipmentSubcategoryNavChild(
+  category: string,
+  subcategory: string,
+  label = subcategory
+): HeaderNavChild {
+  return {
+    label,
+    href: catalogPath({ kind: PRODUCT_KIND.GOODS, category, subcategory }),
+    match: matchEquipmentSubcategory(category, subcategory)
+  };
+}
+
+function buildGasMeterCatalogNavChildren(): HeaderNavChild[] {
+  const sgTkChildren: HeaderNavChild[] = [
+    GAS_METER_SUBCATEGORY_SG_TK_T,
+    GAS_METER_SUBCATEGORY_SG_TK_R,
+    GAS_METER_SUBCATEGORY_SG_TK_D
+  ].map((subcategory) => buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, subcategory));
+
+  return [
+    buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, GAS_METER_SUBCATEGORY_SMT),
+    buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, GAS_METER_SUBCATEGORY_MEMBRANE),
+    buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, GAS_METER_SUBCATEGORY_ROTARY),
+    buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, GAS_METER_SUBCATEGORY_TURBINE),
+    {
+      ...buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, GAS_METER_SUBCATEGORY_SG_TK),
+      children: sgTkChildren
+    },
+    buildEquipmentSubcategoryNavChild(GAS_METERS_CATEGORY, GAS_METER_SUBCATEGORY_SG_EK)
+  ];
+}
+
+function buildPumpCatalogNavChildren(): HeaderNavChild[] {
+  return PUMP_SUBCATEGORIES.map((item) =>
+    buildEquipmentSubcategoryNavChild(PUMPS_CATEGORY, item.name)
+  );
+}
+
+const CATALOG_NESTED_CHILDREN: Partial<Record<string, HeaderNavChild[]>> = {
+  [GAS_METERS_CATEGORY]: buildGasMeterCatalogNavChildren(),
+  [PUMPS_CATEGORY]: buildPumpCatalogNavChildren()
+};
 
 const CATALOG_NAV_IMAGES: Partial<Record<string, string>> = {
   "Счётчики газа": "/media/products/smt/smt-kompleks.webp",
@@ -37,9 +107,15 @@ export const HEADER_CATALOG_CHILDREN: HeaderNavChild[] = EQUIPMENT_HEADER_CATALO
     href: catalogPath({ kind: PRODUCT_KIND.GOODS, category: item.name }),
     imageUrl:
       ("image" in item && item.image ? item.image : CATALOG_NAV_IMAGES[item.label]) ?? null,
-    match: (pathname, search = "") =>
-      pathname === "/oborudovanie" &&
-      new URLSearchParams(search).get(equipmentCategoryParam) === item.name
+    match: (pathname, search = "") => {
+      const params = new URLSearchParams(search);
+      return (
+        pathname === "/oborudovanie" &&
+        params.get(equipmentCategoryParam) === item.name &&
+        !params.get(equipmentSubcategoryParam)
+      );
+    },
+    children: CATALOG_NESTED_CHILDREN[item.name]
   })
 );
 
@@ -88,10 +164,6 @@ export const HEADER_SERVICES_CHILDREN: HeaderNavChild[] = [
   }
 ];
 
-function matchNavChildren(children: HeaderNavChild[], pathname: string, search = "") {
-  return children.some((child) => child.match(pathname, search));
-}
-
 /** Пункты в шапке как на макете. */
 export const HEADER_NAV_LINKS: ShopNavItem[] = [
   {
@@ -99,16 +171,16 @@ export const HEADER_NAV_LINKS: ShopNavItem[] = [
     label: "Каталог",
     dropdown: true,
     children: HEADER_CATALOG_CHILDREN,
-    match: (pathname, search) =>
-      pathname === "/oborudovanie" || matchNavChildren(HEADER_CATALOG_CHILDREN, pathname, search)
+    match: (pathname, search = "") =>
+      pathname === "/oborudovanie" &&
+      !new URLSearchParams(search).get(equipmentCategoryParam)
   },
   {
     href: "/uslugi",
     label: "Услуги",
     dropdown: true,
     children: HEADER_SERVICES_CHILDREN,
-    match: (pathname, search) =>
-      pathname === "/uslugi" || matchNavChildren(HEADER_SERVICES_CHILDREN, pathname, search)
+    match: (pathname) => pathname === "/uslugi"
   },
   {
     href: "/o-kompanii",
@@ -141,7 +213,29 @@ export function isShopNavActive(pathname: string, item: ShopNavItem, search = ""
   return item.match(pathname, search);
 }
 
-export function isHeaderNavChildActive(pathname: string, child: HeaderNavChild, search = "") {
+/** Ветка меню содержит текущую страницу (для автораскрытия групп). */
+export function isHeaderNavChildBranchActive(
+  pathname: string,
+  child: HeaderNavChild,
+  search = ""
+): boolean {
+  if (pathname === "/") return false;
+  if (child.match(pathname, search)) return true;
+  return child.children?.some((nested) => isHeaderNavChildBranchActive(pathname, nested, search)) ?? false;
+}
+
+export function isShopNavBranchActive(pathname: string, item: ShopNavItem, search = "") {
+  if (pathname === "/") return false;
+  if (item.match(pathname, search)) return true;
+  return item.children?.some((child) => isHeaderNavChildBranchActive(pathname, child, search)) ?? false;
+}
+
+/** Только прямое совпадение пункта (для подсветки активного). */
+export function isHeaderNavChildActive(
+  pathname: string,
+  child: HeaderNavChild,
+  search = ""
+): boolean {
   if (pathname === "/") return false;
   return child.match(pathname, search);
 }

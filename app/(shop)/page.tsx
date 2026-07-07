@@ -4,8 +4,8 @@ import { HeroSection } from "@/components/home/HeroSection";
 import { EquipmentPromoSection } from "@/components/home/EquipmentPromoSection";
 import { MetalworkingPromoSection } from "@/components/home/MetalworkingPromoSection";
 import { PromoHomeSections } from "@/components/home/PromoHomeSections";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 import { loadPromoPageData } from "@/lib/catalog-data";
 import { buildPageMetadata } from "@/lib/site-seo";
 
@@ -25,8 +25,7 @@ export default async function Home() {
   }
 
   return (
-    <main className="site-shell site-shell-shop store-promo-page">
-      <SiteHeader />
+    <ShopPageShell className="site-shell site-shell-shop store-promo-page">
       <HeroSection
         categories={promoData?.equipmentPromoCategories ?? []}
         popularProducts={promoData?.heroPopularGoods ?? []}
@@ -37,6 +36,6 @@ export default async function Home() {
       <MetalworkingPromoSection popularServices={promoData?.metalPopularServices ?? []} />
       {!promoData ? <CatalogDbError /> : <PromoHomeSections />}
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

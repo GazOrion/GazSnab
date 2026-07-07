@@ -6,7 +6,7 @@ import { useCallback, useEffect, useState } from "react";
 
 const MAX_QTY = 9999;
 
-export type QuantityStepperVariant = "default" | "compact" | "equipment" | "accent";
+export type QuantityStepperVariant = "default" | "compact" | "equipment" | "accent" | "detailBar";
 
 type Props = {
   quantity: number;
@@ -26,6 +26,13 @@ function variantClasses(variant: QuantityStepperVariant) {
         btn: "store-equipment-popular-card__qty-btn",
         input: "store-equipment-popular-card__qty-input",
         iconSize: 18
+      };
+    case "detailBar":
+      return {
+        root: "product-detail-order-bar__qty",
+        btn: "product-detail-order-bar__qty-btn",
+        input: "product-detail-order-bar__qty-input",
+        iconSize: 16
       };
     case "compact":
       return {

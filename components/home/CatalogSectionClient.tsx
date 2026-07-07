@@ -270,7 +270,9 @@ function CatalogSectionInner({
             subcategory &&
             subcategory !== GAS_METER_SUBCATEGORY_SG_TK
               ? "store-gas-meters-landing store-gas-meters-subcategory-landing"
-              : undefined
+              : category === PUMPS_CATEGORY && subcategory
+                ? "store-pumps-landing store-pumps-subcategory-landing"
+                : undefined
           }
           category={category}
           products={
@@ -297,7 +299,9 @@ function CatalogSectionInner({
                 : undefined
           }
           heroSubtitle={
-            category === GAS_METERS_CATEGORY && subcategory ? subcategory : undefined
+            (category === GAS_METERS_CATEGORY || category === PUMPS_CATEGORY) && subcategory
+              ? subcategory
+              : undefined
           }
         />
       ) : null}

@@ -1,7 +1,7 @@
 import { Factory, ShieldCheck, Wrench } from "lucide-react";
 import type { Metadata } from "next";
+import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import { SiteHeader } from "@/components/SiteHeader";
 
 import { buildPageMetadata } from "@/lib/site-seo";
 
@@ -11,8 +11,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function PodObektPage() {
   return (
-    <main className="site-shell">
-      <SiteHeader />
+    <ShopPageShell className="site-shell">
 
       <article className="section static-page">
         <div className="container about-grid compact-static">
@@ -45,6 +44,6 @@ export default function PodObektPage() {
       </article>
 
       <SiteFooter />
-    </main>
+    </ShopPageShell>
   );
 }

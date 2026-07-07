@@ -1,6 +1,7 @@
 import Link from "next/link";
 import clsx from "clsx";
 import { ResponsiveBannerImage } from "@/components/ResponsiveBannerImage";
+import { getPumpSubcategoryHeroSubtitleParts } from "@/lib/pumps-catalog";
 
 export type CategoryBreadcrumb = {
   label: string;
@@ -31,6 +32,33 @@ function CategoryBreadcrumbs({ breadcrumbs }: { breadcrumbs: CategoryBreadcrumb[
         </span>
       ))}
     </nav>
+  );
+}
+
+function splitCatalogHeroSubtitle(subtitle: string) {
+  const countersMarker = subtitle.toLowerCase().indexOf(" счетчиков газа)");
+  if (countersMarker !== -1) {
+    return {
+      main: subtitle.slice(0, countersMarker),
+      aside: subtitle.slice(countersMarker + 1)
+    };
+  }
+
+  return getPumpSubcategoryHeroSubtitleParts(subtitle);
+}
+
+function CatalogHeroSubtitle({ subtitle }: { subtitle: string }) {
+  const parts = splitCatalogHeroSubtitle(subtitle);
+
+  if (!parts) {
+    return <p className="store-equipment-catalog-hero__subtitle">{subtitle}</p>;
+  }
+
+  return (
+    <p className="store-equipment-catalog-hero__subtitle store-equipment-catalog-hero__subtitle--split">
+      <span className="store-equipment-catalog-hero__subtitle-main">{parts.main}</span>
+      <span className="store-equipment-catalog-hero__subtitle-aside">{parts.aside}</span>
+    </p>
   );
 }
 
@@ -66,9 +94,7 @@ export function EquipmentCategoryHero({
             </div>
             <div className="store-equipment-catalog-hero__heading">
               <h1 className="store-equipment-catalog-hero__title">{title}</h1>
-              {subtitle ? (
-                <p className="store-equipment-catalog-hero__subtitle">{subtitle}</p>
-              ) : null}
+              {subtitle ? <CatalogHeroSubtitle subtitle={subtitle} /> : null}
             </div>
             <p className="store-equipment-catalog-hero__lead">{lead}</p>
           </div>

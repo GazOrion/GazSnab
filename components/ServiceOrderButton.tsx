@@ -14,13 +14,27 @@ type Props = {
   product: ServiceProduct;
   compact?: boolean;
   block?: boolean;
-  variant?: "default" | "equipment" | "accent";
+  variant?: "default" | "equipment" | "accent" | "detailBar";
+  modalTitle?: string;
+  modalDescription?: string;
+  successTitle?: string;
+  successText?: string;
 };
 
-export function ServiceOrderButton({ product, compact, block, variant = "default" }: Props) {
+export function ServiceOrderButton({
+  product,
+  compact,
+  block,
+  variant = "default",
+  modalTitle = "Заказать услугу",
+  modalDescription,
+  successTitle = "Заявка оформлена",
+  successText = "Спасибо! Менеджер свяжется с вами для уточнения деталей."
+}: Props) {
   const [open, setOpen] = useState(false);
 
   const buttonClassName = (() => {
+    if (variant === "detailBar") return "product-detail-order-bar__order";
     if (variant === "equipment") return "store-service-order-btn";
     if (compact) return clsx("button card-add-btn", block && "card-add-btn-block");
     if (variant === "accent") return "button yellow";
@@ -59,11 +73,11 @@ export function ServiceOrderButton({ product, compact, block, variant = "default
       <ContactRequestModal
         open={open}
         onClose={() => setOpen(false)}
-        title="Заказать услугу"
-        description={product.title}
+        title={modalTitle}
+        description={modalDescription ?? product.title}
         submitLabel="Отправить заявку"
-        successTitle="Заявка оформлена"
-        successText="Спасибо! Менеджер свяжется с вами для уточнения деталей."
+        successTitle={successTitle}
+        successText={successText}
         onSubmit={submitOrder}
       />
     </>

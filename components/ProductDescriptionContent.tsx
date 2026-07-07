@@ -51,44 +51,14 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
         }
 
         if (block.type === "figure") {
-          if (block.expandable) {
-            return (
-              <ProductExpandableFigure
-                key={index}
-                imageSrc={block.imageSrc}
-                imageAlt={block.imageAlt}
-                caption={block.caption}
-              />
-            );
-          }
-
-          const figureClass = block.plain
-            ? "product-description-rich__figure product-description-rich__figure--plain"
-            : "product-description-rich__figure";
-
           return (
-            <figure className={figureClass} key={index}>
-              {block.plain ? (
-                <img
-                  className="product-description-rich__figure-image product-description-rich__figure-image--plain"
-                  src={block.imageSrc}
-                  alt={block.imageAlt}
-                  loading="lazy"
-                />
-              ) : (
-                <div className="product-description-rich__figure-frame">
-                  <img
-                    className="product-description-rich__figure-image"
-                    src={block.imageSrc}
-                    alt={block.imageAlt}
-                    loading="lazy"
-                  />
-                </div>
-              )}
-              {block.caption ? (
-                <figcaption className="product-description-rich__figure-caption">{block.caption}</figcaption>
-              ) : null}
-            </figure>
+            <ProductExpandableFigure
+              key={index}
+              imageSrc={block.imageSrc}
+              imageAlt={block.imageAlt}
+              caption={block.caption}
+              mode={block.expandable ? "expandable" : block.plain ? "plain" : "inline"}
+            />
           );
         }
 
@@ -161,14 +131,12 @@ export function ProductDescriptionContent({ blocks }: { blocks: ProductDescripti
               key={index}
             >
               {block.imageSrc ? (
-                <div className="product-parts-catalog__media">
-                  <img
-                    className="product-parts-catalog__image"
-                    src={block.imageSrc}
-                    alt={block.imageAlt || ""}
-                    loading="lazy"
-                  />
-                </div>
+                <ProductExpandableFigure
+                  imageSrc={block.imageSrc}
+                  imageAlt={block.imageAlt || ""}
+                  imageClassName="product-parts-catalog__image"
+                  mode="catalog"
+                />
               ) : null}
               <div className="product-parts-catalog__rows">
                 {block.items.map((item) => (

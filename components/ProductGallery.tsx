@@ -14,6 +14,7 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
   const thumbRefs = useRef<(HTMLButtonElement | null)[]>([]);
   const activeIndexRef = useRef(0);
   const mainWrapRef = useRef<HTMLDivElement>(null);
+  const mobileTrackRef = useRef<HTMLDivElement>(null);
   const stripOuterRef = useRef<HTMLDivElement>(null);
   const stripRef = useRef<HTMLDivElement>(null);
 
@@ -94,15 +95,38 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
     []
   );
 
+  const scrollMobileTo = useCallback((index: number) => {
+    const track = mobileTrackRef.current;
+    if (!track) return;
+
+    const slide = track.children[index] as HTMLElement | undefined;
+    if (!slide) return;
+
+    track.scrollTo({ left: slide.offsetLeft, behavior: "smooth" });
+  }, []);
+
   const goTo = useCallback(
     (index: number) => {
       const next = ((index % safeImages.length) + safeImages.length) % safeImages.length;
       setActiveIndex(next);
       activeIndexRef.current = next;
       scrollThumbIntoView(next);
+      scrollMobileTo(next);
     },
-    [safeImages.length, scrollThumbIntoView]
+    [safeImages.length, scrollMobileTo, scrollThumbIntoView]
   );
+
+  const onMobileScroll = useCallback(() => {
+    const track = mobileTrackRef.current;
+    if (!track || track.clientWidth <= 0) return;
+
+    const next = Math.round(track.scrollLeft / track.clientWidth);
+    if (next === activeIndexRef.current || next < 0 || next >= safeImages.length) return;
+
+    setActiveIndex(next);
+    activeIndexRef.current = next;
+    scrollThumbIntoView(next);
+  }, [safeImages.length, scrollThumbIntoView]);
 
   useEffect(() => {
     if (safeImages.length <= 1) return;
@@ -172,6 +196,41 @@ export function ProductGallery({ images, title }: { images: string[]; title: str
             }
           }}
         />
+      </div>
+
+      <div className="product-detail-gallery-mobile" aria-label="Фото товара">
+        <div
+          className="product-detail-gallery-mobile__track"
+          ref={mobileTrackRef}
+          onScroll={onMobileScroll}
+        >
+          {safeImages.map((image, index) => (
+            <div className="product-detail-gallery-mobile__slide" key={`${image}-mobile-${index}`}>
+              <img
+                src={image}
+                alt={`${title}: фото ${index + 1}`}
+                draggable={false}
+                onError={(event) => {
+                  event.currentTarget.src = PLACEHOLDER;
+                }}
+              />
+            </div>
+          ))}
+        </div>
+        {safeImages.length > 1 ? (
+          <div className="product-detail-gallery-mobile__pagination" aria-hidden={safeImages.length <= 1}>
+            {safeImages.map((image, index) => (
+              <button
+                key={`${image}-dot-${index}`}
+                className={index === activeIndex ? "active" : ""}
+                type="button"
+                aria-label={`Показать фото ${index + 1}`}
+                aria-current={index === activeIndex ? "true" : undefined}
+                onClick={() => goTo(index)}
+              />
+            ))}
+          </div>
+        ) : null}
       </div>
     </div>
   );

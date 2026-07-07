@@ -3,7 +3,6 @@ import type { ProductRichContent } from "@/lib/product-content/smt-kompleks";
 export const SBIG_CONTENT: ProductRichContent = {
   descriptionTitle: "Подробное описание",
   description: [
-    { type: "heading", text: "Система безопасного использования газа", level: 3 },
     { type: "heading", text: "Назначение", level: 3 },
     {
       type: "paragraph",

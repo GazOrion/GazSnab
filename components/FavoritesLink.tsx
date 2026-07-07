@@ -22,12 +22,14 @@ export function FavoritesLink({ className }: Props) {
       href="/favorites"
       aria-label={count ? `Избранное: ${count} позиций` : "Избранное"}
     >
-      <Heart size={22} strokeWidth={1.75} aria-hidden />
-      {count > 0 ? (
-        <span className="header-icon-badge" aria-hidden>
-          {count > 99 ? "99+" : count}
-        </span>
-      ) : null}
+      <span className="header-pro-action-icon-slot">
+        <Heart size={22} strokeWidth={1.75} aria-hidden />
+        {count > 0 ? (
+          <span className="header-icon-badge" aria-hidden>
+            {count > 99 ? "99+" : count}
+          </span>
+        ) : null}
+      </span>
     </Link>
   );
 }

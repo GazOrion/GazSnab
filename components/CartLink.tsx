@@ -22,11 +22,15 @@ export function CartLink({ variant = "icon" }: Props) {
         href="/cart"
         aria-label={count ? `Корзина: ${count} позиций` : "Корзина"}
       >
-        <ShoppingCart size={22} strokeWidth={1.75} aria-hidden />
-        <span className="header-pro-cart-label">Корзина</span>
-        <span className="header-pro-cart-badge" aria-hidden>
-          {count > 99 ? "99+" : count}
+        <span className="header-pro-action-icon-slot header-pro-action-icon-slot--cart">
+          <ShoppingCart size={22} strokeWidth={1.75} aria-hidden />
+          {count > 0 ? (
+            <span className="header-icon-badge" aria-hidden>
+              {count > 99 ? "99+" : count}
+            </span>
+          ) : null}
         </span>
+        <span className="header-pro-cart-label">Корзина</span>
       </Link>
     );
   }

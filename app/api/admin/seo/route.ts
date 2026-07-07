@@ -107,7 +107,7 @@ export async function PUT(request: Request) {
       )
     );
 
-    revalidateTag("seo-pages", "max");
+    revalidateTag("seo-pages");
 
     const revalidatedPaths = new Set<string>();
     for (const item of parsed.data.items) {

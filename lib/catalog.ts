@@ -78,7 +78,11 @@ export const EQUIPMENT_CLUSTER_PRESENTATION: Record<string, ClusterPresentation>
   },
   "Дополнительное оборудование": {
     title: "Дополнительное оборудование",
-    teaser: "Кабели, комплектующие и аксессуары для подключения приборов учёта и телеметрии"
+    teaser: "Антенны, элементы питания, комплектующие и аксессуары для приборов учёта"
+  },
+  "Кабели БПЭК": {
+    title: "Кабели БПЭК",
+    teaser: "Кабели для подключения модулей телеметрии БПЭК к корректорам и счётчикам газа"
   },
   ГРПШ: {
     title: "ГРПШ",
@@ -139,7 +143,8 @@ export const EQUIPMENT_CATEGORY_IMAGES: Partial<Record<string, string>> = {
   "Счётчики газа": "/media/products/smt/smt-kompleks.webp",
   Телеметрия: "/media/products/smt/bpek-02-ck.webp",
   ПО: "/media/products/software/gazset-standart.webp",
-  "Дополнительное оборудование": "/media/products/accessories/bpek-ek-cable.webp",
+  "Дополнительное оборудование": "/media/products/accessories/antenna.webp",
+  "Кабели БПЭК": "/media/products/accessories/bpek-ek-cable.webp",
   [SENSORS_CATEGORY]: "/media/categories/datchiki.webp",
   ГРПШ: GAS_METERING_UNITS_CARD_IMAGE,
   Фильтры: "/media/categories/filtr.webp",
@@ -177,6 +182,7 @@ export const EQUIPMENT_CLUSTER_ORDER = [
   "Телеметрия",
   "ПО",
   "Дополнительное оборудование",
+  "Кабели БПЭК",
   "ГРПШ",
   "Фильтры",
   "Насосы",
@@ -259,6 +265,11 @@ export const EQUIPMENT_HEADER_CATALOG_ITEMS = dedupeEquipmentCatalogNavItems([
   {
     name: "Дополнительное оборудование",
     label: "Дополнительное оборудование",
+    image: "/media/products/accessories/antenna.webp"
+  },
+  {
+    name: "Кабели БПЭК",
+    label: "Кабели БПЭК",
     image: "/media/products/accessories/bpek-ek-cable.webp"
   },
   {

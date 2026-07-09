@@ -26,6 +26,7 @@ import {
 import {
   GAS_METERS_CATEGORY,
   PUMPS_CATEGORY,
+  BPEK_CABLES_CATEGORY,
   getEquipmentCategoryConfig
 } from "@/lib/equipment-category-config";
 import type { CategoryCluster } from "@/lib/catalog-data";
@@ -40,7 +41,7 @@ import {
   type ProductKind
 } from "@/lib/catalog";
 import { sortEquipmentClusters, sortEquipmentProducts } from "@/lib/equipment-catalog";
-import { getClientMobileEquipmentCategoryBannerSrc } from "@/lib/mobile-banner-paths";
+import { getClientMobileEquipmentCategoryBannerSrc, BPEK_CABLES_BANNER_FILE, getClientMobileBannerPath } from "@/lib/mobile-banner-paths";
 import { useCatalogSearch } from "@/contexts/CatalogSearchContext";
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
 import { CatalogClusterGrid } from "./CatalogClusterGrid";
@@ -134,6 +135,12 @@ function CatalogSectionInner({
     categoryMobileBannerSrc ??
     equipmentCategoryMobileBanners[PUMPS_CATEGORY] ??
     getClientMobileEquipmentCategoryBannerSrc(PUMPS_CATEGORY);
+  const bpekCablesBannerSrc =
+    categoryBannerSrc ?? getClientMobileBannerPath(BPEK_CABLES_BANNER_FILE);
+  const bpekCablesMobileBannerSrc =
+    categoryMobileBannerSrc ??
+    equipmentCategoryMobileBanners[BPEK_CABLES_CATEGORY] ??
+    getClientMobileEquipmentCategoryBannerSrc(BPEK_CABLES_CATEGORY);
   const equipmentCategoryConfig =
     category && variant === "equipment" ? getEquipmentCategoryConfig(category) : null;
   const isGasMetersLanding = isGasMetersCategoryView && !subcategory;
@@ -157,9 +164,11 @@ function CatalogSectionInner({
         ? gasMetersMobileBannerSrc
         : category === PUMPS_CATEGORY
           ? pumpsMobileBannerSrc
-          : categoryMobileBannerSrc ??
-            getClientMobileEquipmentCategoryBannerSrc(category) ??
-            catalogMobileBannerSrc
+          : category === BPEK_CABLES_CATEGORY
+            ? bpekCablesMobileBannerSrc
+            : categoryMobileBannerSrc ??
+              getClientMobileEquipmentCategoryBannerSrc(category) ??
+              catalogMobileBannerSrc
       : undefined;
 
   const resolvedEquipmentCategoryBannerSrc =
@@ -168,9 +177,11 @@ function CatalogSectionInner({
         ? gasMetersBannerSrc
         : category === PUMPS_CATEGORY
           ? pumpsBannerSrc
-          : categoryBannerSrc ??
-            resolveEquipmentClusterImage(category, null) ??
-            catalogBannerSrc
+          : category === BPEK_CABLES_CATEGORY
+            ? bpekCablesBannerSrc
+            : categoryBannerSrc ??
+              resolveEquipmentClusterImage(category, null) ??
+              catalogBannerSrc
       : undefined;
 
   const usesEquipmentListingCards =
@@ -282,7 +293,11 @@ function CatalogSectionInner({
                 ? filterPumpProducts(products, subcategory)
                 : products
           }
-          bannerSrc={resolvedEquipmentCategoryBannerSrc ?? catalogBannerSrc ?? "/media/catalog-banner.webp"}
+          bannerSrc={
+            category === BPEK_CABLES_CATEGORY
+              ? bpekCablesBannerSrc
+              : resolvedEquipmentCategoryBannerSrc ?? catalogBannerSrc ?? "/media/catalog-banner.webp"
+          }
           mobileBannerSrc={resolvedEquipmentCategoryMobileBannerSrc ?? catalogMobileBannerSrc}
           breadcrumbs={
             category === GAS_METERS_CATEGORY && subcategory

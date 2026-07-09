@@ -160,7 +160,8 @@ export async function syncCartOrderToOrionCrm(params: {
 const CONSULTATION_SOURCE_LABELS = {
   home: "Главная — консультация",
   popup: "Виджет — консультация",
-  "phone-fab": "Обратный звонок"
+  "phone-fab": "Обратный звонок",
+  "product-detail": "Страница товара — помощь с подбором"
 } as const;
 
 export async function syncConsultationToOrionCrm(params: {

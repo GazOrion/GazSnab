@@ -3602,12 +3602,11 @@ const products = [
     title: `Кабель БПЭК-ЕК (${length}М.)`,
     slug: `bpek-ek-cable-${length}m`,
     kind: "Товар",
-    category: "Дополнительное оборудование",
+    category: "Кабели БПЭК",
     description: BPEK_EK_CABLE_DESCRIPTION,
     details: BPEK_EK_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: `${length} м`
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
@@ -3621,12 +3620,11 @@ const products = [
     title: `Кабель БПЭК-СМТ/ТМ-07 (${length}М.)`,
     slug: `bpek-smt-tm07-cable-${length}m`,
     kind: "Товар",
-    category: "Дополнительное оборудование",
+    category: "Кабели БПЭК",
     description: BPEK_SMT_TM07_CABLE_DESCRIPTION,
     details: BPEK_SMT_TM07_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: `${length} м`
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
@@ -3640,12 +3638,11 @@ const products = [
     title: `Кабель БПЭК-ТС (${length} М.)`,
     slug: `bpek-ts-cable-${length}m`,
     kind: "Товар",
-    category: "Дополнительное оборудование",
+    category: "Кабели БПЭК",
     description: BPEK_TS_CABLE_DESCRIPTION,
     details: BPEK_TS_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: `${length} м`
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
@@ -3659,12 +3656,11 @@ const products = [
     title: `Кабель БПЭК-Флоугаз (${length}М.)`,
     slug: `bpek-flowgaz-cable-${length}m`,
     kind: "Товар",
-    category: "Дополнительное оборудование",
+    category: "Кабели БПЭК",
     description: BPEK_FLOWGAZ_CABLE_DESCRIPTION,
     details: BPEK_FLOWGAZ_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: `${length} м`
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
@@ -3678,12 +3674,11 @@ const products = [
     title: `Кабель БПЭК-ВКГ (${length}м)`,
     slug: `bpek-vkg-cable-${length}m`,
     kind: "Товар",
-    category: "Дополнительное оборудование",
+    category: "Кабели БПЭК",
     description: BPEK_VKG_CABLE_DESCRIPTION,
     details: BPEK_VKG_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: `${length} м`
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
@@ -3697,12 +3692,11 @@ const products = [
     title: `Кабель БПЭК-СПГ/Ирвис (${length}м)`,
     slug: `bpek-spg-irvis-cable-${length}m`,
     kind: "Товар",
-    category: "Дополнительное оборудование",
+    category: "Кабели БПЭК",
     description: BPEK_SPG_IRVIS_CABLE_DESCRIPTION,
     details: BPEK_SPG_IRVIS_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: `${length} м`
     },
     leadTime: "по наличию у дилера, уточняется в заявке",
@@ -3721,7 +3715,6 @@ const products = [
     details: GSM_ANTENNA_CABLE_DESCRIPTION,
     specs: {
       Производитель: CABLE_MANUFACTURER,
-      Подкатегория: "Кабели",
       Длина: "8 м"
     },
     leadTime: "по наличию у дилера, уточняется в заявке",

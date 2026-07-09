@@ -3653,15 +3653,57 @@ button { cursor: pointer; }
 
 .product-detail-order-bar {
   display: flex;
-  align-items: stretch;
+  align-items: flex-start;
   gap: 8px;
   margin-top: 22px;
+}
+
+.product-detail-order-bar__price-col {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 8px;
+  min-width: 0;
+}
+
+.product-detail-order-bar__actions {
+  display: flex;
+  align-items: stretch;
+  gap: 8px;
+}
+
+.product-detail-order-bar__help-link {
+  align-self: flex-start;
+  padding: 0;
+  border: none;
+  background: none;
+  box-shadow: none;
+  color: var(--blue-700);
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.product-detail-order-bar__help-link:hover {
+  color: var(--blue-800);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.product-detail-order-bar__help-link:focus,
+.product-detail-order-bar__help-link:focus-visible {
+  outline: none;
+  box-shadow: none;
 }
 
 .product-detail-order-bar__price {
   position: relative;
   display: flex;
-  flex: 1;
+  width: 100%;
   align-items: center;
   justify-content: space-between;
   gap: 10px;

@@ -19,7 +19,8 @@ const consultationSchema = z
       .trim()
       .refine((value) => normalizeRuPhoneDigits(value).length === 11, "Некорректный телефон."),
     contactMethod: contactMethodSchema.optional(),
-    source: z.enum(["home", "popup", "phone-fab"]).optional()
+    source: z.enum(["home", "popup", "phone-fab", "product-detail"]).optional(),
+    productTitle: z.string().trim().optional()
   })
   .superRefine((data, ctx) => {
     const source = data.source ?? "home";
@@ -73,7 +74,9 @@ export async function POST(request: Request) {
       ? "Заявка на обратный звонок из виджета «Заказать звонок»."
       : source === "popup"
         ? "Заявка на консультацию из виджета на сайте."
-        : "Заявка на консультацию с главной страницы (имя и телефон).";
+        : source === "product-detail"
+          ? `Заявка на помощь с подбором со страницы товара${parsed.data.productTitle ? `: ${parsed.data.productTitle}` : ""}.`
+          : "Заявка на консультацию с главной страницы (имя и телефон).";
 
   const order = await prisma.order.create({
     data: {

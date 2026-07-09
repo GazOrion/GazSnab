@@ -24,7 +24,7 @@ export function CartQuantityControl({ product, compact, block, variant = "defaul
         <button
           type="button"
           className="store-equipment-popular-card__cart"
-          aria-label={`Добавить ${product.title} в корзину`}
+          aria-label={`Добавить ${product.title} в заявку`}
           onClick={() => addItem(product)}
         >
           <ShoppingCart size={20} strokeWidth={2} aria-hidden />
@@ -39,7 +39,7 @@ export function CartQuantityControl({ product, compact, block, variant = "defaul
           className="product-detail-order-bar__order"
           onClick={() => addItem(product)}
         >
-          В корзину
+          Добавить в заявку
         </button>
       );
     }
@@ -52,7 +52,7 @@ export function CartQuantityControl({ product, compact, block, variant = "defaul
 
     return (
       <button type="button" className={addClassName} onClick={() => addItem(product)}>
-        В корзину
+        Добавить в заявку
       </button>
     );
   }

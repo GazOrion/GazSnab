@@ -29,6 +29,7 @@ export const GAS_METERING_UNITS_CATEGORY = "ГРПШ";
 export const TELEMETRY_CATEGORY = "Телеметрия";
 export const SOFTWARE_CATEGORY = "ПО";
 export const ADDITIONAL_EQUIPMENT_CATEGORY = "Дополнительное оборудование";
+export const BPEK_CABLES_CATEGORY = "Кабели БПЭК";
 export const PUMPS_CATEGORY = "Насосы";
 export const SENSORS_CATEGORY = "Датчики";
 
@@ -52,6 +53,7 @@ export type EquipmentCategorySlug =
   | "telemetry"
   | "software"
   | "additional-equipment"
+  | "bpek-cables"
   | "sensors"
   | "gas-metering-units"
   | "filters"
@@ -64,6 +66,7 @@ export const MOBILE_HERO_EQUIPMENT_SLUGS = [
   "telemetry",
   "software",
   "additional-equipment",
+  "bpek-cables",
   "ball-valves",
   "gas-correctors",
   "sensors",
@@ -141,6 +144,12 @@ export const EQUIPMENT_CATEGORY_CONFIGS: Record<string, EquipmentCategoryConfig>
   [ADDITIONAL_EQUIPMENT_CATEGORY]: {
     category: ADDITIONAL_EQUIPMENT_CATEGORY,
     slug: "additional-equipment",
+    filterSections: [],
+    manufacturers: ["Техномер", "РАСКО"]
+  },
+  [BPEK_CABLES_CATEGORY]: {
+    category: BPEK_CABLES_CATEGORY,
+    slug: "bpek-cables",
     filterSections: [],
     manufacturers: ["Техномер"]
   },

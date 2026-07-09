@@ -1,7 +1,7 @@
 "use client";
 
 import clsx from "clsx";
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { CatalogProduct } from "@/components/ProductCard";
 import { EquipmentCategoryFilters } from "@/components/catalog/EquipmentCategoryFilters";
 import { EquipmentCategoryFilterDrawer } from "@/components/catalog/EquipmentCategoryFilterDrawer";
@@ -32,6 +32,7 @@ import {
 import { useCatalogNavigation } from "@/hooks/useCatalogNavigation";
 
 const PAGE_SIZE_OPTIONS = [12, 24, 48] as const;
+const LISTING_SCROLL_OFFSET_PX = 112;
 
 type Props = {
   category: string;
@@ -78,6 +79,39 @@ export function EquipmentCategoryListing({
   const [page, setPage] = useState(1);
   const [pageSize, setPageSize] = useState<(typeof PAGE_SIZE_OPTIONS)[number]>(12);
   const [filtersOpen, setFiltersOpen] = useState(false);
+  const listingTopRef = useRef<HTMLDivElement>(null);
+
+  const scrollListingIntoView = useCallback(() => {
+    const node = listingTopRef.current;
+    if (!node) return;
+
+    const headerOffset = Number.parseInt(
+      getComputedStyle(document.documentElement).getPropertyValue("--store-header-pro-h") || "104",
+      10
+    );
+    const offset = Number.isFinite(headerOffset) ? headerOffset + 16 : LISTING_SCROLL_OFFSET_PX;
+    const top = node.getBoundingClientRect().top + window.scrollY - offset;
+
+    window.scrollTo({
+      top: Math.max(0, top),
+      behavior: "smooth"
+    });
+  }, []);
+
+  function goToPage(nextPage: number) {
+    setPage(nextPage);
+    requestAnimationFrame(() => {
+      scrollListingIntoView();
+    });
+  }
+
+  function handlePageSizeChange(nextPageSize: (typeof PAGE_SIZE_OPTIONS)[number]) {
+    setPageSize(nextPageSize);
+    setPage(1);
+    requestAnimationFrame(() => {
+      scrollListingIntoView();
+    });
+  }
 
   useEffect(() => {
     setFilters(createEquipmentCategoryFilterState(products));
@@ -212,7 +246,7 @@ export function EquipmentCategoryListing({
             onReset={resetFilters}
           />
 
-          <div className="store-equipment-category-main">
+          <div className="store-equipment-category-main" ref={listingTopRef}>
             <EquipmentCategoryMobileBar
               productCount={filteredProducts.length}
               layout={layout}
@@ -271,7 +305,7 @@ export function EquipmentCategoryListing({
                           "store-equipment-listing-pagination__page",
                           item === currentPage && "is-active"
                         )}
-                        onClick={() => setPage(item)}
+                        onClick={() => goToPage(item)}
                         aria-current={item === currentPage ? "page" : undefined}
                       >
                         {item}
@@ -282,7 +316,7 @@ export function EquipmentCategoryListing({
                     type="button"
                     className="store-equipment-listing-pagination__next"
                     disabled={currentPage >= totalPages}
-                    onClick={() => setPage((value) => Math.min(totalPages, value + 1))}
+                    onClick={() => goToPage(Math.min(totalPages, currentPage + 1))}
                     aria-label="Следующая страница"
                   >
                     ›
@@ -294,7 +328,9 @@ export function EquipmentCategoryListing({
                   <select
                     value={pageSize}
                     onChange={(event) =>
-                      setPageSize(Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number])
+                      handlePageSizeChange(
+                        Number(event.target.value) as (typeof PAGE_SIZE_OPTIONS)[number]
+                      )
                     }
                   >
                     {PAGE_SIZE_OPTIONS.map((size) => (

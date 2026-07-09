@@ -97,7 +97,8 @@ const CATALOG_NAV_IMAGES: Partial<Record<string, string>> = {
   "Счётчики газа": "/media/products/smt/smt-kompleks.webp",
   Телеметрия: "/media/products/smt/bpek-02-ck.webp",
   ПО: "/media/products/software/gazset-standart.webp",
-  "Дополнительное оборудование": "/media/products/accessories/bpek-ek-cable.webp",
+  "Дополнительное оборудование": "/media/products/accessories/antenna.webp",
+  "Кабели БПЭК": "/media/products/accessories/bpek-ek-cable.webp",
   Насосы: "/media/categories/pumps.webp"
 };
 

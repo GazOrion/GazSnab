@@ -16,6 +16,7 @@ const mapping = [
   { from: "баннер для БПЭК.webp", to: "telemetry-banner.webp" },
   { from: "баннер для по.webp", to: "software-banner.webp" },
   { from: "Баннер для доп оборудования.webp", to: "additional-equipment-banner.webp" },
+  { from: "баннер для кабелей.webp", to: "bpek-cables-banner.webp" },
   { from: "баннер для узлов учета газа.webp", to: "gas-metering-units-banner.webp" },
   { from: "баннер для регуляторов.webp", to: "regulators-banner.webp" },
   { from: "баннер для сигнализаторов.webp", to: "gas-alarm-banner.webp" },

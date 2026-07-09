@@ -953,6 +953,14 @@
     margin-bottom: clamp(-40px, -12vw, -24px);
   }
 
+  /* Кабели БПЭК: чуть обрезать баннер сверху */
+  .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--bpek-cables)
+    .store-equipment-catalog-hero__banner
+    > picture {
+    margin-top: calc(-52px - var(--store-catalog-hero-lift));
+    margin-bottom: clamp(-40px, -12vw, -24px);
+  }
+
   /* Корректоры газа: отдельный кроп баннера */
   .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--gas-correctors)
     .store-equipment-catalog-hero__banner
@@ -997,6 +1005,12 @@
     transform: translateY(calc(-4% - var(--store-catalog-hero-shift))) !important;
   }
 
+  .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--bpek-cables)
+    .store-equipment-catalog-hero__bg {
+    object-position: center top !important;
+    transform: translateY(calc(-8% - var(--store-catalog-hero-shift))) !important;
+  }
+
   .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--gas-correctors)
     .store-equipment-catalog-hero__bg,
   .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--sensors)
@@ -1019,6 +1033,8 @@
       .store-equipment-catalog-hero__banner--additional-equipment
     )
     .store-equipment-category-page__inner,
+  .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--bpek-cables)
+    .store-equipment-category-page__inner,
   .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--ball-valves)
     .store-equipment-category-page__inner,
   .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--gas-correctors)
@@ -1038,6 +1054,8 @@
   .store-equipment-category-page--mobile-hero:has(
       .store-equipment-catalog-hero__banner--additional-equipment
     )
+    .store-equipment-catalog-hero,
+  .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--bpek-cables)
     .store-equipment-catalog-hero,
   .store-equipment-category-page--mobile-hero:has(.store-equipment-catalog-hero__banner--ball-valves)
     .store-equipment-catalog-hero,

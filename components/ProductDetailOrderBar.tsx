@@ -5,6 +5,7 @@ import { Info } from "lucide-react";
 import { useEffect, useId, useRef, useState } from "react";
 import { CartQuantityControl } from "@/components/CartQuantityControl";
 import { FavoriteButton } from "@/components/FavoriteButton";
+import { ProductSelectionHelpLink } from "@/components/ProductSelectionHelpLink";
 import { ServiceOrderButton } from "@/components/ServiceOrderButton";
 import { PRODUCT_KIND } from "@/lib/catalog";
 
@@ -48,42 +49,48 @@ export function ProductDetailOrderBar({ kind, priceLabel, unit, leadTime, produc
 
   return (
     <div className="product-detail-order-bar">
-      <div className="product-detail-order-bar__price" ref={infoRef}>
-        <span className="product-detail-order-bar__price-value">{priceLabel}</span>
-        <button
-          type="button"
-          className={clsx(
-            "product-detail-order-bar__info",
-            infoOpen && "product-detail-order-bar__info--open"
-          )}
-          aria-expanded={infoOpen}
-          aria-controls={infoId}
-          aria-label="Единица измерения и срок поставки"
-          onClick={() => setInfoOpen((value) => !value)}
-        >
-          <Info size={18} strokeWidth={2} aria-hidden />
-        </button>
-        {infoOpen ? (
-          <div id={infoId} className="product-detail-order-bar__info-popover" role="region">
-            <p>
-              <span>Единица</span>
-              <strong>{unit}</strong>
-            </p>
-            <p>
-              <span>Срок</span>
-              <strong>{leadTime}</strong>
-            </p>
-          </div>
-        ) : null}
+      <div className="product-detail-order-bar__price-col">
+        <div className="product-detail-order-bar__price" ref={infoRef}>
+          <span className="product-detail-order-bar__price-value">{priceLabel}</span>
+          <button
+            type="button"
+            className={clsx(
+              "product-detail-order-bar__info",
+              infoOpen && "product-detail-order-bar__info--open"
+            )}
+            aria-expanded={infoOpen}
+            aria-controls={infoId}
+            aria-label="Единица измерения и срок поставки"
+            onClick={() => setInfoOpen((value) => !value)}
+          >
+            <Info size={18} strokeWidth={2} aria-hidden />
+          </button>
+          {infoOpen ? (
+            <div id={infoId} className="product-detail-order-bar__info-popover" role="region">
+              <p>
+                <span>Единица</span>
+                <strong>{unit}</strong>
+              </p>
+              <p>
+                <span>Срок</span>
+                <strong>{leadTime}</strong>
+              </p>
+            </div>
+          ) : null}
+        </div>
+
+        <ProductSelectionHelpLink productTitle={product.title} />
       </div>
 
-      <FavoriteButton productSlug={product.slug} className="product-detail-order-bar__favorite" />
+      <div className="product-detail-order-bar__actions">
+        <FavoriteButton productSlug={product.slug} className="product-detail-order-bar__favorite" />
 
-      {isService ? (
-        <ServiceOrderButton product={{ id: product.id, title: product.title }} variant="detailBar" />
-      ) : (
-        <CartQuantityControl product={product} variant="detailBar" />
-      )}
+        {isService ? (
+          <ServiceOrderButton product={{ id: product.id, title: product.title }} variant="detailBar" />
+        ) : (
+          <CartQuantityControl product={product} variant="detailBar" />
+        )}
+      </div>
     </div>
   );
 }

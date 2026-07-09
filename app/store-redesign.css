@@ -2342,8 +2342,13 @@
   .store-equipment-catalog-hero__banner--ball-valves .store-equipment-catalog-hero__bg,
   .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg,
   .store-equipment-catalog-hero__banner--software .store-equipment-catalog-hero__bg,
-  .store-equipment-catalog-hero__banner--additional-equipment .store-equipment-catalog-hero__bg {
+  .store-equipment-catalog-hero__banner--additional-equipment .store-equipment-catalog-hero__bg,
+  .store-equipment-catalog-hero__banner--bpek-cables .store-equipment-catalog-hero__bg {
     object-position: right 28%;
+  }
+
+  .store-equipment-catalog-hero__banner--bpek-cables .store-equipment-catalog-hero__bg {
+    object-position: 100% center;
   }
 
   .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg {
@@ -3286,8 +3291,13 @@
     .store-equipment-catalog-hero__banner--ball-valves .store-equipment-catalog-hero__bg,
     .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg,
     .store-equipment-catalog-hero__banner--software .store-equipment-catalog-hero__bg,
-    .store-equipment-catalog-hero__banner--additional-equipment .store-equipment-catalog-hero__bg {
+    .store-equipment-catalog-hero__banner--additional-equipment .store-equipment-catalog-hero__bg,
+    .store-equipment-catalog-hero__banner--bpek-cables .store-equipment-catalog-hero__bg {
       object-position: right 40%;
+    }
+
+    .store-equipment-catalog-hero__banner--bpek-cables .store-equipment-catalog-hero__bg {
+      object-position: 100% center;
     }
 
     .store-equipment-catalog-hero__banner--gas-correctors .store-equipment-catalog-hero__bg {

@@ -1,8 +1,11 @@
 import fs from "fs";
 import path from "path";
 import { EQUIPMENT_CLUSTER_ORDER, SENSORS_CATEGORY } from "@/lib/catalog";
+import { BPEK_CABLES_CATEGORY } from "@/lib/equipment-category-config";
+import { BPEK_CABLES_BANNER_FILE, getClientMobileBannerPath } from "@/lib/mobile-banner-paths";
 
 const mediaDir = path.join(process.cwd(), "public", "media");
+const processedDir = path.join(process.cwd(), "public", "processed");
 
 /** Категория каталога → файл в `public/media/` (синхронизация: `npm run sync:promo`). */
 export const EQUIPMENT_CATEGORY_BANNER_FILES: Record<string, string> = {
@@ -10,6 +13,7 @@ export const EQUIPMENT_CATEGORY_BANNER_FILES: Record<string, string> = {
   Телеметрия: "telemetry-banner.webp",
   ПО: "software-banner.webp",
   "Дополнительное оборудование": "additional-equipment-banner.webp",
+  "Кабели БПЭК": "bpek-cables-banner.webp",
   [SENSORS_CATEGORY]: "regulators-banner.webp",
   ГРПШ: "gas-metering-units-banner.webp",
   Фильтры: "filters-banner.webp",
@@ -41,8 +45,25 @@ export function getServicesCatalogBannerSrc(): string | null {
   return versionedMediaSrc(filename);
 }
 
+function versionedProcessedSrc(filename: string): string {
+  const filePath = path.join(processedDir, filename);
+  try {
+    const { mtimeMs } = fs.statSync(filePath);
+    return `${getClientMobileBannerPath(filename)}?v=${mtimeMs}`;
+  } catch {
+    return getClientMobileBannerPath(filename);
+  }
+}
+
 /** URL баннера раздела оборудования (если файл синхронизирован). */
 export function getEquipmentCategoryBannerSrc(category: string): string | null {
+  if (category === BPEK_CABLES_CATEGORY) {
+    const processedPath = path.join(processedDir, BPEK_CABLES_BANNER_FILE);
+    if (fs.existsSync(processedPath)) {
+      return versionedProcessedSrc(BPEK_CABLES_BANNER_FILE);
+    }
+  }
+
   const filename = EQUIPMENT_CATEGORY_BANNER_FILES[category];
   if (!filename) return null;
   const filePath = path.join(mediaDir, filename);

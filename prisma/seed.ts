@@ -57,6 +57,7 @@ import {
 import {
   GAS_METER_ACCESSORIES_CARD_IMAGE,
   GAS_METER_ACCESSORIES_ROTARY_SLUG,
+  GAS_METER_ACCESSORIES_TURBINE_SLUG,
   GAS_METER_ACCESSORIES_SHORT_DESCRIPTION,
   GAS_METER_ACCESSORIES_TITLE,
   GAS_METER_ACCESSORIES_TURBINE_SLUG
@@ -2183,10 +2184,6 @@ const gasMeterAccessoriesRotarySeedProduct = buildGasMeterAccessoriesSeedProduct
   "Ротационные",
   GAS_METER_ACCESSORIES_ROTARY_SLUG
 );
-const gasMeterAccessoriesTurbineSeedProduct = buildGasMeterAccessoriesSeedProduct(
-  "Турбинные",
-  GAS_METER_ACCESSORIES_TURBINE_SLUG
-);
 
 const gasMeterKpuSeedProduct = {
   title: GAS_METER_KPU_TITLE,
@@ -3253,7 +3250,6 @@ const products = [
   sgTkRSeedProduct,
   sgTkTSeedProduct,
   sgEkKompleksSeedProduct,
-  gasMeterAccessoriesTurbineSeedProduct,
   gasMeterKpuTurbineSeedProduct,
   gasMeterKpuSgSeedProduct,
   {
@@ -4365,7 +4361,8 @@ const RETIRED_PRODUCT_SLUGS = [
   "sg-tk-d-25",
   "sg-tk-d-40",
   "sg-tk-d-65",
-  "sg-tk-d-100"
+  "sg-tk-d-100",
+  GAS_METER_ACCESSORIES_TURBINE_SLUG
 ];
 
 async function main() {

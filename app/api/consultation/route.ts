@@ -5,6 +5,36 @@ import { contactMethodSchema } from "@/lib/contact-method";
 import { syncConsultationToOrionCrm } from "@/lib/orion-crm";
 import { normalizeRuPhoneDigits } from "@/lib/phone-mask";
 import { prisma } from "@/lib/prisma";
+import { absoluteUrl } from "@/lib/site-url";
+
+function resolveConsultationPageUrl(input: {
+  pageUrl?: string;
+  pagePath?: string;
+  productSlug?: string;
+}) {
+  const pageUrl = input.pageUrl?.trim();
+  if (pageUrl) {
+    if (/^https?:\/\//i.test(pageUrl)) return pageUrl;
+    if (pageUrl.startsWith("/")) return absoluteUrl(pageUrl);
+  }
+
+  const pagePath = input.pagePath?.trim();
+  if (pagePath?.startsWith("/")) {
+    return absoluteUrl(pagePath);
+  }
+
+  const productSlug = input.productSlug?.trim();
+  if (productSlug) {
+    return absoluteUrl(`/products/${productSlug}`);
+  }
+
+  return undefined;
+}
+
+function appendPageToConsultationMessage(message: string, pageUrl?: string) {
+  if (!pageUrl) return message;
+  return `${message}\nСтраница: ${pageUrl}`;
+}
 
 const consultationSchema = z
   .object({
@@ -20,7 +50,10 @@ const consultationSchema = z
       .refine((value) => normalizeRuPhoneDigits(value).length === 11, "Некорректный телефон."),
     contactMethod: contactMethodSchema.optional(),
     source: z.enum(["home", "popup", "phone-fab", "product-detail"]).optional(),
-    productTitle: z.string().trim().optional()
+    productTitle: z.string().trim().optional(),
+    productSlug: z.string().trim().optional(),
+    pageUrl: z.string().trim().optional(),
+    pagePath: z.string().trim().optional()
   })
   .superRefine((data, ctx) => {
     const source = data.source ?? "home";
@@ -69,14 +102,21 @@ export async function POST(request: Request) {
       ? "Заявка на звонок"
       : parsed.data.customerName!.trim();
   const contactMethod = parsed.data.contactMethod!;
-  const consultationMessage =
+  const pageUrl = resolveConsultationPageUrl({
+    pageUrl: parsed.data.pageUrl,
+    pagePath: parsed.data.pagePath,
+    productSlug: parsed.data.productSlug
+  });
+  const consultationMessage = appendPageToConsultationMessage(
     source === "phone-fab"
       ? "Заявка на обратный звонок из виджета «Заказать звонок»."
       : source === "popup"
         ? "Заявка на консультацию из виджета на сайте."
         : source === "product-detail"
           ? `Заявка на помощь с подбором со страницы товара${parsed.data.productTitle ? `: ${parsed.data.productTitle}` : ""}.`
-          : "Заявка на консультацию с главной страницы (имя и телефон).";
+          : "Заявка на консультацию с главной страницы (имя и телефон).",
+    pageUrl
+  );
 
   const order = await prisma.order.create({
     data: {
@@ -105,7 +145,8 @@ export async function POST(request: Request) {
       phone: parsed.data.phone,
       contactMethod,
       source,
-      message: consultationMessage
+      message: consultationMessage,
+      pageUrl
     });
   } catch (error) {
     console.error("[consultation] Orion CRM sync failed:", error);

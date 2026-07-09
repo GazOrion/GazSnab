@@ -1,5 +1,6 @@
 import { SG_EK_SLUG } from "@/lib/product-content/sg-ek-kompleks";
 import { SG_TK_D_SLUG } from "@/lib/product-content/sg-tk-kompleks";
+import { GAS_METER_ACCESSORIES_SLUG, GAS_METER_ACCESSORIES_TURBINE_SLUG } from "@/lib/product-content/gas-meter-accessories";
 
 const SG_EK_RETIRED_SLUGS = [
   "sg-ek-r-25-1-6",
@@ -26,7 +27,8 @@ const SG_TK_D_RETIRED_SLUGS = [
 
 export const PRODUCT_SLUG_REDIRECTS: Record<string, string> = Object.fromEntries([
   ...SG_EK_RETIRED_SLUGS.map((slug) => [slug, SG_EK_SLUG]),
-  ...SG_TK_D_RETIRED_SLUGS.map((slug) => [slug, SG_TK_D_SLUG])
+  ...SG_TK_D_RETIRED_SLUGS.map((slug) => [slug, SG_TK_D_SLUG]),
+  [GAS_METER_ACCESSORIES_TURBINE_SLUG, GAS_METER_ACCESSORIES_SLUG]
 ]);
 
 export function getProductSlugRedirect(slug: string): string | null {

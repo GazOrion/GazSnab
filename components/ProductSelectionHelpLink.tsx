@@ -2,13 +2,15 @@
 
 import { useState } from "react";
 import { ContactRequestModal } from "@/components/ContactRequestModal";
+import { getConsultationPagePayload } from "@/lib/consultation-page-url";
 import type { ContactMethod } from "@/lib/contact-method";
 
 type Props = {
   productTitle: string;
+  productSlug: string;
 };
 
-export function ProductSelectionHelpLink({ productTitle }: Props) {
+export function ProductSelectionHelpLink({ productTitle, productSlug }: Props) {
   const [open, setOpen] = useState(false);
 
   async function submitConsultation(payload: {
@@ -24,7 +26,9 @@ export function ProductSelectionHelpLink({ productTitle }: Props) {
         phone: payload.phone,
         contactMethod: payload.contactMethod,
         source: "product-detail",
-        productTitle
+        productTitle,
+        productSlug,
+        ...getConsultationPagePayload()
       })
     });
 

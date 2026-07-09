@@ -6,6 +6,7 @@ import { CheckCircle2, X } from "lucide-react";
 import { ContactMethodField } from "@/components/ContactMethodField";
 import { NameInput } from "@/components/NameInput";
 import { PhoneInput } from "@/components/PhoneInput";
+import { getConsultationPagePayload } from "@/lib/consultation-page-url";
 import { parseContactMethod } from "@/lib/contact-method";
 import {
   CONSULTATION_POPUP_ALWAYS_VISIBLE,
@@ -82,7 +83,8 @@ export function ConsultationPopup() {
         customerName,
         phone,
         contactMethod,
-        source: "popup"
+        source: "popup",
+        ...getConsultationPagePayload()
       })
     });
 

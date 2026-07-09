@@ -79,7 +79,7 @@ export function ProductDetailOrderBar({ kind, priceLabel, unit, leadTime, produc
           ) : null}
         </div>
 
-        <ProductSelectionHelpLink productTitle={product.title} />
+        <ProductSelectionHelpLink productTitle={product.title} productSlug={product.slug} />
       </div>
 
       <div className="product-detail-order-bar__actions">

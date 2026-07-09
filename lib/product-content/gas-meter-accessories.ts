@@ -8,7 +8,15 @@ export const GAS_METER_ACCESSORIES_TITLE =
   "Аксессуары для счетчиков газа РГ-Р, РГ-Т, RABO, RVG и TRZ";
 
 export const GAS_METER_ACCESSORIES_ROTARY_SLUG = "aksessuary-schetchikov-gaza-rotary";
+/** @deprecated Дубликат удалён; редирект на {@link GAS_METER_ACCESSORIES_SLUG}. */
 export const GAS_METER_ACCESSORIES_TURBINE_SLUG = "aksessuary-schetchikov-gaza-turbine";
+
+/** Единственная карточка аксессуаров для ротационных и турбинных счётчиков. */
+export const GAS_METER_ACCESSORIES_SLUG = GAS_METER_ACCESSORIES_ROTARY_SLUG;
+
+export function isGasMeterAccessoriesProduct(slug: string) {
+  return slug === GAS_METER_ACCESSORIES_SLUG || slug === GAS_METER_ACCESSORIES_TURBINE_SLUG;
+}
 
 export const GAS_METER_ACCESSORIES_SHORT_DESCRIPTION =
   "Шайбы, катушки, гильзы, масло, фильтры и импульсные датчики для промышленных счётчиков газа серий РГ-Р, РГ-Т, RABO, RVG и TRZ.";

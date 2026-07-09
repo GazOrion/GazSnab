@@ -30,6 +30,7 @@ export type OrionCrmRequestPayload = {
     items: OrionCrmCartItem[];
   };
   meta?: Record<string, string>;
+  page_url?: string;
 };
 
 export type OrionCrmRequestSuccess = {
@@ -170,6 +171,7 @@ export async function syncConsultationToOrionCrm(params: {
   contactMethod: ContactMethod;
   source: keyof typeof CONSULTATION_SOURCE_LABELS;
   message: string;
+  pageUrl?: string;
 }) {
   if (!isOrionCrmConfigured()) {
     console.warn("[orion-crm] ORION_CRM_API_KEY is not configured, skipping consultation sync");
@@ -184,8 +186,10 @@ export async function syncConsultationToOrionCrm(params: {
     source: CONSULTATION_SOURCE_LABELS[params.source],
     website: getSiteUrl(),
     message: params.message,
+    page_url: params.pageUrl,
     meta: {
-      form: params.source
+      form: params.source,
+      ...(params.pageUrl ? { page_url: params.pageUrl } : {})
     }
   });
 }

@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Phone } from "lucide-react";
 import { ContactRequestModal } from "@/components/ContactRequestModal";
+import { getConsultationPagePayload } from "@/lib/consultation-page-url";
 import type { ContactMethod } from "@/lib/contact-method";
 
 export function PhoneFabWidget() {
@@ -18,7 +19,8 @@ export function PhoneFabWidget() {
       body: JSON.stringify({
         phone: payload.phone,
         contactMethod: payload.contactMethod,
-        source: "phone-fab"
+        source: "phone-fab",
+        ...getConsultationPagePayload()
       })
     });
 

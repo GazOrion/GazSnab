@@ -1,6 +1,7 @@
 import type { CatalogProduct } from "@/components/ProductCard";
 import type { CategoryCluster } from "@/lib/catalog-data";
 import { CATALOG_ROUTES, catalogPath, PRODUCT_KIND } from "@/lib/catalog";
+import { GAS_METER_ACCESSORIES_SLUG } from "@/lib/product-content/gas-meter-accessories";
 
 export const GAS_METERS_CATEGORY = "Счётчики газа";
 
@@ -132,7 +133,16 @@ export function filterGasMeterProducts(
   subcategory: string | null | undefined
 ) {
   if (!subcategory) return products;
-  return products.filter((product) => getGasMeterSubcategory(product) === subcategory);
+  return products.filter((product) => {
+    if (
+      product.slug === GAS_METER_ACCESSORIES_SLUG &&
+      (subcategory === GAS_METER_SUBCATEGORY_ROTARY || subcategory === GAS_METER_SUBCATEGORY_TURBINE)
+    ) {
+      return true;
+    }
+
+    return getGasMeterSubcategory(product) === subcategory;
+  });
 }
 
 function filterSgTkGasMeterProducts(products: CatalogProduct[]) {

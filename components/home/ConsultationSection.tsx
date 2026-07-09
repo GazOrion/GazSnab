@@ -6,6 +6,7 @@ import { Phone, Send } from "lucide-react";
 import { ContactMethodField } from "@/components/ContactMethodField";
 import { PhoneInput } from "@/components/PhoneInput";
 import { company } from "@/lib/company";
+import { getConsultationPagePayload } from "@/lib/consultation-page-url";
 import { parseContactMethod } from "@/lib/contact-method";
 
 export function ConsultationSection() {
@@ -40,7 +41,8 @@ export function ConsultationSection() {
         customerName: formData.get("customerName"),
         phone: formData.get("phone"),
         contactMethod,
-        source: "home"
+        source: "home",
+        ...getConsultationPagePayload()
       })
     });
 

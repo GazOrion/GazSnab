@@ -6,15 +6,30 @@ function vkrContent(
   extraSpecs: ProductSpecRow[] = []
 ): ProductRichContent {
   const typeSize = extraSpecs.find((row) => row.characteristic === "Типоразмер")?.value;
+  const cyclicVolume = extraSpecs.find((row) => row.characteristic === "Циклический объём")?.value;
+  const thermo = extraSpecs.find((row) => row.characteristic === "Термокоррекция")?.value;
+  const axis = extraSpecs.find((row) => row.characteristic === "Межосевое расстояние")?.value;
+
   const intro = typeSize
-    ? `Мембранный счётчик газа ТАУГАЗ ${model} (типоразмер ${typeSize}) предназначен для учёта объёма природного газа. Корпус с механическим отсчётным устройством, резьбовое присоединение.`
+    ? `Мембранный счётчик газа ТАУГАЗ ${model} (типоразмер ${typeSize}) предназначен для учёта объёма природного газа в бытовых и коммунальных узлах. Корпус с механическим отсчётным устройством, резьбовое присоединение.`
     : `Мембранный счётчик газа ТАУГАЗ ${model} предназначен для учёта объёма природного газа. Корпус с механическим отсчётным устройством, резьбовое присоединение.`;
+
+  const detailParts = [`Конструктивное исполнение ${model}: ${lineSpec}`];
+  if (cyclicVolume) {
+    detailParts.push(`Циклический объём — ${cyclicVolume}.`);
+  }
+  if (axis) {
+    detailParts.push(`Межосевое расстояние патрубков — ${axis}.`);
+  }
+  if (thermo) {
+    detailParts.push(`Версия ${typeSize ?? model} комплектуется механической термокоррекцией.`);
+  }
 
   return {
     descriptionTitle: "Подробное описание",
     description: [
       { type: "paragraph", text: intro },
-      { type: "paragraph", text: lineSpec }
+      { type: "paragraph", text: detailParts.join(" ") }
     ],
     specsTitle: "Технические характеристики",
     specs: [

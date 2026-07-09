@@ -3,6 +3,7 @@ import type {
   ProductRichContent,
   ProductSpecRow
 } from "@/lib/product-content/smt-kompleks";
+import { buildTurbineMeterDetailedDescription } from "@/lib/product-content/helpers/turbine-meter-description";
 
 export const RGT_T_CARD_IMAGE = "/media/products/rgt/rgt-turbine-01.webp";
 
@@ -366,13 +367,7 @@ function mergeSpecRows(...groups: ProductSpecRow[][]): ProductSpecRow[] {
 function rgtContent(product: RgtProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
-    description: [
-      { type: "paragraph", text: buildRgtListingDescription(product) },
-      { type: "paragraph", text: RGT_T_SHORT_DESCRIPTION.split("\n\n")[0] },
-      { type: "paragraph", text: RGT_T_SHORT_DESCRIPTION.split("\n\n")[1] },
-      ...RGT_T_DESCRIPTION_BLOCKS,
-      ...RGT_T_PN10_DESCRIPTION_TAIL
-    ],
+    description: buildTurbineMeterDetailedDescription(product),
     specsTitle: "Основные технические характеристики турбинного счётчика газа РГ-Т",
     specs: mergeSpecRows(
       [{ characteristic: "Модель", value: product.model }],

@@ -3,6 +3,7 @@ import type {
   ProductRichContent,
   ProductSpecRow
 } from "@/lib/product-content/smt-kompleks";
+import { buildRotaryMeterDetailedDescription } from "@/lib/product-content/helpers/rotary-meter-description";
 
 export const RGR_R_CARD_IMAGE = "/media/products/rgr/rgr-rotary-card.webp";
 
@@ -260,12 +261,7 @@ export const RGR_R_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
 function rgrContent(product: RgrProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
-    description: [
-      { type: "paragraph", text: buildRgrListingDescription(product) },
-      { type: "paragraph", text: RGR_R_SHORT_DESCRIPTION.split("\n\n")[0] },
-      { type: "paragraph", text: RGR_R_SHORT_DESCRIPTION.split("\n\n")[1] },
-      ...RGR_R_DESCRIPTION_BLOCKS
-    ],
+    description: buildRotaryMeterDetailedDescription(product),
     optionsTitle: RGR_R_OPTIONS_TITLE,
     optionsDescription: RGR_R_OPTIONS_DESCRIPTION
   };

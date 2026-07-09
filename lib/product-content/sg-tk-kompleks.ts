@@ -241,11 +241,30 @@ const SG_TK_RD_MAIN_CHARACTERISTICS = [
 
 export const SG_TK_OPTIONS_TITLE = "Дополнительные опции и исполнения";
 
-function sgTkSharedDescription(includeRdCharacteristics: boolean): ProductDescriptionBlock[] {
+function sgTkSharedDescription(variant: "d" | "r" | "t", includeRdCharacteristics: boolean): ProductDescriptionBlock[] {
+  const uncertaintyParagraph =
+    variant === "d"
+      ? "Для комплексов СГ-ТК-Д на базе диафрагменных счётчиков газа типа BK с температурными корректорами ТС215 и ТС220 относительная расширенная неопределённость измерений не превышает ±3% (ГОСТ Р 8.741-2011)."
+      : variant === "r"
+        ? "Комплексы СГ-ТК-Р на базе ротационных счётчиков газа обеспечивают коммерческий учёт с относительной расширенной неопределённостью не более ±3% при использовании корректора объёма газа в составе комплекса."
+        : "Комплексы СГ-ТК-Т на базе турбинных счётчиков газа предназначены для учёта больших расходов; неопределённость измерений комплекса соответствует требованиям ГОСТ Р 8.741-2011 (±3%).";
+
+  const principleParagraph =
+    variant === "d"
+      ? "Принцип работы СГ-ТК-Д: одновременно измеряются объём газа при рабочих условиях (диафрагменный счётчик) и температура среды; корректор вычисляет объём, приведённый к стандартным условиям, с учётом подстановочных значений давления и коэффициента сжимаемости."
+      : variant === "r"
+        ? "Принцип работы СГ-ТК-Р: ротационный счётчик фиксирует объём прошедшего газа, датчик температуры передаёт данные корректору, который рассчитывает стандартный объём с учётом условно-постоянных параметров давления и сжимаемости."
+        : "Принцип работы СГ-ТК-Т: турбинный счётчик измеряет объём при рабочих условиях, температура газа снимается датчиком; корректор выполняет пересчёт к стандартным условиям и архивирование результатов.";
+
+  const pressureParagraph =
+    variant === "d"
+      ? "Подстановочное избыточное рабочее давление для исполнения СГ-ТК-Д — до 0,05 МПа."
+      : "Подстановочное избыточное рабочее давление для исполнений СГ-ТК-Р и СГ-ТК-Т — до 0,1 МПа.";
+
   return [
     {
       type: "paragraph",
-      text: "Для комплексов СГ-ТК-Д разработана методика выполнения измерений в соответствие с которой относительная расширенная неопределенность комплекса СГ-ТК на базе счетчика газа BK с температурными корректорами ТС215 и ТС220 не превышает ±3%, что соответствует требованиям ГОСТ Р 8.741-2011."
+      text: uncertaintyParagraph
     },
     {
       type: "heading",
@@ -254,7 +273,7 @@ function sgTkSharedDescription(includeRdCharacteristics: boolean): ProductDescri
     },
     {
       type: "paragraph",
-      text: "Принцип действия комплекса СГ-ТК основан на одновременном измерении объема газа (при рабочих условиях), прошедшего через счетчик и температуры газа с последующим вычислением, обработкой и архивированием приведенного к стандартным условиям объема газа с учетом условно-постоянных (подстановочных) значений давления и коэффициента сжимаемости газа с помощью корректора объема газа."
+      text: principleParagraph
     },
     {
       type: "heading",
@@ -266,7 +285,7 @@ function sgTkSharedDescription(includeRdCharacteristics: boolean): ProductDescri
       : [
           {
             type: "paragraph" as const,
-            text: "Подстановочное значение рабочего давления (избыточное) в зависимости от исполнения комплекса: для исполнения СГ-ТК-Д — до 0,05 МПа; для исполнений СГ-ТК-Р(-Т) — до 0,1 МПа."
+            text: pressureParagraph
           },
           {
             type: "paragraph" as const,
@@ -368,7 +387,7 @@ export const SG_TK_D_CONTENT: ProductRichContent = {
       type: "paragraph",
       text: SG_TK_D_CARD_DESCRIPTION
     },
-    ...sgTkSharedDescription(true)
+    ...sgTkSharedDescription("d", true)
   ],
   optionsTitle: SG_TK_OPTIONS_TITLE,
   optionsDescription: buildSgTkDOptionsDescription()
@@ -381,7 +400,7 @@ export const SG_TK_R_CONTENT: ProductRichContent = {
       type: "paragraph",
       text: SG_TK_R_CARD_DESCRIPTION
     },
-    ...sgTkSharedDescription(true)
+    ...sgTkSharedDescription("r", true)
   ]
 };
 
@@ -392,7 +411,7 @@ export const SG_TK_T_CONTENT: ProductRichContent = {
       type: "paragraph",
       text: SG_TK_T_CARD_DESCRIPTION
     },
-    ...sgTkSharedDescription(true)
+    ...sgTkSharedDescription("t", true)
   ],
   optionsTitle: SG_TK_OPTIONS_TITLE,
   optionsDescription: buildSgTkTOptionsDescription()

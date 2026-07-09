@@ -11,7 +11,6 @@ import {
   SERVICE_CATEGORY_METAL
 } from "@/lib/catalog";
 import { catalogVisibilityWhere } from "@/lib/catalog-data";
-import { buildProductSeoDescription } from "@/lib/personalize-product-description";
 import {
   GAS_METERS_CATEGORY,
   GAS_METER_SUBCATEGORY_MEMBRANE,
@@ -238,27 +237,15 @@ function serviceCategoryPages(serviceCategories: string[]): SeoPageDefinition[] 
     });
 }
 
-type ProductSeoSource = Pick<CatalogProduct, "slug" | "title" | "description" | "kind"> & {
-  specs?: unknown;
-};
-
-function productPages(products: ProductSeoSource[]): SeoPageDefinition[] {
-  return products.map((product) => {
-    const specs = ((product.specs ?? {}) as Record<string, string>) ?? {};
-    const seoDescription = buildProductSeoDescription({
-      title: product.title,
-      slug: product.slug,
-      description: product.description,
-      specs
-    });
-
-    return {
-      path: `/products/${product.slug}`,
-      label: product.kind === PRODUCT_KIND.SERVICE ? `Услуга: ${product.title}` : `Товар: ${product.title}`,
-      title: `${product.title} | ${SITE_SUFFIX}`,
-      description: excerpt(seoDescription)
-    };
-  });
+function productPages(
+  products: Pick<CatalogProduct, "slug" | "title" | "description" | "kind">[]
+): SeoPageDefinition[] {
+  return products.map((product) => ({
+    path: `/products/${product.slug}`,
+    label: product.kind === PRODUCT_KIND.SERVICE ? `Услуга: ${product.title}` : `Товар: ${product.title}`,
+    title: `${product.title} | ${SITE_SUFFIX}`,
+    description: excerpt(product.description)
+  }));
 }
 
 function dedupePages(pages: SeoPageDefinition[]) {
@@ -281,8 +268,7 @@ export async function buildSeoPageCatalog(): Promise<SeoPageDefinition[]> {
         title: true,
         description: true,
         kind: true,
-        category: true,
-        specs: true
+        category: true
       },
       orderBy: [{ kind: "asc" }, { title: "asc" }]
     }),

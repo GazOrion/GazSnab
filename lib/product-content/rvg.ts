@@ -2,6 +2,7 @@ import {
   RGR_R_CARD_IMAGE,
   RGR_R_GALLERY
 } from "@/lib/product-content/rgr-r";
+import { buildRotaryMeterDetailedDescription } from "@/lib/product-content/helpers/rotary-meter-description";
 import type {
   ProductDescriptionBlock,
   ProductRichContent,
@@ -340,11 +341,7 @@ export const RVG_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
 function rvgContent(product: RvgProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
-    description: [
-      { type: "paragraph", text: buildRvgListingDescription(product) },
-      { type: "paragraph", text: RVG_SHORT_DESCRIPTION },
-      ...RVG_INTRO_DESCRIPTION_BLOCKS
-    ],
+    description: buildRotaryMeterDetailedDescription(product),
     specsTitle: "Основные технические характеристики счётчика газа ротационного RVG",
     specs: [],
     specsFooter: RVG_SPECS_SECTION_BLOCKS,

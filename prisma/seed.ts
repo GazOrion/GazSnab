@@ -1051,17 +1051,21 @@ function intelligentPumpSlug(model: string) {
   return `nasos-${model.toLowerCase()}`;
 }
 
-function intelligentPumpDetailsText(model: string) {
-  if (model.endsWith("FN-PRO")) {
-    return PUMP_INTELLIGENT_DETAILS_GEM_FN_PRO;
+function intelligentPumpDetailsText(row: IntelligentPumpRow) {
+  let seriesText = PUMP_INTELLIGENT_DETAILS_GEB;
+  if (row.model.endsWith("FN-PRO")) {
+    seriesText = PUMP_INTELLIGENT_DETAILS_GEM_FN_PRO;
+  } else if (row.model.includes("-PRO")) {
+    seriesText = PUMP_INTELLIGENT_DETAILS_GEM_PRO;
+  } else if (row.model.startsWith("GEM")) {
+    seriesText = PUMP_INTELLIGENT_DETAILS_GEM;
   }
-  if (model.includes("-PRO")) {
-    return PUMP_INTELLIGENT_DETAILS_GEM_PRO;
-  }
-  if (model.startsWith("GEM")) {
-    return PUMP_INTELLIGENT_DETAILS_GEM;
-  }
-  return PUMP_INTELLIGENT_DETAILS_GEB;
+
+  const connection = row.connection
+    ? `резьбовое присоединение ${row.connection}`
+    : `номинальный диаметр ${row.dn} мм`;
+
+  return `${seriesText} Модель ${row.model} с ${connection} обеспечивает подачу до ${row.flow} м³/ч при напоре ${row.head} м. Потребляемая мощность в рабочем диапазоне — ${row.power} Вт, корпус выполнен из ${row.material}.`;
 }
 
 const intelligentWetRotorPumpProducts = INTELLIGENT_WET_ROTOR_PUMPS.map((row) => ({
@@ -1070,7 +1074,7 @@ const intelligentWetRotorPumpProducts = INTELLIGENT_WET_ROTOR_PUMPS.map((row) =>
   kind: "Товар" as const,
   category: "Насосы",
   description: intelligentPumpDescription(row),
-  details: intelligentPumpDetailsText(row.model),
+  details: intelligentPumpDetailsText(row),
   specs: intelligentPumpSpecs(row),
   leadTime: "по наличию, уточняется в заявке",
   price: "0",
@@ -1468,7 +1472,10 @@ function threeSpeedPumpSpecs(row: ThreeSpeedPumpRow) {
 }
 
 function threeSpeedPumpDetails(row: ThreeSpeedPumpRow) {
-  return row.series === "UPS" ? PUMP_THREE_SPEED_DETAILS_UPS : PUMP_THREE_SPEED_DETAILS_GS_F;
+  const seriesText =
+    row.series === "UPS" ? PUMP_THREE_SPEED_DETAILS_UPS : PUMP_THREE_SPEED_DETAILS_GS_F;
+
+  return `${seriesText} Модель ${row.model} обеспечивает подачу до ${row.flow} м³/ч при напоре ${row.head} м, потребляемая мощность — ${row.power} Вт, присоединение ${row.dn}.`;
 }
 
 function threeSpeedPumpSlug(model: string) {
@@ -1531,7 +1538,7 @@ const inlineCirculationPumpProducts = GTD_INLINE_PUMPS.map((row) => ({
   kind: "Товар" as const,
   category: "Насосы",
   description: PUMP_INLINE_SHORT_DESCRIPTION,
-  details: PUMP_INLINE_DETAILS,
+  details: `${PUMP_INLINE_DETAILS} Модель ${row.model} при номинальной мощности ${formatPumpDecimal(row.powerKw)} кВт обеспечивает расход ${formatPumpDecimal(row.flow)} м³/ч и напор ${formatPumpDecimal(row.head)} м при частоте вращения ${row.speed} об/мин.`,
   specs: inlinePumpSpecs(row),
   leadTime: "по наличию, уточняется в заявке",
   price: "0",
@@ -1582,14 +1589,14 @@ function verticalPumpSpecs(row: VerticalMultistagePumpRow) {
   };
 }
 
-function buildVerticalMultistagePumpProducts(rows: VerticalMultistagePumpRow[], details: string) {
+function buildVerticalMultistagePumpProducts(rows: VerticalMultistagePumpRow[], baseDetails: string) {
   return rows.map((row) => ({
     title: `Вертикальный многоступенчатый насос ${row.model}`,
     slug: verticalPumpSlug(row.model),
     kind: "Товар" as const,
     category: "Насосы",
     description: PUMP_VERTICAL_SHORT_DESCRIPTION,
-    details,
+    details: `${baseDetails} Модель ${row.model} при номинальной мощности ${formatPumpDecimal(row.powerKw)} кВт обеспечивает расход ${formatPumpDecimal(row.flow)} м³/ч и напор ${formatPumpDecimal(row.head)} м.`,
     specs: verticalPumpSpecs(row),
     leadTime: "по наличию, уточняется в заявке",
     price: "0",
@@ -1692,7 +1699,7 @@ function buildHorizontalMultistagePumpProducts(
     kind: "Товар" as const,
     category: "Насосы",
     description,
-    details,
+    details: `${details} Модель ${row.model} при номинальной мощности ${formatPumpDecimal(row.powerKw)} кВт обеспечивает расход ${formatPumpDecimal(row.flow)} м³/ч и напор ${formatPumpDecimal(row.head)} м.`,
     specs: horizontalPumpSpecs(row),
     leadTime: "по наличию, уточняется в заявке",
     price: "0",
@@ -1772,8 +1779,7 @@ function buildMonoblockConsolePumpProducts(
     kind: "Товар" as const,
     category: "Насосы",
     description,
-    details,
-    specs: monoblockPumpSpecs(row),
+    details: `${details} Модель ${row.model} при номинальной мощности ${formatPumpDecimal(row.powerKw)} кВт обеспечивает расход ${formatPumpDecimal(row.flow)} м³/ч и напор ${formatPumpDecimal(row.head)} м.`,
     leadTime: "по наличию, уточняется в заявке",
     price: "0",
     unit: "шт.",
@@ -1855,8 +1861,7 @@ function buildConsoleCentrifugalPumpProducts(
     kind: "Товар" as const,
     category: "Насосы",
     description,
-    details,
-    specs: consoleCentrifugalPumpSpecs(row),
+    details: `${details} Модель ${row.model} при номинальной мощности ${formatPumpDecimal(row.powerKw)} кВт обеспечивает расход ${formatPumpDecimal(row.flow)} м³/ч и напор ${formatPumpDecimal(row.head)} м.`,
     leadTime: "по наличию, уточняется в заявке",
     price: "0",
     unit: "шт.",
@@ -1959,8 +1964,7 @@ function buildSubmersibleSewagePumpProducts(
     kind: "Товар" as const,
     category: "Насосы",
     description,
-    details,
-    specs: submersibleSewagePumpSpecs(row),
+    details: `${details} Модель ${row.model} при номинальной мощности ${formatPumpDecimal(row.powerKw)} кВт обеспечивает расход ${formatPumpDecimal(row.flow)} м³/ч и напор ${formatPumpDecimal(row.head)} м.`,
     leadTime: "по наличию, уточняется в заявке",
     price: "0",
     unit: "шт.",

@@ -190,8 +190,30 @@ const COMMUNAL_COMMON_SPECS: ProductSpecRow[] = [
   { characteristic: "Порог чувствительности", value: "0,01 м³/ч" }
 ];
 
+function raskoVkIntro(model: string, extraSpecs: ProductSpecRow[], communal: boolean): string {
+  const typeSize = extraSpecs.find((row) => row.characteristic === "Типоразмер")?.value ?? model;
+  const qnom = extraSpecs.find((row) => row.characteristic === "Номинальный расход")?.value;
+  const qrange = extraSpecs.find((row) => row.characteristic === "Диапазон рабочих расходов")?.value;
+
+  const scope = communal
+    ? "на коммунальных и производственных объектах с котлами малой и средней мощности"
+    : "в квартирах, частных домах и на объектах с газовым оборудованием малой мощности";
+
+  let text = `Диафрагменный счётчик газа РАСКО ${model} (типоразмер ${typeSize}) предназначен для учёта объёма потребляемого природного, сжиженного и других неагрессивных газов ${scope}.`;
+
+  if (qnom) {
+    text += ` Номинальный расход — ${qnom}.`;
+  }
+
+  if (qrange) {
+    text += ` Диапазон рабочих расходов — ${qrange}.`;
+  }
+
+  return text;
+}
+
 type RaskoVkContentOptions = {
-  shortIntro: string;
+  communal?: boolean;
   descriptionBlocks: ProductDescriptionBlock[];
   dimensionsTable: ProductDescriptionBlock[];
   baseSpecs?: ProductSpecRow[];
@@ -204,7 +226,10 @@ function raskoVkContent(
   options: RaskoVkContentOptions
 ): ProductRichContent {
   const introBlocks: ProductDescriptionBlock[] = [
-    { type: "paragraph", text: options.shortIntro }
+    {
+      type: "paragraph",
+      text: raskoVkIntro(model, extraSpecs, Boolean(options.communal))
+    }
   ];
 
   if (options.executionNote) {
@@ -240,7 +265,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Порог чувствительности", value: "0,0032 м³/ч" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE
     }
@@ -256,7 +280,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."
@@ -272,7 +295,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Порог чувствительности", value: "0,005 м³/ч" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE
     }
@@ -288,7 +310,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."
@@ -304,7 +325,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Порог чувствительности", value: "0,008 м³/ч" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE
     }
@@ -320,7 +340,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."
@@ -336,7 +355,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Порог чувствительности", value: "0,008 м³/ч" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE
     }
@@ -352,7 +370,6 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_SHORT,
       descriptionBlocks: RASKO_VK_DESCRIPTION_BLOCKS,
       dimensionsTable: HOUSEHOLD_DIMENSIONS_TABLE,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."
@@ -367,8 +384,7 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Циклический объём", value: "3,5 / 5,6 / 6 дм³" }
     ],
     {
-      shortIntro: RASKO_VK_COMMUNAL_SHORT,
-      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
+      communal: true,      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
       dimensionsTable: COMMUNAL_DIMENSIONS_TABLE,
       baseSpecs: COMMUNAL_COMMON_SPECS
     }
@@ -383,8 +399,7 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_COMMUNAL_SHORT,
-      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
+      communal: true,      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
       dimensionsTable: COMMUNAL_DIMENSIONS_TABLE,
       baseSpecs: COMMUNAL_COMMON_SPECS,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."
@@ -399,8 +414,7 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Циклический объём", value: "6 / 11 дм³" }
     ],
     {
-      shortIntro: RASKO_VK_COMMUNAL_SHORT,
-      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
+      communal: true,      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
       dimensionsTable: COMMUNAL_DIMENSIONS_TABLE,
       baseSpecs: COMMUNAL_COMMON_SPECS
     }
@@ -415,8 +429,7 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_COMMUNAL_SHORT,
-      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
+      communal: true,      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
       dimensionsTable: COMMUNAL_DIMENSIONS_TABLE,
       baseSpecs: COMMUNAL_COMMON_SPECS,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."
@@ -431,8 +444,7 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Циклический объём", value: "11 / 12 дм³" }
     ],
     {
-      shortIntro: RASKO_VK_COMMUNAL_SHORT,
-      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
+      communal: true,      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
       dimensionsTable: COMMUNAL_DIMENSIONS_TABLE,
       baseSpecs: COMMUNAL_COMMON_SPECS
     }
@@ -447,8 +459,7 @@ export const RASKO_VK_CONTENT_BY_SLUG: Record<string, ProductRichContent> = {
       { characteristic: "Термокоррекция", value: "механическая" }
     ],
     {
-      shortIntro: RASKO_VK_COMMUNAL_SHORT,
-      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
+      communal: true,      descriptionBlocks: RASKO_VK_COMMUNAL_DESCRIPTION_BLOCKS,
       dimensionsTable: COMMUNAL_DIMENSIONS_TABLE,
       baseSpecs: COMMUNAL_COMMON_SPECS,
       executionNote: "Исполнение «Т» с механической температурной компенсацией."

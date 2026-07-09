@@ -257,10 +257,11 @@ export const RGR_R_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
   }
 ];
 
-function rgrContent(): ProductRichContent {
+function rgrContent(product: RgrProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
     description: [
+      { type: "paragraph", text: buildRgrListingDescription(product) },
       { type: "paragraph", text: RGR_R_SHORT_DESCRIPTION.split("\n\n")[0] },
       { type: "paragraph", text: RGR_R_SHORT_DESCRIPTION.split("\n\n")[1] },
       ...RGR_R_DESCRIPTION_BLOCKS
@@ -480,5 +481,5 @@ export function buildRgrListingDescription(product: RgrProductDefinition): strin
 }
 
 export const RGR_R_CONTENT_BY_SLUG: Record<string, ProductRichContent> = Object.fromEntries(
-  RGR_R_PRODUCTS.map((product) => [product.slug, rgrContent()])
+  RGR_R_PRODUCTS.map((product) => [product.slug, rgrContent(product)])
 );

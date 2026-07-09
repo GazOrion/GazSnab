@@ -337,10 +337,11 @@ export const RVG_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
   }
 ];
 
-function rvgContent(): ProductRichContent {
+function rvgContent(product: RvgProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
     description: [
+      { type: "paragraph", text: buildRvgListingDescription(product) },
       { type: "paragraph", text: RVG_SHORT_DESCRIPTION },
       ...RVG_INTRO_DESCRIPTION_BLOCKS
     ],
@@ -418,5 +419,5 @@ export function buildRvgListingDescription(product: RvgProductDefinition): strin
 }
 
 export const RVG_CONTENT_BY_SLUG: Record<string, ProductRichContent> = Object.fromEntries(
-  RVG_PRODUCTS.map((product) => [product.slug, rvgContent()])
+  RVG_PRODUCTS.map((product) => [product.slug, rvgContent(product)])
 );

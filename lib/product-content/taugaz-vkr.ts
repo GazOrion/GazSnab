@@ -1,17 +1,19 @@
 import type { ProductRichContent, ProductSpecRow } from "@/lib/product-content/smt-kompleks";
 
-const MEMBRANE_INTRO =
-  "Мембранные счётчики газа ТАУГАЗ серии ВКР предназначены для учёта объёма природного газа. Корпус с механическим отсчётным устройством, резьбовое присоединение.";
-
 function vkrContent(
   model: string,
   lineSpec: string,
   extraSpecs: ProductSpecRow[] = []
 ): ProductRichContent {
+  const typeSize = extraSpecs.find((row) => row.characteristic === "Типоразмер")?.value;
+  const intro = typeSize
+    ? `Мембранный счётчик газа ТАУГАЗ ${model} (типоразмер ${typeSize}) предназначен для учёта объёма природного газа. Корпус с механическим отсчётным устройством, резьбовое присоединение.`
+    : `Мембранный счётчик газа ТАУГАЗ ${model} предназначен для учёта объёма природного газа. Корпус с механическим отсчётным устройством, резьбовое присоединение.`;
+
   return {
     descriptionTitle: "Подробное описание",
     description: [
-      { type: "paragraph", text: MEMBRANE_INTRO },
+      { type: "paragraph", text: intro },
       { type: "paragraph", text: lineSpec }
     ],
     specsTitle: "Технические характеристики",

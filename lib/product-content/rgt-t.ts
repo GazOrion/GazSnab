@@ -363,10 +363,11 @@ function mergeSpecRows(...groups: ProductSpecRow[][]): ProductSpecRow[] {
   return merged;
 }
 
-function rgtContent(model: string, extraSpecs: ProductSpecRow[]): ProductRichContent {
+function rgtContent(product: RgtProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
     description: [
+      { type: "paragraph", text: buildRgtListingDescription(product) },
       { type: "paragraph", text: RGT_T_SHORT_DESCRIPTION.split("\n\n")[0] },
       { type: "paragraph", text: RGT_T_SHORT_DESCRIPTION.split("\n\n")[1] },
       ...RGT_T_DESCRIPTION_BLOCKS,
@@ -374,8 +375,8 @@ function rgtContent(model: string, extraSpecs: ProductSpecRow[]): ProductRichCon
     ],
     specsTitle: "Основные технические характеристики турбинного счётчика газа РГ-Т",
     specs: mergeSpecRows(
-      [{ characteristic: "Модель", value: model }],
-      extraSpecs,
+      [{ characteristic: "Модель", value: product.model }],
+      product.extraSpecs,
       RGT_T_COMMON_SPECS
     ),
     specsFooter: RGT_T_SPECS_FOOTER_BLOCKS,
@@ -660,8 +661,5 @@ export function buildRgtListingDescription(product: RgtProductDefinition): strin
 }
 
 export const RGT_T_CONTENT_BY_SLUG: Record<string, ProductRichContent> = Object.fromEntries(
-  RGT_T_PRODUCTS.map((product) => [
-    product.slug,
-    rgtContent(product.model, product.extraSpecs)
-  ])
+  RGT_T_PRODUCTS.map((product) => [product.slug, rgtContent(product)])
 );

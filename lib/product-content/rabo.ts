@@ -305,10 +305,11 @@ export const RABO_OPTIONS_DESCRIPTION: ProductDescriptionBlock[] = [
   }
 ];
 
-function raboContent(): ProductRichContent {
+function raboContent(product: RaboProductDefinition): ProductRichContent {
   return {
     descriptionTitle: "Подробное описание",
     description: [
+      { type: "paragraph", text: buildRaboListingDescription(product) },
       {
         type: "paragraph",
         text: "Счётчик газа RABO имеет следующие особенности:"
@@ -401,5 +402,5 @@ export function buildRaboListingDescription(product: RaboProductDefinition): str
 }
 
 export const RABO_CONTENT_BY_SLUG: Record<string, ProductRichContent> = Object.fromEntries(
-  RABO_PRODUCTS.map((product) => [product.slug, raboContent()])
+  RABO_PRODUCTS.map((product) => [product.slug, raboContent(product)])
 );

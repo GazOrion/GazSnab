@@ -245,10 +245,6 @@ function sgTkSharedDescription(includeRdCharacteristics: boolean): ProductDescri
   return [
     {
       type: "paragraph",
-      text: SG_TK_SHORT_DESCRIPTION
-    },
-    {
-      type: "paragraph",
       text: "Для комплексов СГ-ТК-Д разработана методика выполнения измерений в соответствие с которой относительная расширенная неопределенность комплекса СГ-ТК на базе счетчика газа BK с температурными корректорами ТС215 и ТС220 не превышает ±3%, что соответствует требованиям ГОСТ Р 8.741-2011."
     },
     {

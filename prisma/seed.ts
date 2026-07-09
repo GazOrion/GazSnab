@@ -3598,8 +3598,8 @@ const products = [
     slug: `bpek-ek-cable-${length}m`,
     kind: "Товар",
     category: "Кабели БПЭК",
-    description: BPEK_EK_CABLE_DESCRIPTION,
-    details: BPEK_EK_CABLE_DESCRIPTION,
+    description: `${BPEK_EK_CABLE_DESCRIPTION} Длина кабеля — ${length} м.`,
+    details: `Кабель БПЭК-ЕК длиной ${length} м ${BPEK_EK_CABLE_DESCRIPTION}`,
     specs: {
       Производитель: CABLE_MANUFACTURER,
       Длина: `${length} м`
@@ -3616,8 +3616,8 @@ const products = [
     slug: `bpek-smt-tm07-cable-${length}m`,
     kind: "Товар",
     category: "Кабели БПЭК",
-    description: BPEK_SMT_TM07_CABLE_DESCRIPTION,
-    details: BPEK_SMT_TM07_CABLE_DESCRIPTION,
+    description: `${BPEK_SMT_TM07_CABLE_DESCRIPTION} Длина кабеля — ${length} м.`,
+    details: `Кабель БПЭК-СМТ/ТМ-07 длиной ${length} м ${BPEK_SMT_TM07_CABLE_DESCRIPTION}`,
     specs: {
       Производитель: CABLE_MANUFACTURER,
       Длина: `${length} м`
@@ -3634,8 +3634,8 @@ const products = [
     slug: `bpek-ts-cable-${length}m`,
     kind: "Товар",
     category: "Кабели БПЭК",
-    description: BPEK_TS_CABLE_DESCRIPTION,
-    details: BPEK_TS_CABLE_DESCRIPTION,
+    description: `${BPEK_TS_CABLE_DESCRIPTION} Длина кабеля — ${length} м.`,
+    details: `Кабель БПЭК-ТС длиной ${length} м ${BPEK_TS_CABLE_DESCRIPTION}`,
     specs: {
       Производитель: CABLE_MANUFACTURER,
       Длина: `${length} м`
@@ -3652,8 +3652,8 @@ const products = [
     slug: `bpek-flowgaz-cable-${length}m`,
     kind: "Товар",
     category: "Кабели БПЭК",
-    description: BPEK_FLOWGAZ_CABLE_DESCRIPTION,
-    details: BPEK_FLOWGAZ_CABLE_DESCRIPTION,
+    description: `${BPEK_FLOWGAZ_CABLE_DESCRIPTION} Длина кабеля — ${length} м.`,
+    details: `Кабель БПЭК-Флоугаз длиной ${length} м ${BPEK_FLOWGAZ_CABLE_DESCRIPTION}`,
     specs: {
       Производитель: CABLE_MANUFACTURER,
       Длина: `${length} м`
@@ -3670,8 +3670,8 @@ const products = [
     slug: `bpek-vkg-cable-${length}m`,
     kind: "Товар",
     category: "Кабели БПЭК",
-    description: BPEK_VKG_CABLE_DESCRIPTION,
-    details: BPEK_VKG_CABLE_DESCRIPTION,
+    description: `${BPEK_VKG_CABLE_DESCRIPTION} Длина кабеля — ${length} м.`,
+    details: `Кабель БПЭК-ВКГ длиной ${length} м ${BPEK_VKG_CABLE_DESCRIPTION}`,
     specs: {
       Производитель: CABLE_MANUFACTURER,
       Длина: `${length} м`
@@ -3688,8 +3688,8 @@ const products = [
     slug: `bpek-spg-irvis-cable-${length}m`,
     kind: "Товар",
     category: "Кабели БПЭК",
-    description: BPEK_SPG_IRVIS_CABLE_DESCRIPTION,
-    details: BPEK_SPG_IRVIS_CABLE_DESCRIPTION,
+    description: `${BPEK_SPG_IRVIS_CABLE_DESCRIPTION} Длина кабеля — ${length} м.`,
+    details: `Кабель БПЭК-СПГ/Ирвис длиной ${length} м ${BPEK_SPG_IRVIS_CABLE_DESCRIPTION}`,
     specs: {
       Производитель: CABLE_MANUFACTURER,
       Длина: `${length} м`
@@ -3892,7 +3892,7 @@ const products = [
     description:
       "Комплект фитингов для счётчиков газа ВК G1,6(Т)-G6(Т). Гайка накидная 1¼\", патрубок без резьбы d=22 мм, Ду=15 мм.",
     details:
-      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т).",
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т) на трубопровод Ду=15 мм (гайка накидная 1¼\", патрубок d=22 мм).",
     specs: {
       Производитель: "РАСКО",
       Подкатегория: "Присоединительное оборудование",
@@ -3917,7 +3917,7 @@ const products = [
     description:
       "Комплект фитингов для счётчиков газа ВК G1,6(Т)-G6(Т). Гайка накидная 1¼\", патрубок без резьбы d=26,5 мм, Ду=20 мм.",
     details:
-      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т).",
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т) на трубопровод Ду=20 мм (гайка накидная 1¼\", патрубок d=26,5 мм).",
     specs: {
       Производитель: "РАСКО",
       Подкатегория: "Присоединительное оборудование",
@@ -3942,7 +3942,7 @@ const products = [
     description:
       "Комплект фитингов для счётчиков газа ВК G1,6(Т)-G6(Т). Гайка накидная 1¼\", патрубок без резьбы d=33,5 мм, Ду=25 мм.",
     details:
-      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т).",
+      "Комплект фитингов для монтажа диафрагменных счётчиков газа РАСКО серии ВК типоразмеров G1,6(Т)-G6(Т) на трубопровод Ду=25 мм (гайка накидная 1¼\", патрубок d=33,5 мм).",
     specs: {
       Производитель: "РАСКО",
       Подкатегория: "Присоединительное оборудование",

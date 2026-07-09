@@ -10,6 +10,10 @@ import { getBoughtTogetherProducts } from "@/lib/bought-together";
 import { getProductBackCatalogHref } from "@/lib/catalog";
 import { ProductShortSpecs } from "@/components/ProductShortSpecs";
 import { getProductRichContent } from "@/lib/product-content";
+import {
+  personalizeProductDetails,
+  personalizeProductRichContent
+} from "@/lib/personalize-product-description";
 import { splitProductDescriptionBlocks } from "@/lib/product-description-split";
 import { getProductDetailCardPriceLabel, getProductPriceLabel } from "@/lib/product-price-label";
 import { getProductListingTitle } from "@/lib/product-listing-title";
@@ -106,7 +110,17 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const specs = Object.entries(specsRecord);
   const shortSpecs =
     product.category === BALL_VALVE_CATEGORY ? getOrderedShortSpecs(specsRecord) : [];
-  const richContent = getProductRichContent(product.slug);
+  const descriptionContext = {
+    title: product.title,
+    slug: product.slug,
+    description: product.description,
+    specs: specsRecord
+  };
+  const baseRichContent = getProductRichContent(product.slug);
+  const richContent = baseRichContent
+    ? personalizeProductRichContent(baseRichContent, descriptionContext)
+    : null;
+  const details = personalizeProductDetails(product.details, descriptionContext);
   const hasRichSpecsContent = Boolean(
     (richContent?.specs?.length ?? 0) > 0 ||
       (richContent?.specsFooter?.length ?? 0) > 0 ||
@@ -186,7 +200,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
 
           <ProductDetailTabs
             description={product.description}
-            details={product.details}
+            details={details}
             specs={specs}
             relatedProducts={relatedProducts}
             richContent={richContent}

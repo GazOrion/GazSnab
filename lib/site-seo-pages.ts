@@ -75,12 +75,6 @@ export const SEO_STATIC_PAGES: SeoPageDefinition[] = [
     description: "Гарантийные обязательства и условия возврата поставляемого оборудования"
   },
   {
-    path: "/pod-obekt",
-    label: "Под объект",
-    title: `Под объект | ${SITE_SUFFIX}`,
-    description: "Комплектация газового оборудования под условия объекта"
-  },
-  {
     path: "/politika-konfidencialnosti",
     label: "Политика конфиденциальности",
     title: `Политика конфиденциальности | ${SITE_SUFFIX}`,

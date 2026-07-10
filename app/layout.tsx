@@ -16,6 +16,9 @@ export const viewport = {
 export const metadata: Metadata = {
   title: "ГазСнаб | Производство газового оборудования",
   description: "Интернет-магазин производственной компании ГазСнаб",
+  verification: {
+    yandex: "0316f456e812d94d"
+  },
   icons: {
     icon: "/favicon.ico",
     shortcut: "/favicon.ico",

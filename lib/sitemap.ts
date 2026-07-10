@@ -24,7 +24,7 @@ function sitemapChangeFrequency(path: string): MetadataRoute.Sitemap[number]["ch
   return "monthly";
 }
 
-export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+export async function buildSitemapEntries(): Promise<MetadataRoute.Sitemap> {
   const [pages, products] = await Promise.all([
     buildSeoPageCatalog(),
     prisma.product.findMany({
@@ -61,4 +61,47 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
 
       return entry;
     });
+}
+
+function escapeXml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+}
+
+function formatLastModified(value: Date | string | undefined) {
+  if (!value) return null;
+  const date = value instanceof Date ? value : new Date(value);
+  if (Number.isNaN(date.getTime())) return null;
+  return date.toISOString();
+}
+
+export function renderSitemapXml(entries: MetadataRoute.Sitemap) {
+  const urls = entries
+    .map((entry) => {
+      const parts = [
+        "  <url>",
+        `    <loc>${escapeXml(entry.url)}</loc>`
+      ];
+
+      const lastModified = formatLastModified(entry.lastModified);
+      if (lastModified) {
+        parts.push(`    <lastmod>${escapeXml(lastModified)}</lastmod>`);
+      }
+      if (entry.changeFrequency) {
+        parts.push(`    <changefreq>${escapeXml(entry.changeFrequency)}</changefreq>`);
+      }
+      if (typeof entry.priority === "number") {
+        parts.push(`    <priority>${entry.priority.toFixed(1)}</priority>`);
+      }
+
+      parts.push("  </url>");
+      return parts.join("\n");
+    })
+    .join("\n");
+
+  return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`;
 }

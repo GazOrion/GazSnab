@@ -8,6 +8,7 @@ import {
   SEO_STATIC_PAGES,
   type SeoPageDefinition
 } from "@/lib/site-seo-pages";
+import { legacyCatalogSeoPathLookupKeys } from "@/lib/legacy-seo-paths";
 
 export type { SeoPageDefinition };
 
@@ -47,6 +48,22 @@ async function getDefaultsForPath(path: string) {
   };
 }
 
+async function findStoredPageMeta(path: string) {
+  const direct = await prisma.pageMeta.findUnique({ where: { path } });
+  if (direct) {
+    return direct;
+  }
+
+  for (const legacyPath of legacyCatalogSeoPathLookupKeys(path)) {
+    const legacy = await prisma.pageMeta.findUnique({ where: { path: legacyPath } });
+    if (legacy) {
+      return legacy;
+    }
+  }
+
+  return null;
+}
+
 export async function getPageSeo(path: string): Promise<{ title: string; description: string }> {
   const defaults = await getDefaultsForPath(path);
 
@@ -55,7 +72,7 @@ export async function getPageSeo(path: string): Promise<{ title: string; descrip
   }
 
   try {
-    const row = await prisma.pageMeta.findUnique({ where: { path } });
+    const row = await findStoredPageMeta(path);
     if (!row) return defaults;
 
     return {
@@ -101,7 +118,12 @@ export async function listSeoPagesForAdmin(): Promise<SeoPageRow[]> {
   const byPath = new Map(storedRows.map((row) => [row.path, row]));
 
   return catalog.map((page) => {
-    const stored = byPath.get(page.path);
+    const stored =
+      byPath.get(page.path) ??
+      legacyCatalogSeoPathLookupKeys(page.path)
+        .map((legacyPath) => byPath.get(legacyPath))
+        .find(Boolean);
+
     return {
       path: page.path,
       label: page.label,

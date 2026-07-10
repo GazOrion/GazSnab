@@ -1,9 +1,9 @@
 import {
-  CATALOG_FILTER_PARAMS,
   catalogPath,
   EQUIPMENT_HEADER_CATALOG_ITEMS,
   PRODUCT_KIND
 } from "@/lib/catalog";
+import { parseEquipmentCatalogPath } from "@/lib/catalog-slugs";
 import {
   GAS_METERS_CATEGORY,
   GAS_METER_SUBCATEGORY_MEMBRANE,
@@ -36,17 +36,13 @@ export type ShopNavItem = {
   children?: HeaderNavChild[];
 };
 
-const equipmentCategoryParam = CATALOG_FILTER_PARAMS.equipment.category;
-const equipmentSubcategoryParam = CATALOG_FILTER_PARAMS.equipment.subcategory;
-
-function matchEquipmentSubcategory(category: string, subcategory: string) {
-  return (pathname: string, search = "") => {
-    const params = new URLSearchParams(search);
-    return (
-      pathname === "/oborudovanie" &&
-      params.get(equipmentCategoryParam) === category &&
-      params.get(equipmentSubcategoryParam) === subcategory
-    );
+function matchEquipmentCategory(category: string, subcategory?: string) {
+  return (pathname: string) => {
+    const parsed = parseEquipmentCatalogPath(pathname.split("?")[0] ?? pathname);
+    if (subcategory) {
+      return parsed.categoryName === category && parsed.subcategoryName === subcategory;
+    }
+    return parsed.categoryName === category && !parsed.subcategoryName;
   };
 }
 
@@ -58,7 +54,7 @@ function buildEquipmentSubcategoryNavChild(
   return {
     label,
     href: catalogPath({ kind: PRODUCT_KIND.GOODS, category, subcategory }),
-    match: matchEquipmentSubcategory(category, subcategory)
+    match: matchEquipmentCategory(category, subcategory)
   };
 }
 
@@ -108,14 +104,7 @@ export const HEADER_CATALOG_CHILDREN: HeaderNavChild[] = EQUIPMENT_HEADER_CATALO
     href: catalogPath({ kind: PRODUCT_KIND.GOODS, category: item.name }),
     imageUrl:
       ("image" in item && item.image ? item.image : CATALOG_NAV_IMAGES[item.label]) ?? null,
-    match: (pathname, search = "") => {
-      const params = new URLSearchParams(search);
-      return (
-        pathname === "/oborudovanie" &&
-        params.get(equipmentCategoryParam) === item.name &&
-        !params.get(equipmentSubcategoryParam)
-      );
-    },
+    match: matchEquipmentCategory(item.name),
     children: CATALOG_NESTED_CHILDREN[item.name]
   })
 );
@@ -172,16 +161,20 @@ export const HEADER_NAV_LINKS: ShopNavItem[] = [
     label: "Каталог",
     dropdown: true,
     children: HEADER_CATALOG_CHILDREN,
-    match: (pathname, search = "") =>
-      pathname === "/oborudovanie" &&
-      !new URLSearchParams(search).get(equipmentCategoryParam)
+    match: (pathname) => {
+      const cleanPath = pathname.split("?")[0] ?? pathname;
+      return cleanPath === "/oborudovanie";
+    }
   },
   {
     href: "/uslugi",
     label: "Услуги",
     dropdown: true,
     children: HEADER_SERVICES_CHILDREN,
-    match: (pathname) => pathname === "/uslugi"
+    match: (pathname) => {
+      const cleanPath = pathname.split("?")[0] ?? pathname;
+      return cleanPath === "/uslugi";
+    }
   },
   {
     href: "/o-kompanii",

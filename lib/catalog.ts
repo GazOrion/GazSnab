@@ -1,5 +1,10 @@
 import { GAS_METERING_UNITS_CARD_IMAGE } from "@/lib/gas-metering-units-media";
 import { SENSORS_CATEGORY } from "@/lib/equipment-category-config";
+import {
+  appendCatalogQuery,
+  buildEquipmentCatalogPath,
+  buildServicesCatalogPath
+} from "@/lib/catalog-slugs";
 
 export { SENSORS_CATEGORY } from "@/lib/equipment-category-config";
 
@@ -342,8 +347,9 @@ export function catalogRouteFromBlock(block: CatalogBlockId): string {
 /** Базовый путь для фильтров: остаёмся на текущей странице каталога, если она подходит блоку. */
 export function resolveCatalogBasePath(pathname: string, block: CatalogBlockId): string {
   const blockRoute = catalogRouteFromBlock(block);
-  if (pathname === blockRoute) {
-    return pathname;
+  const cleanPath = pathname.split("?")[0] ?? pathname;
+  if (cleanPath === blockRoute || cleanPath.startsWith(`${blockRoute}/`)) {
+    return cleanPath;
   }
   return blockRoute;
 }
@@ -371,12 +377,6 @@ export function catalogPath(options?: {
   const block = options?.block ?? catalogBlockFromKind(options?.kind);
 
   if (block) {
-    if (options?.category) {
-      params.set(CATALOG_FILTER_PARAMS[block].category, options.category);
-    }
-    if (block === "equipment" && options?.subcategory) {
-      params.set(CATALOG_FILTER_PARAMS.equipment.subcategory, options.subcategory);
-    }
     if (options?.q) {
       params.set(CATALOG_FILTER_PARAMS[block].q, options.q);
     }
@@ -385,10 +385,15 @@ export function catalogPath(options?: {
     }
   }
 
-  const query = params.toString();
-  const base = block ? catalogRouteFromBlock(block) : CATALOG_ROUTES.home;
-  if (query) return `${base}?${query}`;
-  return base;
+  let path = block ? catalogRouteFromBlock(block) : CATALOG_ROUTES.home;
+
+  if (block === "equipment" && options?.category) {
+    path = buildEquipmentCatalogPath(options.category, options.subcategory);
+  } else if (block === "services" && options?.category) {
+    path = buildServicesCatalogPath(options.category);
+  }
+
+  return appendCatalogQuery(path, params);
 }
 
 /** Ссылка «назад в каталог» со страницы товара — раздел оборудования/услуг с фильтром по категории. */

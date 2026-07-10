@@ -8,10 +8,17 @@ import {
   CATALOG_ROUTES,
   PRODUCT_KIND,
   catalogBlockFromKind,
+  catalogPath,
+  catalogRouteFromBlock,
   parseEquipmentSort,
   resolveCatalogBasePath,
   type EquipmentSort
 } from "@/lib/catalog";
+import {
+  appendCatalogQuery,
+  parseEquipmentCatalogPath,
+  parseServicesCatalogPath
+} from "@/lib/catalog-slugs";
 
 type Options = {
   fixedKind?: ProductKind;
@@ -22,6 +29,34 @@ function legacyParamsToDelete(params: URLSearchParams) {
   params.delete("kind");
   params.delete("q");
   params.delete("category");
+  params.delete(CATALOG_FILTER_PARAMS.equipment.category);
+  params.delete(CATALOG_FILTER_PARAMS.equipment.subcategory);
+  params.delete(CATALOG_FILTER_PARAMS.services.category);
+}
+
+function buildTargetPath(
+  block: "equipment" | "services" | undefined,
+  category: string,
+  subcategory: string,
+  listView: boolean
+) {
+  if (!block) {
+    return CATALOG_ROUTES.home;
+  }
+
+  if (listView) {
+    return catalogPath({ block, list: true });
+  }
+
+  if (category) {
+    return catalogPath({
+      block,
+      category,
+      ...(block === "equipment" && subcategory ? { subcategory } : {})
+    });
+  }
+
+  return catalogRouteFromBlock(block);
 }
 
 export function useCatalogNavigation(options: Options = {}) {
@@ -32,35 +67,44 @@ export function useCatalogNavigation(options: Options = {}) {
 
   const block = catalogBlockFromKind(fixedKind);
   const filterKeys = block ? CATALOG_FILTER_PARAMS[block] : null;
+  const cleanPath = pathname.split("?")[0] ?? pathname;
+  const equipmentPath = parseEquipmentCatalogPath(cleanPath);
+  const servicesPath = parseServicesCatalogPath(cleanPath);
+
+  const pathCategory =
+    block === "equipment"
+      ? equipmentPath.categoryName ?? ""
+      : block === "services"
+        ? servicesPath.categoryName ?? ""
+        : "";
+  const subcategory = block === "equipment" ? equipmentPath.subcategoryName ?? "" : "";
+
+  const category = pathCategory;
+
   const basePath =
     basePathOption ??
     (block ? resolveCatalogBasePath(pathname, block) : CATALOG_ROUTES.home);
   const [, startTransition] = useTransition();
 
   const kind = fixedKind ?? searchParams.get("kind") ?? "";
-  const category = filterKeys
-    ? (searchParams.get(filterKeys.category) ?? "")
-    : (searchParams.get("category") ?? "");
   const listView = filterKeys ? searchParams.get(filterKeys.list) === "1" : false;
-  const subcategory =
-    block === "equipment"
-      ? (searchParams.get(CATALOG_FILTER_PARAMS.equipment.subcategory) ?? "")
-      : "";
   const equipmentSort: EquipmentSort =
     block === "equipment" && "sort" in CATALOG_FILTER_PARAMS.equipment
       ? parseEquipmentSort(searchParams.get(CATALOG_FILTER_PARAMS.equipment.sort))
       : parseEquipmentSort(null);
 
-  const navigate = useCallback(
-    (next: URLSearchParams) => {
-      legacyParamsToDelete(next);
-      const query = next.toString();
-      const target = query ? `${basePath}?${query}` : basePath;
+  const navigateTo = useCallback(
+    (targetPath: string, params: URLSearchParams) => {
+      legacyParamsToDelete(params);
+      const target = appendCatalogQuery(targetPath, params);
+      const current = `${pathname}${searchParams.toString() ? `?${searchParams}` : ""}`;
+      if (target === current) return;
+
       startTransition(() => {
         router.replace(target, { scroll: false });
       });
     },
-    [basePath, router]
+    [pathname, router, searchParams]
   );
 
   const merge = useCallback(() => new URLSearchParams(searchParams.toString()), [searchParams]);
@@ -72,7 +116,7 @@ export function useCatalogNavigation(options: Options = {}) {
       else params.set("kind", value);
 
       if (fixedKind) {
-        navigate(params);
+        navigateTo(basePath, params);
         return;
       }
 
@@ -82,41 +126,35 @@ export function useCatalogNavigation(options: Options = {}) {
           : value === PRODUCT_KIND.SERVICE
             ? CATALOG_ROUTES.services
             : CATALOG_ROUTES.home;
-      const query = params.toString();
-      startTransition(() => {
-        router.replace(query ? `${target}?${query}` : target, { scroll: false });
-      });
+      navigateTo(target, params);
     },
-    [fixedKind, merge, navigate, router]
+    [basePath, fixedKind, merge, navigateTo]
   );
 
   const setCategory = useCallback(
     (value: string) => {
       const params = merge();
       legacyParamsToDelete(params);
-
       if (filterKeys) {
         params.delete(filterKeys.list);
-        params.delete(CATALOG_FILTER_PARAMS.equipment.subcategory);
-        if (!value) params.delete(filterKeys.category);
-        else params.set(filterKeys.category, value);
-      } else if (!value) {
-        params.delete("category");
-      } else {
-        params.set("category", value);
+      }
+      if (block === "equipment") {
+        params.delete(CATALOG_FILTER_PARAMS.equipment.sort);
       }
 
-      navigate(params);
+      const targetPath = buildTargetPath(block, value, "", false);
+      navigateTo(targetPath, params);
     },
-    [filterKeys, merge, navigate]
+    [block, filterKeys, merge, navigateTo]
   );
 
   const clearListView = useCallback(() => {
     if (!filterKeys) return;
     const params = merge();
     params.delete(filterKeys.list);
-    navigate(params);
-  }, [filterKeys, merge, navigate]);
+    const targetPath = buildTargetPath(block, category, subcategory, false);
+    navigateTo(targetPath, params);
+  }, [block, category, filterKeys, merge, navigateTo, subcategory]);
 
   const setEquipmentSort = useCallback(
     (value: EquipmentSort) => {
@@ -127,9 +165,9 @@ export function useCatalogNavigation(options: Options = {}) {
       } else {
         params.set(CATALOG_FILTER_PARAMS.equipment.sort, value);
       }
-      navigate(params);
+      navigateTo(basePath, params);
     },
-    [block, merge, navigate]
+    [basePath, block, merge, navigateTo]
   );
 
   const setSubcategory = useCallback(
@@ -137,14 +175,10 @@ export function useCatalogNavigation(options: Options = {}) {
       if (block !== "equipment") return;
       const params = merge();
       legacyParamsToDelete(params);
-      if (!value) {
-        params.delete(CATALOG_FILTER_PARAMS.equipment.subcategory);
-      } else {
-        params.set(CATALOG_FILTER_PARAMS.equipment.subcategory, value);
-      }
-      navigate(params);
+      const targetPath = buildTargetPath(block, category, value, false);
+      navigateTo(targetPath, params);
     },
-    [block, merge, navigate]
+    [block, category, merge, navigateTo]
   );
 
   const clearAll = useCallback(() => {
@@ -152,26 +186,15 @@ export function useCatalogNavigation(options: Options = {}) {
     legacyParamsToDelete(params);
 
     if (filterKeys) {
-      params.delete(filterKeys.category);
       params.delete(filterKeys.list);
       if (block === "equipment") {
         params.delete(CATALOG_FILTER_PARAMS.equipment.sort);
-        params.delete(CATALOG_FILTER_PARAMS.equipment.subcategory);
       }
-    } else {
-      params.delete("category");
     }
 
-    const query = params.toString();
-    const target = query ? `${basePath}?${query}` : basePath;
-    const current = `${pathname}${searchParams.toString() ? `?${searchParams}` : ""}`;
-
-    if (target === current) return;
-
-    startTransition(() => {
-      router.replace(target, { scroll: false });
-    });
-  }, [basePath, filterKeys, merge, pathname, router, searchParams]);
+    const targetPath = block ? catalogRouteFromBlock(block) : CATALOG_ROUTES.home;
+    navigateTo(targetPath, params);
+  }, [block, filterKeys, merge, navigateTo]);
 
   return {
     kind,

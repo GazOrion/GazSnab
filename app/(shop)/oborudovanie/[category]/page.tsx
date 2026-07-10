@@ -1,38 +1,49 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CatalogDbError } from "@/components/home/CatalogDbError";
 import { CatalogSection } from "@/components/home/CatalogSection";
 import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
 import {
-  CATALOG_ROUTES,
-  CATALOG_SECTION,
-  PRODUCT_KIND
-} from "@/lib/catalog";
+  getEquipmentCategoryBySlug
+} from "@/lib/catalog-slugs";
 import { loadHomeCatalogData } from "@/lib/catalog-data";
-import { buildPageMetadataFromRequest } from "@/lib/site-seo";
+import { buildPageMetadata } from "@/lib/site-seo";
+import { catalogPath, CATALOG_SECTION, PRODUCT_KIND } from "@/lib/catalog";
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Record<string, string | string[] | undefined>;
+type Props = {
+  params: Promise<{
+    category: string;
+  }>;
+};
 
-export async function generateMetadata({
-  searchParams
-}: {
-  searchParams: Promise<SearchParams>;
-}): Promise<Metadata> {
-  const params = await searchParams;
-  return buildPageMetadataFromRequest(CATALOG_ROUTES.equipment, params);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { category: categorySlug } = await params;
+  const categoryName = getEquipmentCategoryBySlug(categorySlug);
+  if (!categoryName) {
+    return {};
+  }
+
+  return buildPageMetadata(catalogPath({ kind: PRODUCT_KIND.GOODS, category: categoryName }));
 }
 
-export default async function EquipmentPage() {
+export default async function EquipmentCategoryPage({ params }: Props) {
+  const { category: categorySlug } = await params;
+  const categoryName = getEquipmentCategoryBySlug(categorySlug);
+  if (!categoryName) {
+    notFound();
+  }
+
   let catalogData;
   try {
     catalogData = await loadHomeCatalogData({
-      goods: {}
+      goods: { category: categoryName }
     });
   } catch (error) {
-    console.error("[oborudovanie] catalog load failed:", error);
+    console.error("[oborudovanie/category] catalog load failed:", error);
     catalogData = null;
   }
 

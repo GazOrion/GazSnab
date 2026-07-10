@@ -10,6 +10,10 @@ import {
   SERVICE_CLUSTER_ORDER,
   SERVICE_CATEGORY_METAL
 } from "@/lib/catalog";
+import {
+  parseEquipmentCatalogPath,
+  parseServicesCatalogPath
+} from "@/lib/catalog-slugs";
 import { catalogVisibilityWhere } from "@/lib/catalog-data";
 import {
   GAS_METERS_CATEGORY,
@@ -306,6 +310,63 @@ export function normalizeSeoPath(
   pathname: string,
   searchParams?: URLSearchParams | Record<string, string | string[] | undefined>
 ) {
+  const cleanPath = pathname.split("?")[0] ?? pathname;
+  const equipmentPath = parseEquipmentCatalogPath(cleanPath);
+  const servicesPath = parseServicesCatalogPath(cleanPath);
+
+  if (equipmentPath.categoryName) {
+    const params = new URLSearchParams();
+    if (searchParams instanceof URLSearchParams) {
+      searchParams.forEach((value, key) => params.set(key, value));
+    } else if (searchParams) {
+      for (const [key, value] of Object.entries(searchParams)) {
+        if (typeof value === "string" && value) params.set(key, value);
+        else if (Array.isArray(value) && value[0]) params.set(key, value[0]);
+      }
+    }
+
+    const list = params.get(CATALOG_FILTER_PARAMS.equipment.list);
+    const normalized = new URLSearchParams();
+    if (list === "1") {
+      normalized.set(CATALOG_FILTER_PARAMS.equipment.list, "1");
+    }
+
+    const basePath = catalogPath({
+      kind: PRODUCT_KIND.GOODS,
+      category: equipmentPath.categoryName,
+      subcategory: equipmentPath.subcategoryName,
+      list: list === "1"
+    }).split("?")[0];
+
+    const query = normalized.toString();
+    return query ? `${basePath}?${query}` : basePath;
+  }
+
+  if (servicesPath.categoryName) {
+    const params = new URLSearchParams();
+    if (searchParams instanceof URLSearchParams) {
+      searchParams.forEach((value, key) => params.set(key, value));
+    } else if (searchParams) {
+      for (const [key, value] of Object.entries(searchParams)) {
+        if (typeof value === "string" && value) params.set(key, value);
+        else if (Array.isArray(value) && value[0]) params.set(key, value[0]);
+      }
+    }
+
+    const list = params.get(CATALOG_FILTER_PARAMS.services.list);
+    const basePath = catalogPath({
+      kind: PRODUCT_KIND.SERVICE,
+      category: servicesPath.categoryName,
+      list: list === "1"
+    }).split("?")[0];
+    const normalized = new URLSearchParams();
+    if (list === "1") {
+      normalized.set(CATALOG_FILTER_PARAMS.services.list, "1");
+    }
+    const query = normalized.toString();
+    return query ? `${basePath}?${query}` : basePath;
+  }
+
   const params = new URLSearchParams();
 
   if (searchParams instanceof URLSearchParams) {
@@ -317,25 +378,19 @@ export function normalizeSeoPath(
     }
   }
 
-  const equipmentCategory = params.get(CATALOG_FILTER_PARAMS.equipment.category);
-  const equipmentSubcategory = params.get(CATALOG_FILTER_PARAMS.equipment.subcategory);
   const equipmentList = params.get(CATALOG_FILTER_PARAMS.equipment.list);
-  const servicesCategory = params.get(CATALOG_FILTER_PARAMS.services.category);
   const servicesList = params.get(CATALOG_FILTER_PARAMS.services.list);
 
   const normalized = new URLSearchParams();
-  if (pathname === CATALOG_ROUTES.equipment) {
-    if (equipmentCategory) normalized.set(CATALOG_FILTER_PARAMS.equipment.category, equipmentCategory);
-    if (equipmentSubcategory) normalized.set(CATALOG_FILTER_PARAMS.equipment.subcategory, equipmentSubcategory);
-    if (equipmentList === "1") normalized.set(CATALOG_FILTER_PARAMS.equipment.list, "1");
+  if (cleanPath === CATALOG_ROUTES.equipment && equipmentList === "1") {
+    normalized.set(CATALOG_FILTER_PARAMS.equipment.list, "1");
   }
-  if (pathname === CATALOG_ROUTES.services) {
-    if (servicesCategory) normalized.set(CATALOG_FILTER_PARAMS.services.category, servicesCategory);
-    if (servicesList === "1") normalized.set(CATALOG_FILTER_PARAMS.services.list, "1");
+  if (cleanPath === CATALOG_ROUTES.services && servicesList === "1") {
+    normalized.set(CATALOG_FILTER_PARAMS.services.list, "1");
   }
 
   const query = normalized.toString();
-  return query ? `${pathname}?${query}` : pathname;
+  return query ? `${cleanPath}?${query}` : cleanPath;
 }
 
 export function productSeoPath(slug: string) {

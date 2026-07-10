@@ -1,38 +1,47 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CatalogDbError } from "@/components/home/CatalogDbError";
 import { CatalogSection } from "@/components/home/CatalogSection";
 import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
-import {
-  CATALOG_ROUTES,
-  CATALOG_SECTION,
-  PRODUCT_KIND
-} from "@/lib/catalog";
+import { CATALOG_SECTION, PRODUCT_KIND, catalogPath } from "@/lib/catalog";
+import { getServiceCategoryBySlug } from "@/lib/catalog-slugs";
 import { loadHomeCatalogData } from "@/lib/catalog-data";
-import { buildPageMetadataFromRequest } from "@/lib/site-seo";
+import { buildPageMetadata } from "@/lib/site-seo";
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Record<string, string | string[] | undefined>;
+type Props = {
+  params: Promise<{
+    category: string;
+  }>;
+};
 
-export async function generateMetadata({
-  searchParams
-}: {
-  searchParams: Promise<SearchParams>;
-}): Promise<Metadata> {
-  const params = await searchParams;
-  return buildPageMetadataFromRequest(CATALOG_ROUTES.services, params);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { category: categorySlug } = await params;
+  const categoryName = getServiceCategoryBySlug(categorySlug);
+  if (!categoryName) {
+    return {};
+  }
+
+  return buildPageMetadata(catalogPath({ kind: PRODUCT_KIND.SERVICE, category: categoryName }));
 }
 
-export default async function ServicesPage() {
+export default async function ServicesCategoryPage({ params }: Props) {
+  const { category: categorySlug } = await params;
+  const categoryName = getServiceCategoryBySlug(categorySlug);
+  if (!categoryName) {
+    notFound();
+  }
+
   let catalogData;
   try {
     catalogData = await loadHomeCatalogData({
-      services: {}
+      services: { category: categoryName }
     });
   } catch (error) {
-    console.error("[uslugi] catalog load failed:", error);
+    console.error("[uslugi/category] catalog load failed:", error);
     catalogData = null;
   }
 

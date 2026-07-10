@@ -30,8 +30,15 @@ type CatalogSearchContextValue = {
 const CatalogSearchContext = createContext<CatalogSearchContextValue | null>(null);
 
 function blocksForPathname(pathname: string): CatalogBlockId[] {
-  if (pathname === CATALOG_ROUTES.equipment) return ["equipment"];
-  if (pathname === CATALOG_ROUTES.services) return ["services"];
+  if (
+    pathname === CATALOG_ROUTES.equipment ||
+    pathname.startsWith(`${CATALOG_ROUTES.equipment}/`)
+  ) {
+    return ["equipment"];
+  }
+  if (pathname === CATALOG_ROUTES.services || pathname.startsWith(`${CATALOG_ROUTES.services}/`)) {
+    return ["services"];
+  }
   return ["equipment", "services"];
 }
 

@@ -1,38 +1,62 @@
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { CatalogDbError } from "@/components/home/CatalogDbError";
 import { CatalogSection } from "@/components/home/CatalogSection";
 import { ShopPageShell } from "@/components/ShopPageShell";
 import { SiteFooter } from "@/components/SiteFooter";
+import { CATALOG_SECTION, PRODUCT_KIND, catalogPath } from "@/lib/catalog";
 import {
-  CATALOG_ROUTES,
-  CATALOG_SECTION,
-  PRODUCT_KIND
-} from "@/lib/catalog";
+  getEquipmentCategoryBySlug,
+  getEquipmentSubcategoryBySlug
+} from "@/lib/catalog-slugs";
 import { loadHomeCatalogData } from "@/lib/catalog-data";
-import { buildPageMetadataFromRequest } from "@/lib/site-seo";
+import { buildPageMetadata } from "@/lib/site-seo";
 
 export const dynamic = "force-dynamic";
 
-type SearchParams = Record<string, string | string[] | undefined>;
+type Props = {
+  params: Promise<{
+    category: string;
+    subcategory: string;
+  }>;
+};
 
-export async function generateMetadata({
-  searchParams
-}: {
-  searchParams: Promise<SearchParams>;
-}): Promise<Metadata> {
-  const params = await searchParams;
-  return buildPageMetadataFromRequest(CATALOG_ROUTES.equipment, params);
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { category: categorySlug, subcategory: subcategorySlug } = await params;
+  const categoryName = getEquipmentCategoryBySlug(categorySlug);
+  const subcategoryName =
+    categoryName && getEquipmentSubcategoryBySlug(categoryName, subcategorySlug);
+  if (!categoryName || !subcategoryName) {
+    return {};
+  }
+
+  return buildPageMetadata(
+    catalogPath({
+      kind: PRODUCT_KIND.GOODS,
+      category: categoryName,
+      subcategory: subcategoryName
+    })
+  );
 }
 
-export default async function EquipmentPage() {
+export default async function EquipmentSubcategoryPage({ params }: Props) {
+  const { category: categorySlug, subcategory: subcategorySlug } = await params;
+  const categoryName = getEquipmentCategoryBySlug(categorySlug);
+  const subcategoryName =
+    categoryName && getEquipmentSubcategoryBySlug(categoryName, subcategorySlug);
+
+  if (!categoryName || !subcategoryName) {
+    notFound();
+  }
+
   let catalogData;
   try {
     catalogData = await loadHomeCatalogData({
-      goods: {}
+      goods: { category: categoryName }
     });
   } catch (error) {
-    console.error("[oborudovanie] catalog load failed:", error);
+    console.error("[oborudovanie/category/subcategory] catalog load failed:", error);
     catalogData = null;
   }
 

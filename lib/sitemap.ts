@@ -15,11 +15,13 @@ function sitemapPriority(path: string): number {
   if (path === "/") return 1;
   if (path.startsWith("/products/")) return 0.8;
   if (path.includes("?")) return 0.6;
+  if (path.startsWith("/oborudovanie/") || path.startsWith("/uslugi/")) return 0.75;
   return 0.7;
 }
 
 function sitemapChangeFrequency(path: string): MetadataRoute.Sitemap[number]["changeFrequency"] {
   if (path.startsWith("/products/")) return "weekly";
+  if (path.startsWith("/oborudovanie/") || path.startsWith("/uslugi/")) return "weekly";
   if (path.includes("?")) return "weekly";
   return "monthly";
 }
